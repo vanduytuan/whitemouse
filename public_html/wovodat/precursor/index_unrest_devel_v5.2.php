@@ -678,7 +678,7 @@ if (isset($_SESSION['login'])) {
                 
                 // get the label from the list of available time series
                 var label = document.getElementById(id + 'Tr' + tableId).getElementsByTagName('td')[1].innerHTML;
-                console.log(args.data);
+                
                 var data = Wovodat.highlightNoDataRange(args.data);
                 // set up the reference time
                 if(referenceTime == null){
