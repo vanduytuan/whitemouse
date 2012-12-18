@@ -1,0 +1,56 @@
+
+#wrap{margin: 0 auto; width: 800px; height: 920px; background: #aaaaaa;}
+
+#headershadow{width:900px; height:112px; background:#fefefe; font-size:10px}
+
+#header1{float:left; width:900px; height:88px;font-size:11px}
+#wovologo{float:left; width:12%; height:88px;}
+#iavceilogo{float:left; width:2%; height:88px;}
+#wovodatlogo{float:left; width:74%; height:88px}
+#eoslogo{float:left; width:12%; height:88px;}
+
+#headerspacer1{float:left; width:900px; height:10px;}
+#headerspacer2{float:left; width:900px; height:10px; background:#aaaaff;}
+#headerline{float:left; width:900px; height:3px; background:#ff5555;}
+
+#content{width: 800px; height: 700px; background: #111111;}
+#contentl{float: left; width: 550px; height: 698px; background: #eeeeee;}
+#contentr{float: left; width: 250px; height: 698px; background: #aaaaaa;}
+#footer{width: 800px; height: 80px; font-size: 10px; background: #cccccc;}
+
+h1{font-size: 16px; color: #777777; font-family: helvetica, san-serif;}
+.home1{padding: 0px 40px 0px 20px; color: #444444; font-family: helvetica, san-serif; font-size: 11px;}
+.home2{padding: 0px 20px 0px 20px; color: #444444; font-family: helvetica, san-serif; font-size: 11px;}
+
+#nav2upload{width: 550px; height: 22px; font-family: Helvetica, san-serif;}
+#nav2upload ul{margin-top: 0; padding: 0px 0 4px 178px;}
+#nav2upload ul li{display: inline; padding: 4px; background: #ccccff; font-size: 10px;}
+#nav2upload ul li a{color: #000000;text-decoration: underline;}
+#nav2upload ul li:hover{background: #555555;}
+#nav2upload ul li a:hover{color: #ffffff; text-decoration: underline;}
+#nav2upload ul li a.active{color: red; text-decoration: underline;}
+
+#nav2precursors{width: 550px; height: 22px; font-family: Helvetica, san-serif;}
+#nav2precursors ul{margin-top: 0; padding: 0px 0 4px 229px;}
+#nav2precursors ul li{display: inline; padding: 4px; background: #ccccff; font-size: 10px;}
+#nav2precursors ul li a{color: #000000;text-decoration: underline;}
+#nav2precursors ul li:hover{background: #555555;}
+#nav2precursors ul li a:hover{color: #ffffff; text-decoration: underline;}
+#nav2precursors ul li a.active{color: red; text-decoration: underline;}
+
+#nav2about{width: 550px; height: 22px; font-family: Helvetica, san-serif;}
+#nav2about ul{margin-top: 0; padding: 0px 0 4px 40px;}
+#nav2about ul li{display: inline; padding: 4px; background: #ccccff; font-size: 10px;}
+#nav2about ul li a{color: #000000;text-decoration: underline;}
+#nav2about ul li:hover{background: #555555;}
+#nav2about ul li a:hover{color: #ffffff; text-decoration: underline;}
+#nav2about ul li a.active{color: red; text-decoration: underline;}
+
+#nav2docu{width: 550px; height: 22px; font-family: Helvetica, san-serif;}
+#nav2docu ul{margin-top: 0; padding: 0px 0 4px 84px;}
+#nav2docu ul li{display: inline; padding: 4px; background: #ccccff; font-size: 10px;}
+#nav2docu ul li a{color: #000000;text-decoration: underline;}
+#nav2docu ul li:hover{background: #555555;}
+#nav2docu ul li a:hover{color: #ffffff; text-decoration: underline;}
+#nav2docu ul li a.active{color: red; text-decoration: underline;}
+

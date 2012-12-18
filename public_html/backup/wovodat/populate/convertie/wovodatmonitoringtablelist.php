@@ -1,0 +1,25 @@
+<?php
+header("Cache-Control: no-cache");
+$wovodatmontables=array(
+	"SeismicNetwork",
+	"SeismicStation",
+	"SeismicInstrument",
+	"SeismicComponent",
+	"DeformationNetwork",
+	"DeformationStation",
+	"DeformationInstrumentG",
+	"DeformationInstrumentT",
+	"GasNetwork",
+	"GasStation",
+	"GasInstrument",
+	"HydrologicNetwork",
+	"HydrologicStation",
+	"HydrologicInstrument",
+	"ThermalNetwork",
+	"ThermalStation",
+	"ThermalInstrument",
+	"FieldsNetwork",
+	"FieldsStation",
+	"FieldsInstrument"
+);
+?>

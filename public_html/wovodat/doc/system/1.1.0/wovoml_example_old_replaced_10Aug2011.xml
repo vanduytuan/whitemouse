@@ -1,0 +1,1571 @@
+<wovoml version="1.1.0" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS" xmlns="http://www.wovodat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wovodat.org wovodat_schema.xsd">
+	<!-- Observations-->
+	<Observations volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+		<!-- Observation -->
+		<Observation code="string30" volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<description>string</description>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+		</Observation>
+	</Observations>
+	<!-- Inferred processes -->
+	<InferredProcesses volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+		<!-- Magma movement -->
+		<MagmaMovement code="string30" volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<inferTime>YYYY-MM-DD HH:MM:SS</inferTime>
+			<inferTimeUnc>YYYY-MM-DD HH:MM:SS</inferTimeUnc>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<deepSupp>Y/N/M/U</deepSupp>
+			<ascent>Y/N/M/U</ascent>
+			<convecBelow>Y/N/M/U</convecBelow>
+			<convecAbove>Y/N/M/U</convecAbove>
+			<magmaMix>Y/N/M/U</magmaMix>
+			<dikeIntru>Y/N/M/U</dikeIntru>
+			<pipeIntru>Y/N/M/U</pipeIntru>
+			<sillIntru>Y/N/M/U</sillIntru>
+			<comments>string255</comments>
+		</MagmaMovement>
+		<!-- Volatile saturation -->
+		<VolatileSat code="string30" volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<inferTime>YYYY-MM-DD HH:MM:SS</inferTime>
+			<inferTimeUnc>YYYY-MM-DD HH:MM:SS</inferTimeUnc>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<CO2Sat>Y/N/M/U</CO2Sat>
+			<H2OSat>Y/N/M/U</H2OSat>
+			<decompress>Y/N/M/U</decompress>
+			<fugacity>Y/N/M/U</fugacity>
+			<volatileAdd>Y/N/M/U</volatileAdd>
+			<crystalOr2ndBoil>Y/N/M/U</crystalOr2ndBoil>
+			<vesicul>Y/N/M/U</vesicul>
+			<devesicul>Y/N/M/U</devesicul>
+			<degas>Y/N/M/U</degas>
+			<comments>string255</comments>
+		</VolatileSat>
+		<!-- Build up of magma pressure -->
+		<MagmaPressure code="string30" volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<inferTime>YYYY-MM-DD HH:MM:SS</inferTime>
+			<inferTimeUnc>YYYY-MM-DD HH:MM:SS</inferTimeUnc>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<gasInduced>Y/N/M/U</gasInduced>
+			<tectInduced>Y/N/M/U</tectInduced>
+			<comments>string255</comments>
+		</MagmaPressure>
+		<!-- Hydrothermal system interaction -->
+		<Hydrothermal code="string30" volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<inferTime>YYYY-MM-DD HH:MM:SS</inferTime>
+			<inferTimeUnc>YYYY-MM-DD HH:MM:SS</inferTimeUnc>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<heatGwater>Y/N/M/U</heatGwater>
+			<poreDestab>Y/N/M/U</poreDestab>
+			<poreDeform>Y/N/M/U</poreDeform>
+			<hydrofract>Y/N/M/U</hydrofract>
+			<boilTremor>Y/N/M/U</boilTremor>
+			<absorSolGas>Y/N/M/U</absorSolGas>
+			<speciesEqbChange>Y/N/M/U</speciesEqbChange>
+			<boilDryChimneys>Y/N/M/U</boilDryChimneys>
+			<comments>string255</comments>
+		</Hydrothermal>
+		<!-- Regional tectonics interaction -->
+		<RegionalTectonics code="string30" volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<inferTime>YYYY-MM-DD HH:MM:SS</inferTime>
+			<inferTimeUnc>YYYY-MM-DD HH:MM:SS</inferTimeUnc>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<tectonicChanges>Y/N/M/U</tectonicChanges>
+			<staticStress>Y/N/M/U</staticStress>
+			<dynamicStrain>Y/N/M/U</dynamicStrain>
+			<localShear>Y/N/M/U</localShear>
+			<slowEarthquake>Y/N/M/U</slowEarthquake>
+			<distalPressure>Y/N/M/U</distalPressure>
+			<distalDepressure>Y/N/M/U</distalDepressure>
+			<hydrothermalLubrication>Y/N/M/U</hydrothermalLubrication>
+			<earthTide>Y/N/M/U</earthTide>
+			<atmosInfluence>Y/N/M/U</atmosInfluence>
+			<comments>string255</comments>
+		</RegionalTectonics>
+	</InferredProcesses>
+	<!-- Eruptions -->
+	<Eruptions volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+		<!-- Eruption -->
+		<Eruption code="string30" volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<name>string60</name>
+			<narrative>string255</narrative>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<climaxTime>YYYY-MM-DD HH:MM:SS</climaxTime>
+			<climaxTimeUnc>YYYY-MM-DD HH:MM:SS</climaxTimeUnc>
+			<comments>string255</comments>
+			<!-- Video -->
+			<Video code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<link>string255</link>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<length>HH:MM:SS</length>
+				<description>string255</description>
+				<comments>string255</comments>
+			</Video>
+			<!-- Phase -->
+			<Phase code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<phaseNumber>float</phaseNumber>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<description>string255</description>
+				<vei>integer</vei>
+				<maxLavaExtru>float</maxLavaExtru>
+				<maxExpMassDis>float</maxExpMassDis>
+				<dre>float</dre>
+				<magmaMix>Y/N/U</magmaMix>
+				<maxColHeight>float</maxColHeight>
+				<colHeightDet>string255</colHeightDet>
+				<minSiO2MatrixGlass>float</minSiO2MatrixGlass>
+				<maxSiO2MatrixGlass>float</maxSiO2MatrixGlass>
+				<minSiO2WholeRock>float</minSiO2WholeRock>
+				<maxSiO2WholeRock>float</maxSiO2WholeRock>
+				<totCrystal>float</totCrystal>
+				<phenoContent>float</phenoContent>
+				<phenoAssemb>string255</phenoAssemb>
+				<preErupH2OContent>float</preErupH2OContent>
+				<phenoMeltInclusion>string255</phenoMeltInclusion>
+				<comments>string255</comments>
+				<!-- Video -->
+				<Video code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<link>string255</link>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<length>HH:MM:SS</length>
+					<description>string255</description>
+					<comments>string255</comments>
+				</Video>
+				<!-- Forecast -->
+				<Forecast code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<description>string255</description>
+					<earliestStartTime>YYYY-MM-DD HH:MM:SS</earliestStartTime>
+					<earliestStartTimeUnc>YYYY-MM-DD HH:MM:SS</earliestStartTimeUnc>
+					<latestStartTime>YYYY-MM-DD HH:MM:SS</latestStartTime>
+					<latestStartTimeUnc>YYYY-MM-DD HH:MM:SS</latestStartTimeUnc>
+					<issueTime>YYYY-MM-DD HH:MM:SS</issueTime>
+					<issueTimeUnc>YYYY-MM-DD HH:MM:SS</issueTimeUnc>
+					<timeSuccess>Y/N/P</timeSuccess>
+					<magniSuccess>Y/N/P</magniSuccess>
+					<comments>string255</comments>
+				</Forecast>
+			</Phase>
+		</Eruption>
+		<!-- Eruption phases -->
+		<Phases eruption="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Eruption phase -->
+			<Phase code="string30" eruption="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<phaseNumber>float</phaseNumber>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<description>string255</description>
+				<vei>integer</vei>
+				<maxLavaExtru>float</maxLavaExtru>
+				<maxExpMassDis>float</maxExpMassDis>
+				<dre>float</dre>
+				<magmaMix>Y/N/U</magmaMix>
+				<maxColHeight>float</maxColHeight>
+				<colHeightDet>string255</colHeightDet>
+				<minSiO2MatrixGlass>float</minSiO2MatrixGlass>
+				<maxSiO2MatrixGlass>float</maxSiO2MatrixGlass>
+				<minSiO2WholeRock>float</minSiO2WholeRock>
+				<maxSiO2WholeRock>float</maxSiO2WholeRock>
+				<totCrystal>float</totCrystal>
+				<phenoContent>float</phenoContent>
+				<phenoAssemb>string255</phenoAssemb>
+				<preErupH2OContent>float</preErupH2OContent>
+				<phenoMeltInclusion>string255</phenoMeltInclusion>
+				<comments>string255</comments>
+				<!-- Video -->
+				<Video code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<link>string255</link>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<length>HH:MM:SS</length>
+					<description>string255</description>
+					<comments>string255</comments>
+				</Video>
+				<!-- Forecast -->
+				<Forecast code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<description>string255</description>
+					<earliestStartTime>YYYY-MM-DD HH:MM:SS</earliestStartTime>
+					<earliestStartTimeUnc>YYYY-MM-DD HH:MM:SS</earliestStartTimeUnc>
+					<latestStartTime>YYYY-MM-DD HH:MM:SS</latestStartTime>
+					<latestStartTimeUnc>YYYY-MM-DD HH:MM:SS</latestStartTimeUnc>
+					<issueTime>YYYY-MM-DD HH:MM:SS</issueTime>
+					<issueTimeUnc>YYYY-MM-DD HH:MM:SS</issueTimeUnc>
+					<timeSuccess>Y/N/P</timeSuccess>
+					<magniSuccess>Y/N/P</magniSuccess>
+					<comments>string255</comments>
+				</Forecast>
+			</Phase>
+		</Phases>
+		<!-- Eruption video -->
+		<Video code="string30" volcano="string12" eruption="string30" phase="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<link>string255</link>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<length>HH:MM:SS</length>
+			<description>string255</description>
+			<comments>string255</comments>
+		</Video>
+		<!-- Eruption forecast -->
+		<Forecast code="string30" volcano="string12" phase="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<description>string255</description>
+			<earliestStartTime>YYYY-MM-DD HH:MM:SS</earliestStartTime>
+			<earliestStartTimeUnc>YYYY-MM-DD HH:MM:SS</earliestStartTimeUnc>
+			<latestStartTime>YYYY-MM-DD HH:MM:SS</latestStartTime>
+			<latestStartTimeUnc>YYYY-MM-DD HH:MM:SS</latestStartTimeUnc>
+			<issueTime>YYYY-MM-DD HH:MM:SS</issueTime>
+			<issueTimeUnc>YYYY-MM-DD HH:MM:SS</issueTimeUnc>
+			<timeSuccess>Y/N/P</timeSuccess>
+			<magniSuccess>Y/N/P</magniSuccess>
+			<comments>string255</comments>
+		</Forecast>
+	</Eruptions>
+	<!-- Monitoring systems -->
+	<MonitoringSystems owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+		<!-- Airplane -->
+		<Airplane code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<name>string50</name>
+			<description>string255</description>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<!-- Gas instrument -->
+			<GasInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<type>string255</type>
+				<units>string50</units>
+				<resolution>float</resolution>
+				<signalToNoise>float</signalToNoise>
+				<calibration>string255</calibration>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<comments>string255</comments>
+			</GasInstrument>
+			<!-- Thermal instrument -->
+			<ThermalInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<type>string255</type>
+				<units>string50</units>
+				<resolution>float</resolution>
+				<signalToNoise>float</signalToNoise>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<comments>string255</comments>
+			</ThermalInstrument>
+		</Airplane>
+		<!-- Deformation network -->
+		<DeformationNetwork code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<Volcanoes>
+				<volcanoCode>string12</volcanoCode>
+			</Volcanoes>
+			<name>string255</name>
+			<area>float</area>
+			<description>string255</description>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<diffUTC>float</diffUTC>
+			<comments>string255</comments>
+			<!-- Deformation station -->
+			<DeformationStation code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<permInst>string255</permInst>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<horizPrecision>float</horizPrecision>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<refStation>Y/N</refStation>
+				<description>string255</description>
+				<!-- Deformation instrument -->
+				<DeformationInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string50</type>
+					<units>string30</units>
+					<resolution>float</resolution>
+					<signalToNoise>float</signalToNoise>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</DeformationInstrument>
+				<!-- Tilt/Strain instrument -->
+				<TiltStrainInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string50</type>
+					<depth>float</depth>
+					<units>string30</units>
+					<resolution>float</resolution>
+					<direction1>0/360</direction1>
+					<direction2>0/360</direction2>
+					<direction3>0/360</direction3>
+					<direction4>0/360</direction4>
+					<electroConv1>float</electroConv1>
+					<electroConv2>float</electroConv2>
+					<electroConv3>float</electroConv3>
+					<electroConv4>float</electroConv4>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</TiltStrainInstrument>
+			</DeformationStation>
+		</DeformationNetwork>
+		<!-- Deformation stations -->
+		<DeformationStations network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Deformation station -->
+			<DeformationStation code="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<permInst>string255</permInst>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<horizPrecision>float</horizPrecision>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<refStation>Y/N</refStation>
+				<description>string255</description>
+				<!-- Deformation instrument -->
+				<DeformationInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string50</type>
+					<units>string30</units>
+					<resolution>float</resolution>
+					<signalToNoise>float</signalToNoise>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</DeformationInstrument>
+				<!-- Tilt/Strain instrument -->
+				<TiltStrainInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string50</type>
+					<depth>float</depth>
+					<units>string30</units>
+					<resolution>float</resolution>
+					<direction1>0/360</direction1>
+					<direction2>0/360</direction2>
+					<direction3>0/360</direction3>
+					<direction4>0/360</direction4>
+					<electroConv1>float</electroConv1>
+					<electroConv2>float</electroConv2>
+					<electroConv3>float</electroConv3>
+					<electroConv4>float</electroConv4>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</TiltStrainInstrument>
+			</DeformationStation>
+		</DeformationStations>
+		<!-- Deformation instruments -->
+		<DeformationInstruments station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Deformation instrument -->
+			<DeformationInstrument code="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<type>string50</type>
+				<units>string30</units>
+				<resolution>float</resolution>
+				<signalToNoise>float</signalToNoise>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<comments>string255</comments>
+			</DeformationInstrument>
+			<!-- Tilt/Strain instrument -->
+			<TiltStrainInstrument code="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<type>string50</type>
+				<depth>float</depth>
+				<units>string30</units>
+				<resolution>float</resolution>
+				<direction1>0/360</direction1>
+				<direction2>0/360</direction2>
+				<direction3>0/360</direction3>
+				<direction4>0/360</direction4>
+				<electroConv1>float</electroConv1>
+				<electroConv2>float</electroConv2>
+				<electroConv3>float</electroConv3>
+				<electroConv4>float</electroConv4>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<comments>string255</comments>
+			</TiltStrainInstrument>
+		</DeformationInstruments>
+		<!-- Gas network -->
+		<GasNetwork code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<Volcanoes>
+				<volcanoCode>string12</volcanoCode>
+			</Volcanoes>
+			<name>string255</name>
+			<area>float</area>
+			<description>string255</description>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<diffUTC>float</diffUTC>
+			<comments>string255</comments>
+			<!-- Gas station -->
+			<GasStation code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<type>string255</type>
+				<permInst>string255</permInst>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<description>string255</description>
+				<!-- Gas instrument -->
+				<GasInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string255</type>
+					<units>string50</units>
+					<resolution>float</resolution>
+					<signalToNoise>float</signalToNoise>
+					<calibration>EOS</calibration>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</GasInstrument>
+			</GasStation>
+		</GasNetwork>
+		<!-- Gas stations -->
+		<GasStations network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Gas station -->
+			<GasStation code="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<type>string255</type>
+				<permInst>string255</permInst>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<description>string255</description>
+				<!-- Gas instrument -->
+				<GasInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string255</type>
+					<units>string50</units>
+					<resolution>float</resolution>
+					<signalToNoise>float</signalToNoise>
+					<calibration>EOS</calibration>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</GasInstrument>
+			</GasStation>
+		</GasStations>
+		<!-- Gas instruments -->
+		<GasInstruments station="string30" airplane="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Gas instrument -->
+			<GasInstrument code="string30" station="string30" airplane="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<type>string255</type>
+				<units>string50</units>
+				<resolution>float</resolution>
+				<signalToNoise>float</signalToNoise>
+				<calibration>EOS</calibration>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<comments>string255</comments>
+			</GasInstrument>
+		</GasInstruments>
+		<!-- Hydrologic network -->
+		<HydrologicNetwork code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<Volcanoes>
+				<volcanoCode>string12</volcanoCode>
+			</Volcanoes>
+			<name>string255</name>
+			<area>float</area>
+			<description>string255</description>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<diffUTC>float</diffUTC>
+			<comments>string255</comments>
+			<!-- Hydrologic station -->
+			<HydrologicStation code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<waterBodyType>string255</waterBodyType>
+				<permInst>string255</permInst>
+				<screenTop>float</screenTop>
+				<screenBottom>float</screenBottom>
+				<wellDepth>double</wellDepth>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<description>string255</description>
+				<!-- Hydrologic instrument -->
+				<HydrologicInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<pressureMeasType>V</pressureMeasType>
+					<type>string50</type>
+					<units>string50</units>
+					<resolution>float</resolution>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</HydrologicInstrument>
+			</HydrologicStation>
+		</HydrologicNetwork>
+		<!-- Hydrologic stations -->
+		<HydrologicStations network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Hydrologic station -->
+			<HydrologicStation code="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<waterBodyType>string255</waterBodyType>
+				<permInst>string255</permInst>
+				<screenTop>float</screenTop>
+				<screenBottom>float</screenBottom>
+				<wellDepth>double</wellDepth>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<description>string255</description>
+				<!-- Hydrologic instrument -->
+				<HydrologicInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<pressureMeasType>V</pressureMeasType>
+					<type>string50</type>
+					<units>string50</units>
+					<resolution>float</resolution>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</HydrologicInstrument>
+			</HydrologicStation>
+		</HydrologicStations>
+		<!-- Hydrologic instruments -->
+		<HydrologicInstruments station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Hydrologic instrument -->
+			<HydrologicInstrument code="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<pressureMeasType>V</pressureMeasType>
+				<type>string50</type>
+				<units>string50</units>
+				<resolution>float</resolution>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<comments>string255</comments>
+			</HydrologicInstrument>
+		</HydrologicInstruments>
+		<!-- Fields network -->
+		<FieldsNetwork code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<Volcanoes>
+				<volcanoCode>string12</volcanoCode>
+			</Volcanoes>
+			<name>string255</name>
+			<area>float</area>
+			<description>string255</description>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<diffUTC>float</diffUTC>
+			<comments>string255</comments>
+			<!-- Fields station -->
+			<FieldsStation code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string50</name>
+				<permInst>string255</permInst>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<description>string255</description>
+				<!-- Fields instrument -->
+				<FieldsInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string255</type>
+					<units>string255</units>
+					<resolution>float</resolution>
+					<sampleRate>float</sampleRate>
+					<filterType>string255</filterType>
+					<orientation>string255</orientation>
+					<calculation>string255</calculation>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</FieldsInstrument>
+			</FieldsStation>
+		</FieldsNetwork>
+		<!-- Fields stations -->
+		<FieldsStations network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Fields station -->
+			<FieldsStation code="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string50</name>
+				<permInst>string255</permInst>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<description>string255</description>
+				<!-- Fields instrument -->
+				<FieldsInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string255</type>
+					<units>string255</units>
+					<resolution>float</resolution>
+					<sampleRate>float</sampleRate>
+					<filterType>string255</filterType>
+					<orientation>string255</orientation>
+					<calculation>string255</calculation>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</FieldsInstrument>
+			</FieldsStation>
+		</FieldsStations>
+		<!-- Fields instruments -->
+		<FieldsInstruments station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Fields instrument -->
+			<FieldsInstrument code="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<type>string255</type>
+				<units>string255</units>
+				<resolution>float</resolution>
+				<sampleRate>float</sampleRate>
+				<filterType>string255</filterType>
+				<orientation>string255</orientation>
+				<calculation>string255</calculation>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<comments>string255</comments>
+			</FieldsInstrument>
+		</FieldsInstruments>
+		<!-- Thermal network -->
+		<ThermalNetwork code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<Volcanoes>
+				<volcanoCode>string12</volcanoCode>
+			</Volcanoes>
+			<name>string255</name>
+			<area>float</area>
+			<description>string255</description>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<diffUTC>float</diffUTC>
+			<comments>string255</comments>
+			<!-- Thermal station -->
+			<ThermalStation code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<thermalFeatType>string255</thermalFeatType>
+				<groundType>string255</groundType>
+				<permInst>string255</permInst>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<description>string255</description>
+				<!-- Thermal instrument -->
+				<ThermalInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string255</type>
+					<units>string50</units>
+					<resolution>float</resolution>
+					<signalToNoise>float</signalToNoise>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</ThermalInstrument>
+			</ThermalStation>
+		</ThermalNetwork>
+		<!-- Thermal stations -->
+		<ThermalStations network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Thermal station -->
+			<ThermalStation code="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<thermalFeatType>string255</thermalFeatType>
+				<groundType>string255</groundType>
+				<permInst>string255</permInst>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<description>string255</description>
+				<!-- Thermal instrument -->
+				<ThermalInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string255</type>
+					<units>string50</units>
+					<resolution>float</resolution>
+					<signalToNoise>float</signalToNoise>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<comments>string255</comments>
+				</ThermalInstrument>
+			</ThermalStation>
+		</ThermalStations>
+		<!-- Thermal instruments -->
+		<ThermalInstruments station="string30" airplane="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Thermal instrument -->
+			<ThermalInstrument code="string30" station="string30" airplane="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<type>string255</type>
+				<units>string50</units>
+				<resolution>float</resolution>
+				<signalToNoise>float</signalToNoise>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<comments>string255</comments>
+			</ThermalInstrument>
+		</ThermalInstruments>
+		<!-- Seismic network -->
+		<SeismicNetwork code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<Volcanoes>
+				<volcanoCode>string12</volcanoCode>
+			</Volcanoes>
+			<name>string30</name>
+			<description>string255</description>
+			<velocityModel>string511</velocityModel>
+			<zeroDepth>string255</zeroDepth>
+			<fixedDepth>Y/N/U</fixedDepth>
+			<fixedDepthDesc>string255</fixedDepthDesc>
+			<numberOfSeismo>integer</numberOfSeismo>
+			<numberOfBBSeismo>integer</numberOfBBSeismo>
+			<numberOfSMPSeismo>integer</numberOfSMPSeismo>
+			<numberOfDigiSeismo>integer</numberOfDigiSeismo>
+			<numberOfAnaSeismo>integer</numberOfAnaSeismo>
+			<numberOf3CompSeismo>integer</numberOf3CompSeismo>
+			<numberOfMicro>integer</numberOfMicro>
+			<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+			<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+			<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+			<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			<diffUTC>float</diffUTC>
+			<!-- Seismic station -->
+			<SeismicStation code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<description>string255</description>
+				<comments>string255</comments>
+				<instDepth>string255</instDepth>
+				<instType>string255</instType>
+				<systemGain>float</systemGain>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<!-- Seismic instrument -->
+				<SeismicInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string255</type>
+					<comments>string255</comments>
+					<dynamicRange>string255</dynamicRange>
+					<gain>float</gain>
+					<filters>string255</filters>
+					<numberOfComp>integer</numberOfComp>
+					<respOverview>string255</respOverview>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<!-- Seismic component -->
+					<SeismicComponent code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+						<name>string255</name>
+						<type>string255</type>
+						<comments>string255</comments>
+						<respDesc>string255</respDesc>
+						<sampleRate>float</sampleRate>
+						<seedBandCode>string30</seedBandCode>
+						<seedInstCode>string30</seedInstCode>
+						<seedOrientCode>string30</seedOrientCode>
+						<sensitivity>string255</sensitivity>
+						<depth>float</depth>
+					</SeismicComponent>
+				</SeismicInstrument>
+			</SeismicStation>
+		</SeismicNetwork>
+		<!-- Seismic station -->
+		<SeismicStations network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Seismic station -->
+			<SeismicStation code="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string30</name>
+				<description>string255</description>
+				<comments>string255</comments>
+				<instDepth>string255</instDepth>
+				<instType>string255</instType>
+				<systemGain>float</systemGain>
+				<lat>-90/+90</lat>
+				<lon>-180/+180</lon>
+				<elev>float</elev>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<diffUTC>float</diffUTC>
+				<!-- Seismic instrument -->
+				<SeismicInstrument code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string255</type>
+					<comments>string255</comments>
+					<dynamicRange>string255</dynamicRange>
+					<gain>float</gain>
+					<filters>string255</filters>
+					<numberOfComp>integer</numberOfComp>
+					<respOverview>string255</respOverview>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<!-- Seismic component -->
+					<SeismicComponent code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+						<name>string255</name>
+						<type>string255</type>
+						<comments>string255</comments>
+						<respDesc>string255</respDesc>
+						<sampleRate>float</sampleRate>
+						<seedBandCode>string30</seedBandCode>
+						<seedInstCode>string30</seedInstCode>
+						<seedOrientCode>string30</seedOrientCode>
+						<sensitivity>string255</sensitivity>
+						<depth>float</depth>
+						<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+						<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+						<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+						<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					</SeismicComponent>
+				</SeismicInstrument>
+			</SeismicStation>
+		</SeismicStations>
+		<!-- Seismic instruments -->
+		<SeismicInstruments station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Seismic instrument -->
+			<SeismicInstrument code="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<type>string255</type>
+				<comments>string255</comments>
+				<dynamicRange>string255</dynamicRange>
+				<gain>float</gain>
+				<filters>string255</filters>
+				<numberOfComp>integer</numberOfComp>
+				<respOverview>string255</respOverview>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+				<!-- Seismic component -->
+				<SeismicComponent code="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<name>string255</name>
+					<type>string255</type>
+					<comments>string255</comments>
+					<respDesc>string255</respDesc>
+					<sampleRate>float</sampleRate>
+					<seedBandCode>string30</seedBandCode>
+					<seedInstCode>string30</seedInstCode>
+					<seedOrientCode>string30</seedOrientCode>
+					<sensitivity>string255</sensitivity>
+					<depth>float</depth>
+				</SeismicComponent>
+			</SeismicInstrument>
+		</SeismicInstruments>
+		<!-- Seismic components -->
+		<SeismicComponents instrument="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Seismic component -->
+			<SeismicComponent code="string30" instrument="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<name>string255</name>
+				<type>string255</type>
+				<comments>string255</comments>
+				<respDesc>string255</respDesc>
+				<sampleRate>float</sampleRate>
+				<seedBandCode>string30</seedBandCode>
+				<seedInstCode>string30</seedInstCode>
+				<seedOrientCode>string30</seedOrientCode>
+				<sensitivity>string255</sensitivity>
+				<depth>float</depth>
+				<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+				<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+				<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+				<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+			</SeismicComponent>
+		</SeismicComponents>
+	</MonitoringSystems>
+	<!-- Data -->
+	<Data owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+		<!-- Deformation -->
+		<Deformation owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Electronic tilt dataset -->
+			<ElectronicTiltDataset instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Electronic tilt -->
+				<ElectronicTilt code="string30" instrument="string30" station="string30"  owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS.SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS.SS</measTimeUnc>
+					<sampleRate>double</sampleRate>
+					<tilt1>double</tilt1>
+					<tilt1Unc>double</tilt1Unc>
+					<tilt2>double</tilt2>
+					<tilt2Unc>double</tilt2Unc>
+					<processed>P/R</processed>
+				</ElectronicTilt>
+			</ElectronicTiltDataset>
+			<!-- Tilt vector dataset -->
+			<TiltVectorDataset instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Tilt vector -->
+				<TiltVector code="string30" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<magnitude>float</magnitude>
+					<magnitudeUnc>float</magnitudeUnc>
+					<azimuth>0/360</azimuth>
+					<azimuthUnc>float</azimuthUnc>
+					<comments>string255</comments>
+				</TiltVector>
+			</TiltVectorDataset>
+			<!-- Strain dataset -->
+			<StrainDataset instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Strain -->
+				<Strain code="string30" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<component1>double</component1>
+					<component1Unc>double</component1Unc>
+					<component2>double</component2>
+					<component2Unc>double</component2Unc>
+					<component3>double</component3>
+					<component3Unc>double</component3Unc>
+					<component4>double</component4>
+					<component4Unc>double</component4Unc>
+					<volumetricStrain>double</volumetricStrain>
+					<volumetricStrainUnc>double</volumetricStrainUnc>
+					<shearStrainAxis1>double</shearStrainAxis1>
+					<shearStrainAxis1Unc>double</shearStrainAxis1Unc>
+					<azimuthAxis1>0/360</azimuthAxis1>
+					<shearStrainAxis2>double</shearStrainAxis2>
+					<shearStrainAxis2Unc>double</shearStrainAxis2Unc>
+					<azimuthAxis2>0/360</azimuthAxis2>
+					<shearStrainAxis3>double</shearStrainAxis3>
+					<shearStrainAxis3Unc>double</shearStrainAxis3Unc>
+					<azimuthAxis3>0/360</azimuthAxis3>
+					<minPrincipalStrain>double</minPrincipalStrain>
+					<minPrincipalStrainUnc>double</minPrincipalStrainUnc>
+					<maxPrincipalStrain>double</maxPrincipalStrain>
+					<maxPrincipalStrainUnc>double</maxPrincipalStrainUnc>
+					<minPrincipalStrainDir>0/360</minPrincipalStrainDir>
+					<minPrincipalStrainDirUnc>float</minPrincipalStrainDirUnc>
+					<maxPrincipalStrainDir>0/360</maxPrincipalStrainDir>
+					<maxPrincipalStrainDirUnc>float</maxPrincipalStrainDirUnc>
+				</Strain>
+			</StrainDataset>
+			<!-- EDM dataset -->
+			<EDMDataset instrument="string30" station="string30" targetStation="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- EDM -->
+				<EDM code="string30" instrument="string30" station="string30" targetStation="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<lineLength>double</lineLength>
+					<constantErr>float</constantErr>
+					<scaleErr>float</scaleErr>
+				</EDM>
+			</EDMDataset>
+			<!-- Angle dataset -->
+			<AngleDataset instrument="string30" station="string30" targetStation1="string30" targetStation2="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Angle -->
+				<Angle code="string30" instrument="string30" station="string30" targetStation1="string30" targetStation2="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<hAngle1>0/360</hAngle1>
+					<hAngle1Unc>float</hAngle1Unc>
+					<hAngle2>0/360</hAngle2>
+					<hAngle2Unc>float</hAngle2Unc>
+					<vAngle1>-90/+90</vAngle1>
+					<vAngle1Unc>float</vAngle1Unc>
+					<vAngle2>-90/+90</vAngle2>
+					<vAngle2Unc>float</vAngle2Unc>
+					<comments>string255</comments>
+				</Angle>
+			</AngleDataset>
+			<!-- GPS dataset -->
+			<GPSDataset instrument="string30" station="string30" refStation1="string30" refStation2="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- GPS -->
+				<GPS code="string30" instrument="string30" station="string30" refStation1="string30" refStation2="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<lat>-90/+90</lat>
+					<lon>-180/+180</lon>
+					<elev>double</elev>
+					<N-SErr>double</N-SErr>
+					<E-WErr>double</E-WErr>
+					<verticalErr>float</verticalErr>
+					<software>EOS</software>
+					<orbits>EOS</orbits>
+					<duration>10 minutes</duration>
+					<quality>U</quality>
+				</GPS>
+			</GPSDataset>
+			<!-- GPS vector dataset -->
+			<GPSVectorDataset instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- GPS vector -->
+				<GPSVector code="string30" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<magnitude>float</magnitude>
+					<azimuth>0/360</azimuth>
+					<inclination>0/90</inclination>
+					<northDispl>float</northDispl>
+					<northDisplErr>float</northDisplErr>
+					<eastDispl>float</eastDispl>
+					<eastDisplErr>float</eastDisplErr>
+					<vertDispl>float</vertDispl>
+					<vertDisplErr>float</vertDisplErr>
+					<comments>string255</comments>
+				</GPSVector>
+			</GPSVectorDataset>
+			<!-- Leveling dataset -->
+			<LevelingDataset instrument="string30" refStation="string30" firstBMStation="string30" secondBMStation="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Leveling -->
+				<Leveling code="string30" instrument="string30" refStation="string30" firstBMStation="string30" secondBMStation="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<order>integer</order>
+					<class>EOS</class>
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<elevChange>float</elevChange>
+					<elevChangeUnc>float</elevChangeUnc>
+					<comments>string255</comments>
+				</Leveling>
+			</LevelingDataset>
+			<!-- InSAR image dataset -->
+			<InSARImageDataset instrument="string30" volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- InSAR image -->
+				<InSARImage code="string30" instrument="string30" volcano="string12" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<Satellites>
+						<satelliteCode>string30</satelliteCode>
+					</Satellites>
+					<startLat>-90/+90</startLat>
+					<startLon>-180/+180</startLon>
+					<startPosition>BLC/TLC</startPosition>
+					<rowOrder>string30</rowOrder>
+					<numbOfRows>integer</numbOfRows>
+					<numbOfCols>integer</numbOfCols>
+					<units>string30</units>
+					<nullValue>string30</nullValue>
+					<location>string255</location>
+					<pair>P/S/U</pair>
+					<description>string255</description>
+					<DEM>string50</DEM>
+					<bytesOrder>string30</bytesOrder>
+					<img1Time>YYYY-MM-DD HH:MM:SS</img1Time>
+					<img1TimeUnc>YYYY-MM-DD HH:MM:SS</img1TimeUnc>
+					<img2Time>1999-09-19 09:09:09</img2Time>
+					<img2TimeUnc>YYYY-MM-DD HH:MM:SS</img2TimeUnc>
+					<metersPixelSize>float</metersPixelSize>
+					<degreesPixelSize>float</degreesPixelSize>
+					<lookAngle>float</lookAngle>
+					<limb>ASC/DES</limb>
+					<processMethod>string255</processMethod>
+					<software>string255</software>
+					<DEMQuality>U</DEMQuality>
+					<!-- InSAR image pixels -->
+					<InSARPixels>
+						<!-- InSAR image pixel -->
+						<InSARPixel number="integer">
+							<rangeOfChange>float</rangeOfChange>
+						</InSARPixel>
+					</InSARPixels>
+				</InSARImage>
+			</InSARImageDataset>
+		</Deformation>
+		<!-- Gas -->
+		<Gas owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Gas sample dataset -->
+			<GasSampleDataset instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Gas sample -->
+				<GasSample code="string30" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<!-- Gas species -->
+					<GasSpecies type="CO2/SO2/H2S/HCl/HF/CH4/H2/CO/3He4He/d13C/d34S/d18O/dD" waterfree="Y/N">
+						<concentration>float</concentration>
+						<concentrationUnc>float</concentrationUnc>
+						<units>string30</units>
+						<recalculated>O/R</recalculated>
+					</GasSpecies>
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<temperature>float</temperature>
+					<atmosPress>float</atmosPress>
+					<emissionRate>float</emissionRate>
+					<environFactors>string255</environFactors>
+					<sublimateMinerals>string255</sublimateMinerals>
+					<comments>string255</comments>
+				</GasSample>
+			</GasSampleDataset>
+			<!-- Soil efflux dataset -->
+			<SoilEffluxDataset instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Soil efflux -->
+				<SoilEfflux code="string30" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<species>string30</species>
+					<totalFlux>float</totalFlux>
+					<totalFluxUnc>float</totalFluxUnc>
+					<numberOfPoints>integer</numberOfPoints>
+					<area>float</area>
+					<highestFlux>float</highestFlux>
+					<highestTemp>float</highestTemp>
+					<comments>string255</comments>
+				</SoilEfflux>
+			</SoilEffluxDataset>
+			<!-- Plume dataset -->
+			<PlumeDataset volcano="string12" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Plume -->
+				<Plume code="string30" volcano="string12" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<!-- Plume species -->
+					<PlumeSpecies type="CO2/SO2/H2S/HCl/HF/CO">
+						<emissionRate>float</emissionRate>
+						<emissionRateUnc>float</emissionRateUnc>
+						<units>string30</units>
+						<recalculated>O/R</recalculated>
+					</PlumeSpecies>
+					<lat>-90/+90</lat>
+					<lon>-180/+180</lon>
+					<height>float</height>
+					<heightDetermination>string255</heightDetermination>
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<windSpeed>float</windSpeed>
+					<weatherNotes>string255</weatherNotes>
+					<comments>string255</comments>
+				</Plume>
+			</PlumeDataset>
+		</Gas>
+		<!-- Hydrologic -->
+		<Hydrologic owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Hydrologic sample dataset -->
+			<HydrologicSampleDataset instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Hydrologic sample -->
+				<HydrologicSample code="string30" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<!-- Hydrologic species -->
+					<HydrologicSpecies type="SO4/H2S/Cl/F/HCO3/Mg/Fe/Ca/Na/K/3He4He/c3He4He/d13C/d34S/dD/d18O">
+						<content>float</content>
+						<contentUnc>float</contentUnc>
+						<units>string30</units>
+					</HydrologicSpecies>
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<temperature>float</temperature>
+					<elev>double</elev>
+					<depth>double</depth>
+					<waterLevelChange>double</waterLevelChange>
+					<atmosPress>float</atmosPress>
+					<springDischRate>double</springDischRate>
+					<precipitation>float</precipitation>
+					<dailyPrecipitation>float</dailyPrecipitation>
+					<precipitationType>R/FR/S/H/R-FR/R-S/R-H/FR-R/FR-S/FR-H/S-R/S-FR/S-H/H-R/H-FR/H-S</precipitationType>
+					<pH>float</pH>
+					<pHUnc>float</pHUnc>
+					<conductivity>float</conductivity>
+					<conductivityUnc>float</conductivityUnc>
+					<comments>string255</comments>
+				</HydrologicSample>
+			</HydrologicSampleDataset>
+		</Hydrologic>
+		<!-- Fields -->
+		<Fields owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Magnetic dataset -->
+			<MagneticDataset instrument="string30" station="string30" refStation="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Magnetic -->
+				<Magnetic code="string30" instrument="string30" station="string30" refStation="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<F>double</F>
+					<FUnc>float</FUnc>
+					<X>double</X>
+					<XUnc>float</XUnc>
+					<Y>double</Y>
+					<YUnc>float</YUnc>
+					<Z>double</Z>
+					<ZUnc>float</ZUnc>
+					<highPass>float</highPass>
+					<lowPass>float</lowPass>
+					<comments>string255</comments>
+				</Magnetic>
+			</MagneticDataset>
+			<!-- Magnetic vector dataset -->
+			<MagneticVectorDataset instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Magnetic vector -->
+				<MagneticVector code="string30" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<declination>0/360</declination>
+					<inclination>0/90</inclination>
+					<comments>string255</comments>
+				</MagneticVector>
+			</MagneticVectorDataset>
+			<!-- Electric dataset -->
+			<ElectricDataset instrument="string30" refStation1="string30" refStation2="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Electric -->
+				<Electric code="string30" instrument="string30" refStation1="string30" refStation2="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<field>float</field>
+					<fieldUnc>float</fieldUnc>
+					<direction>0/360</direction>
+					<highPass>float</highPass>
+					<lowPass>float</lowPass>
+					<selfPotential>float</selfPotential>
+					<selfPotentialUnc>float</selfPotentialUnc>
+					<apparentResistivity>float</apparentResistivity>
+					<apparentResistivityUnc>float</apparentResistivityUnc>
+					<directResistivity>float</directResistivity>
+					<directResistivityUnc>float</directResistivityUnc>
+					<comments>string255</comments>
+				</Electric>
+			</ElectricDataset>
+			<!-- Gravity dataset -->
+			<GravityDataset instrument="string30" station="string30" refStation="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Gravity -->
+				<Gravity code="string30" instrument="string30" station="string30" refStation="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<fieldStrength>double</fieldStrength>
+					<fieldStrengthUnc>double</fieldStrengthUnc>
+					<assocVertDispl>string255</assocVertDispl>
+					<assocGWaterLevel>string255</assocGWaterLevel>
+					<comments>string255</comments>
+				</Gravity>
+			</GravityDataset>
+		</Fields>
+		<!-- Thermal -->
+		<Thermal owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Ground-based dataset -->
+			<Ground-basedDataset instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Ground-based -->
+				<Ground-based code="string30" instrument="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<measType>string255</measType>
+					<measTime>YYYY-MM-DD HH:DD:SS</measTime>
+					<measTimeUnc>YYYY-MM-DD HH:DD:SS</measTimeUnc>
+					<measDepth>float</measDepth>
+					<distance>float</distance>
+					<recalculated>O/R</recalculated>
+					<temperature>float</temperature>
+					<temperatureUnc>float</temperatureUnc>
+					<area>float</area>
+					<heatFlux>float</heatFlux>
+					<heatFluxUnc>float</heatFluxUnc>
+					<bgGeothermGradient>float</bgGeothermGradient>
+					<conductivity>float</conductivity>
+					<comments>string255</comments>
+				</Ground-based>
+			</Ground-basedDataset>
+			<!-- Thermal image dataset -->
+			<ThermalImageDataset volcano="string12" instrument="string30" station="string30" satellite="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Thermal image -->
+				<ThermalImage code="string30" volcano="string12" instrument="string30" station="string30" satellite="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<instPlatform>string255</instPlatform>
+					<instLat>-90/+90</instLat>
+					<instLon>-180/+180</instLon>
+					<datum>string30</datum>
+					<instAlt>float</instAlt>
+					<description>string255</description>
+					<time>YYYY-MM-DD HH:MM:SS</time>
+					<timeUnc>YYYY-MM-DD HH:MM:SS</timeUnc>
+					<bandName>string255</bandName>
+					<highBandWavelength>float</highBandWavelength>
+					<lowBandWavelength>float</lowBandWavelength>
+					<pixelSize>float</pixelSize>
+					<maxRadiance>float</maxRadiance>
+					<maxRelativeRadiance>float</maxRelativeRadiance>
+					<hottestPixelTemp>float</hottestPixelTemp>
+					<totRadiance>float</totRadiance>
+					<maxHeatFlux>float</maxHeatFlux>
+					<nominalTempRes>float</nominalTempRes>
+					<atmosCorrection>string255</atmosCorrection>
+					<thermCorrection>string255</thermCorrection>
+					<orthorecProc>string255</orthorecProc>
+					<comments>string255</comments>
+					<!-- Thermal image pixels -->
+					<ThermalPixels>
+						<!-- Thermal image pixel -->
+						<ThermalPixel>
+							<lat>-90/+90</lat>
+							<lon>-180/+180</lon>
+							<elev>float</elev>
+							<radiance>float</radiance>
+							<heatFlux>float</heatFlux>
+							<temperature>float</temperature>
+						</ThermalPixel>
+					</ThermalPixels>
+				</ThermalImage>
+			</ThermalImageDataset>
+		</Thermal>
+		<!-- Seismic -->
+		<Seismic owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+			<!-- Network event dataset -->
+			<NetworkEventDataset network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Network event -->
+				<NetworkEvent code="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<seismoArchive>string255</seismoArchive>
+					<originTime>YYYY-MM-DD HH:MM:SS.SS</originTime>
+					<originTimeUnc>YYYY-MM-DD HH:MM:SS.SS</originTimeUnc>
+					<duration>float</duration>
+					<durationUnc>float</durationUnc>
+					<locaTechnique>string255</locaTechnique>
+					<picksDetermination>A/R/H/U</picksDetermination>
+					<lat>-90/+90</lat>
+					<lon>-180/+180</lon>
+					<depth>float</depth>
+					<fixedDepth>Y/N/U</fixedDepth>
+					<numberOfStations>integer</numberOfStations>
+					<numberOfPhases>integer</numberOfPhases>
+					<largestAzimuthGap>0/360</largestAzimuthGap>
+					<distClosestStation>float</distClosestStation>
+					<travelTimeRMS>float</travelTimeRMS>
+					<horizLocaErr>float</horizLocaErr>
+					<maxLonErr>float</maxLonErr>
+					<maxLatErr>float</maxLatErr>
+					<depthErr>float</depthErr>
+					<locaQuality>string255</locaQuality>
+					<primMagnitude>float</primMagnitude>
+					<primMagnitudeType>string30</primMagnitudeType>
+					<secMagnitude>float</secMagnitude>
+					<secMagnitudeType>string30</secMagnitudeType>
+					<earthquakeType>R/Q/V/VT/VT_D/VT_S/H/H_HLF/H_LHF/LF/LF_LP/LF_T/LF_ILF/VLP/E</earthquakeType>
+					<momentTensorScale>float</momentTensorScale>
+					<momentTensorXX>float</momentTensorXX>
+					<momentTensorXY>float</momentTensorXY>
+					<momentTensorXZ>float</momentTensorXZ>
+					<momentTensorYY>float</momentTensorYY>
+					<momentTensorYZ>float</momentTensorYZ>
+					<momentTensorZZ>float</momentTensorZZ>
+					<strike1>0/360</strike1>
+					<strike1Unc>float</strike1Unc>
+					<dip1>0/90</dip1>
+					<dip1Unc>float</dip1Unc>
+					<rake1>0/90</rake1>
+					<rake1Unc>float</rake1Unc>
+					<strike2>0/360</strike2>
+					<strike2Unc>float</strike2Unc>
+					<dip2>0/90</dip2>
+					<dip2Unc>float</dip2Unc>
+					<rake2>0/90</rake2>
+					<rake2Unc>float</rake2Unc>
+					<sampleRate>float</sampleRate>
+				</NetworkEvent>
+			</NetworkEventDataset>
+			<!-- Single station event dataset -->
+			<SingleStationEventDataset station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Single station event -->
+				<SingleStationEvent code="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<startTime>YYYY-MM-DD HH:MM:SS.SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS.SS</startTimeUnc>
+					<duration>float</duration>
+					<durationUnc>float</durationUnc>
+					<picksDetermination>U</picksDetermination>
+					<SPInterval>float</SPInterval>
+					<distActiveVent>float</distActiveVent>
+					<maxAmplitude>float</maxAmplitude>
+					<sampleRate>float</sampleRate>
+				</SingleStationEvent>
+			</SingleStationEventDataset>
+			<!-- Intensity dataset -->
+			<IntensityDataset volcano="string12" networkEvent="string30" singleStationEvent="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Intensity -->
+				<Intensity code="string30" volcano="string12" networkEvent="string30" singleStationEvent="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<time>YYYY-MM-DD HH:MM:SS</time>
+					<timeUnc>YYYY-MM-DD HH:MM:SS</timeUnc>
+					<city>string30</city>
+					<maxDistance>float</maxDistance>
+					<maxReported>float</maxReported>
+					<distMaxReported>float</distMaxReported>
+				</Intensity>
+			</IntensityDataset>
+			<!-- Tremor dataset -->
+			<TremorDataset station="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Tremor -->
+				<Tremor code="string30" station="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<earthquakeType>R/Q/V/VT/VT_D/VT_S/H/H_HLF/H_LHF/LF/LF_LP/LF_T/LF_ILF/VLP/E</earthquakeType>
+					<type>B 5-15Hz</type>
+					<qualitativeDepth>U</qualitativeDepth>
+					<dominantFreq>float</dominantFreq>
+					<secondDominantFreq>float</secondDominantFreq>
+					<maxAmplitude>float</maxAmplitude>
+					<backgroundNoise>float</backgroundNoise>
+					<reducedDisp>float</reducedDisp>
+					<reducedDispUnc>float</reducedDispUnc>
+					<visibleActivity>EOS</visibleActivity>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<durationPerDay>float</durationPerDay>
+					<durationPerDayUnc>float</durationPerDayUnc>
+				</Tremor>
+			</TremorDataset>
+			<!-- Interval dataset -->
+			<IntervalDataset station="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- Interval -->
+				<Interval code="string30" station="string30" network="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<hDistSummit>float</hDistSummit>
+					<meanDepth>float</meanDepth>
+					<verticalDisp>float</verticalDisp>
+					<hypocenterHMigr>float</hypocenterHMigr>
+					<hypocenterVMigr>float</hypocenterVMigr>
+					<temporalPattern>string30</temporalPattern>
+					<dataType>L/C/H/U</dataType>
+					<picksDetermination>A/R/H/U</picksDetermination>
+					<numbOfRecEq>integer</numbOfRecEq>
+					<numbOfFeltEq>integer</numbOfFeltEq>
+					<feltEqCntStartTime>YYYY-MM-DD HH:MM:SS</feltEqCntStartTime>
+					<feltEqCntStartTimeUnc>YYYY-MM-DD HH:MM:SS</feltEqCntStartTimeUnc>
+					<feltEqCntEndTime>YYYY-MM-DD HH:MM:SS</feltEqCntEndTime>
+					<feltEqCntEndTimeUnc>YYYY-MM-DD HH:MM:SS</feltEqCntEndTimeUnc>
+					<energyRelease>float</energyRelease>
+					<energyMeasStartTime>YYYY-MM-DD HH:MM:SS</energyMeasStartTime>
+					<energyMeasStartTimeUnc>YYYY-MM-DD HH:MM:SS</energyMeasStartTimeUnc>
+					<energyMeasEndTime>YYYY-MM-DD HH:MM:SS</energyMeasEndTime>
+					<energyMeasEndTimeUnc>YYYY-MM-DD HH:MM:SS</energyMeasEndTimeUnc>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<description>string255</description>
+				</Interval>
+			</IntervalDataset>
+			<!-- RSAM-SSAM dataset -->
+			<RSAM-SSAMDataset station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+				<!-- RSAM-SSAM -->
+				<RSAM-SSAM code="string30" station="string30" owner1="string10" owner2="string10" owner3="string10" pubDate="YYYY-MM-DD HH:MM:SS">
+					<cntInterval>float</cntInterval>
+					<cntIntervalUnc>float</cntIntervalUnc>
+					<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+					<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+					<endTime>YYYY-MM-DD HH:MM:SS</endTime>
+					<endTimeUnc>YYYY-MM-DD HH:MM:SS</endTimeUnc>
+					<!-- RSAM -->
+					<RSAM>
+						<!-- RSAM data -->
+						<RSAMData>
+							<cnt>float</cnt>
+							<calibration>float</calibration>
+							<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+							<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+						</RSAMData>
+					</RSAM>
+					<!-- SSAM -->
+					<SSAM>
+						<!-- SSAM data -->
+						<SSAMData>
+							<lowFreq>float</lowFreq>
+							<highFreq>float</highFreq>
+							<cnt>float</cnt>
+							<calibration>float</calibration>
+							<startTime>YYYY-MM-DD HH:MM:SS</startTime>
+							<startTimeUnc>YYYY-MM-DD HH:MM:SS</startTimeUnc>
+						</SSAMData>
+					</SSAM>
+				</RSAM-SSAM>
+			</RSAM-SSAMDataset>
+		</Seismic>
+	</Data>
+</wovoml>

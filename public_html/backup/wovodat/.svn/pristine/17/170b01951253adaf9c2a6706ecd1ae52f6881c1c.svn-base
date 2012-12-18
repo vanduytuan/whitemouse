@@ -1,0 +1,729 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="chart">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="set">
+          <xs:complexType>
+            <xs:attribute name="value" use="optional">
+              <xs:simpleType>
+                <xs:restriction base="xs:decimal" />
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="label" use="optional">
+              <xs:simpleType>
+                <xs:restriction base="xs:string" />
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="color" type="xs:string" use="optional" />
+            <xs:attribute name="link" type="xs:string" use="optional" />
+            <xs:attribute name="toolText" type="xs:string" use="optional" />
+            <xs:attribute name="showLabe" use="optional">
+              <xs:simpleType>
+                <xs:restriction base="xs:int">
+                  <xs:minInclusive value="0" />
+                  <xs:maxInclusive value="1" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="showValue" use="optional">
+              <xs:simpleType>
+                <xs:restriction base="xs:int">
+                  <xs:minInclusive value="0" />
+                  <xs:maxInclusive value="1" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="dashed" use="optional">
+              <xs:simpleType>
+                <xs:restriction base="xs:int">
+                  <xs:minInclusive value="0" />
+                  <xs:maxInclusive value="2" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="alpha">
+              <xs:simpleType>
+                <xs:restriction base="xs:int">
+                  <xs:minInclusive value="0" />
+                  <xs:maxInclusive value="100" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="vLine">
+          <xs:complexType>
+            <xs:attribute name="color" type="xs:string" use="optional" />
+            <xs:attribute name="thickness" type="xs:int" use="optional" />
+            <xs:attribute name="alpha" use="optional">
+              <xs:simpleType>
+                <xs:restriction base="xs:int">
+                  <xs:minInclusive value="0" />
+                  <xs:maxInclusive value="100" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="dashed" use="optional">
+              <xs:simpleType>
+                <xs:restriction base="xs:int">
+                  <xs:minInclusive value="0" />
+                  <xs:maxInclusive value="1" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="dashLen" type="xs:int" use="optional" />
+            <xs:attribute name="dashGap" type="xs:int" use="optional" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element minOccurs="0" maxOccurs="1" name="trendlines">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="line">
+                <xs:complexType>
+                  <xs:attribute name="startValue" type="xs:decimal" use="optional" />
+                  <xs:attribute name="endValue" type="xs:decimal" use="optional" />
+                  <xs:attribute name="displayValue" type="xs:string" use="optional" />
+                  <xs:attribute name="color" type="xs:string" use="optional" />
+                  <xs:attribute name="thickness" use="optional">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:int">
+                        <xs:minInclusive value="0" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                  <xs:attribute name="isTrendZone" use="optional">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:int">
+                        <xs:minInclusive value="0" />
+                        <xs:maxInclusive value="1" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                  <xs:attribute name="alpha" use="optional">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:int">
+                        <xs:minInclusive value="0" />
+                        <xs:maxInclusive value="100" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                  <xs:attribute name="showOnTop" use="optional">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:int">
+                        <xs:minInclusive value="0" />
+                        <xs:maxInclusive value="1" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                  <xs:attribute name="dashed" use="optional">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:int">
+                        <xs:minInclusive value="0" />
+                        <xs:maxInclusive value="1" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                  <xs:attribute name="dashLen" type="xs:int" use="optional" />
+                  <xs:attribute name="dashGap" type="xs:int" use="optional" />
+                  <xs:attribute name="valueOnRight" use="optional">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:int">
+                        <xs:minInclusive value="0" />
+                        <xs:maxInclusive value="1" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element minOccurs="0" maxOccurs="1" name="styles">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="1" name="definition">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="style">
+                      <xs:complexType>
+                        <xs:attribute name="name" type="xs:string" use="optional" />
+                        <xs:attribute name="type" type="xs:string" use="optional" />
+                        <xs:attribute name="color" type="xs:string" use="optional" />
+                        <xs:attribute name="alpha" use="optional">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                              <xs:minInclusive value="0" />
+                              <xs:maxInclusive value="100" />
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="blurX" type="xs:int" use="optional" />
+                        <xs:attribute name="blurY" type="xs:int" use="optional" />
+                        <xs:attribute name="Strength" use="optional">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                              <xs:minInclusive value="0" />
+                              <xs:maxInclusive value="255" />
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="Quality" type="xs:int" use="optional" />
+                        <xs:attribute name="Angle" use="optional">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                              <xs:minInclusive value="0" />
+                              <xs:maxInclusive value="360" />
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="Distance" type="xs:int" use="optional" />
+                        <xs:attribute name="shadowColor" type="xs:string" use="optional" />
+                        <xs:attribute name="shadowAlpha" use="optional">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                              <xs:minInclusive value="0" />
+                              <xs:maxInclusive value="100" />
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="highlightColor" type="xs:string" use="optional" />
+                        <xs:attribute name="highlightAlpha" use="optional">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                              <xs:minInclusive value="0" />
+                              <xs:maxInclusive value="100" />
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="_x" type="xs:decimal" use="optional" />
+                        <xs:attribute name="_y" type="xs:decimal" use="optional" />
+                        <xs:attribute name="_xScale" type="xs:decimal" use="optional" />
+                        <xs:attribute name="_yScale" type="xs:decimal" />
+                        <xs:attribute name="_alpha" use="optional">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                              <xs:minInclusive value="0" />
+                              <xs:maxInclusive value="100" />
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="_rotation" use="optional">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                              <xs:minInclusive value="0" />
+                              <xs:maxInclusive value="360" />
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="1" name="application">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="apply" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="animation" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int" />
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="palette" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int" />
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="showLabels" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="labelDisplay" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="WRAP" />
+            <xs:enumeration value="STAGGER" />
+            <xs:enumeration value="ROTATE" />
+            <xs:enumeration value="NONE " />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="rotateLabels" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="slantLabels" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="labelStep" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="1" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="staggerLines" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="2" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="showValues" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="rotateValues" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="placeValuesInside" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="showYAxisValues" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="showLimits" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="showDivLineValues" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="yAxisValuesStep" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="showShadow" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="adjustDiv" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="rotateYAxisName" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="yAxisNameWidth" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="bgAlpha" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="clickURL" type="xs:string" use="optional" />
+      <xs:attribute name="defaultAnimation" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="yAxisMinValue" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:decimal" />
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="yAxisMaxValue" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:decimal" />
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="setAdaptiveYMin" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="caption" type="xs:string" use="optional" />
+      <xs:attribute name="subCaption" type="xs:string" use="optional" />
+      <xs:attribute name="xAxisName" type="xs:string" use="optional" />
+      <xs:attribute name="yAxisName" type="xs:string" use="optional" />
+      <xs:attribute name="bgColor" type="xs:string" use="optional" />
+      <xs:attribute name="bgRatio" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="bgAngle" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="360" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="bgSWF" type="xs:string" use="optional" />
+      <xs:attribute name="bgSWFAlpha" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="canvasBgColor" type="xs:string" use="optional" />
+      <xs:attribute name="canvasBgAlpha" type="xs:string" use="optional" />
+      <xs:attribute name="canvasBgRatio" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="canvasBgAngle" type="xs:int" use="optional" />
+      <xs:attribute name="canvasBorderColor" type="xs:string" use="optional" />
+      <xs:attribute name="canvasBorderThickness" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="5" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="canvasBorderAlpha" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="showBorder" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="borderColor" type="xs:string" use="optional" />
+      <xs:attribute name="borderThickness" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="10" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="borderAlpha" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="useRoundEdges" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="showPlotBorder" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="plotBorderColor" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="plotBorderThickness" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="5" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="plotBorderAlpha" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="plotBorderDashed" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="plotBorderDashLen" type="xs:int" use="optional" />
+      <xs:attribute name="plotBorderDashGap" type="xs:int" use="optional" />
+      <xs:attribute name="plotFillAngle" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="360" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="plotFillRatio" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="plotFillAlpha" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="plotGradientColor" type="xs:string" use="optional" />
+      <xs:attribute name="numDivLines" type="xs:int" use="optional" />
+      <xs:attribute name="divLineColor" type="xs:string" use="optional" />
+      <xs:attribute name="divLineThickness" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="5" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="divLineAlpha" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="divLineIsDashed" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="divLineDashLen" type="xs:int" use="optional" />
+      <xs:attribute name="divLineDashGap" type="xs:int" use="optional" />
+      <xs:attribute name="zeroPlaneColor" type="xs:string" use="optional" />
+      <xs:attribute name="zeroPlaneThickness" type="xs:int" use="optional" />
+      <xs:attribute name="zeroPlaneAlpha" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="showAlternateHGridColor" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="alternateHGridColor" type="xs:string" use="optional" />
+      <xs:attribute name="alternateHGridAlpha" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="100" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="formatNumber" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="formatNumberScale" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="defaultNumberScale" type="xs:string" use="optional" />
+      <xs:attribute name="numberScaleUnit" type="xs:string" use="optional" />
+      <xs:attribute name="numberScaleValue" type="xs:string" use="optional" />
+      <xs:attribute name="numberPrefix" type="xs:string" use="optional" />
+      <xs:attribute name="decimalSeparator" type="xs:string" use="optional" />
+      <xs:attribute name="thousandSeparator" type="xs:string" use="optional" />
+      <xs:attribute name="inDecimalSeparator" type="xs:string" use="optional" />
+      <xs:attribute name="inThousandSeparator" type="xs:string" use="optional" />
+      <xs:attribute name="decimals" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="10" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="forceDecimals" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="yAxisValueDecimals" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="10" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="baseFont" type="xs:string" use="optional" />
+      <xs:attribute name="baseFontSize" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="72" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="baseFontColor" type="xs:string" use="optional" />
+      <xs:attribute name="outCnvBaseFont" type="xs:string" use="optional" />
+      <xs:attribute name="outCnvBaseFontSize" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="72" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="outCnvBaseFontColor" type="xs:string" use="optional" />
+      <xs:attribute name="showToolTip" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="toolTipBgColor" type="xs:string" use="optional" />
+      <xs:attribute name="toolTipSepChar" type="xs:string" use="optional" />
+      <xs:attribute name="captionPadding" type="xs:int" use="optional" />
+      <xs:attribute name="xAxisNamePadding" type="xs:int" />
+      <xs:attribute name="yAxisNamePadding" type="xs:int" use="optional" />
+      <xs:attribute name="yAxisValuesPadding" type="xs:int" use="optional" />
+      <xs:attribute name="labelPadding" type="xs:int" use="optional" />
+      <xs:attribute name="valuePadding" type="xs:int" use="optional" />
+      <xs:attribute name="plotSpacePercent" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
+            <xs:maxInclusive value="80" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="chartLeftMargin" type="xs:int" use="optional" />
+      <xs:attribute name="chartRightMargin" type="xs:int" use="optional" />
+      <xs:attribute name="chartTopMargin" type="xs:int" use="optional" />
+      <xs:attribute name="chartBottomMargin" type="xs:int" use="optional" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,5 @@
+AuthType Basic
+AuthName "WOVOdat"
+AuthUserFile /net/sunbeam/WWW/docs/academic/atmos/wovo/WOVOdat/bin/passwords
+AuthGroupFile /net/sunbeam/WWW/docs/academic/atmos/wovo/WOVOdat/bin/groups
+Require group admin
