@@ -1022,6 +1022,8 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                         $result = mysql_query("select b.dd_tlv_stime, b.dd_tlv_mag from ds a, dd_tlv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlv_pubdate <= now() order by dd_tlv_stime desc");
                         break;
                     case 'Strain':
+                        $com = strtolower($component);
+                        $com = "dd_str_" . $com;
                         switch ($component) {
                             case 'Comp1':
                                 $result = mysql_query("select b.dd_str_time, b.dd_str_comp1 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
@@ -1039,15 +1041,16 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                                 $result = mysql_query("select b.dd_str_time, b.dd_str_vdstr from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Ax1':
-                                $result = mysql_query("select b.dd_str_time, b.dd_sstr_ax1 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax1 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Ax2':
-                                $result = mysql_query("select b.dd_str_time, b.dd_sstr_ax2 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax2 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Ax3':
-                                $result = mysql_query("select b.dd_str_time, b.dd_sstr_ax3 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax3 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                         }
+                        
                         break;
                     case 'EDM':
                         $result = mysql_query("select b.dd_edm_time, b.dd_edm_line from ds a, dd_edm b where a.ds_code = '$code' and b.ds_id = a.ds_id and a.ds_pubdate <= now() and b.dd_edm_pubdate <= now()  order by b.dd_edm_time desc");
