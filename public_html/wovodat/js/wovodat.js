@@ -904,8 +904,6 @@ Wovodat.Printer = {
         function printDiv(element){
             var w = window.open();
             w.document.write(element.innerHTML);
-            w.print();
-            w.close();
         }
         function print2DEquake(obj){
             
@@ -952,8 +950,6 @@ Wovodat.Printer = {
                     divs[i].innerHTML = '';
                 }
             }
-        //w.print();
-        //w.close();
         }
         function printGMTEquake(obj){
             var link = obj.link;
@@ -976,8 +972,6 @@ Wovodat.Printer = {
             img.src = link;
             t.appendChild(img);
             w.document.body.appendChild(t);
-        //w.print();
-        //w.close();
             
         }
         function printTimeSeries(obj){

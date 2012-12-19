@@ -2322,7 +2322,7 @@ if (isset($_SESSION['login'])) {
                 width: 330px;
                 height: 110px;
                 overflow:auto;
-                margin-top:15px;
+                margin-top: 5px;
                 margin-left: 2px;
                 margin-right: 2px;
                 background-color:white;
@@ -2336,11 +2336,14 @@ if (isset($_SESSION['login'])) {
             }
             #overview1, #overview2{
                 width:340px;
-                height:50px;
+                height:35px;
             }
             #TimeSeriesView1, #TimeSeriesView2{
-                margin-top: 10px;
+                margin-top: 5px;
                 display: none
+            }
+            #TimeSeriesList1,#TimeSeriesList2{
+                padding-left: 15px;
             }
             .button {
                 width:460px;

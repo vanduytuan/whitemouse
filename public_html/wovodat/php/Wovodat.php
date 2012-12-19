@@ -44,6 +44,7 @@ class Wovodat {
     public function clearOutputFolder() {
         $outputDir = opendir($this->gmt_output_folder);
         if ($outputDir) {
+            // keep it in the server for 8 hours
             $MAX_TIME = 8 * 60 * 60;
             $currentTime = time();
             $change = 0;
