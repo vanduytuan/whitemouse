@@ -1790,21 +1790,26 @@ if (strpos($dirname, "WOVOdat") > 0)
                             continue;
 						
                         // choose icon size base on magnitude of the equake event
-                        size = Math.sqrt(mag) * 3;
-                        if (size < 4 ) 
+                        size = Math.round(4+((mag)*2)/4);
+                        
+                        if (size<4) 
                             size = 4;
+                        if (size>12) 
+                            size = 12;
+                        
                         // choose icon image base on depth of the equake event
                         if (depth <= 2.5) 
-                            color = '../img/pin_ge.png'; // Green
+                            color = '../img/blankCircles/pin_org.png'; // Red
                         else if (depth >2.5 && depth <= 5) 
-                            color = '../img/pin_ye.png'; // YELLOW
+                            color = '../img/blankCircles/pin_re.png'; // YELLOW
                         else if (depth >5 && depth <= 10) 
-                            color = '../img/pin_re.png'; // Red
+                            color = '../img/blankCircles/pin_dge.png'; // DARK BLUE
                         else if (depth >10 && depth <= 50) 
-                            color ='../img/pin_be.png'; // BLUE
+                            color ='../img/blankCircles/pin_be.png'; // BLUE
                         else 
-                            color = '../img/pin_dbe.png'; // DARK BLUE
+                            color = '../img/blankCircles/pin_lbe.png'; // Green 
 							
+						
                         // set icon
                         icon = new google.maps.MarkerImage(color,null,null,null,new google.maps.Size(size,size));
                         
@@ -1825,6 +1830,7 @@ if (strpos($dirname, "WOVOdat") > 0)
                             + mag+"</td></tr></table>";
                         var infoWindow = new google.maps.InfoWindow({content:contentText});
 			
+                        //infoWindow.open(map[mapUsed],marker);
                         // store the quake data in the earthquakes[cavw] object
                         earthquakes[cavw][index]=[];
                         earthquakes[cavw][index]['marker']= marker;
