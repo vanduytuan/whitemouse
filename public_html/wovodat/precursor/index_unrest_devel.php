@@ -23,7 +23,7 @@ if (isset($_SESSION['login'])) {
 // client code. Otherwise, we do not cach it for the purpose of development
 $cache = time();
 $dirname = dirname(__FILE__);
-if(strpos($dirname,"WOVOdat") > 0)
+if (strpos($dirname, "WOVOdat") > 0)
     $cache = "";
 ?>
 <html>
@@ -125,50 +125,10 @@ if(strpos($dirname,"WOVOdat") > 0)
                     streetViewControl:false
                 };
                 map[1] = new google.maps.Map(document.getElementById("Map"),myOptions);		
-                map[2] = new google.maps.Map(document.getElementById("Map2"),myOptions);		
-                //register toRad function
-                if (typeof(Number.prototype.toRad) === "undefined") {
-                    Number.prototype.toRad = function() {
-                        return this * Math.PI / 180;
-                    }
-                }
+                map[2] = new google.maps.Map(document.getElementById("Map2"),myOptions);	
                 
                 
-                //handle the "Show Filter" button
-                $("#FilterSwitch1").click(function(){
-                    if ($("#FormFilter1").css("display")!="none"){
-                        $("#FormFilter1").hide();
-                        $("#FilterSwitch1").html("Show Filter");
-                    }
-                    else{
-                        $("#FormFilter1").show();
-                        $("#FilterSwitch1").html("Hide Filter");
-                        if ($("#SDate1").val() =="" || $("#SDate1").val() =="undefined"){
-                            $("#SDate1").val("01/01/1900");
-                        }
-                        if ($("#EDate1").val() =="" || $("#EDate1").val() =="undefined"){
-                            var today = new Date();
-                            $("#EDate1").val($.datepicker.formatDate("m/d/yy",today));
-                        }
-                    }
-                });
-                $("#FilterSwitch2").click(function(){
-                    if ($("#FormFilter2").css("display")!="none"){
-                        $("#FormFilter2").hide();
-                        $("#FilterSwitch2").html("Show Filter");
-                    }
-                    else{
-                        $("#FormFilter2").show();
-                        $("#FilterSwitch2").html("Hide Filter");
-                    }
-                    if ($("#SDate2").val() =="" || $("#SDate2").val() =="undefined"){
-                        $("#SDate2").val("01/01/1900");
-                    }
-                    if ($("#EDate2").val() =="" || $("#EDate2").val() =="undefined"){
-                        var today = new Date();
-                        $("#EDate2").val($.datepicker.formatDate("m/d/yy",today));
-                    }
-                });
+                
 				
                 
                 
@@ -1747,6 +1707,30 @@ if(strpos($dirname,"WOVOdat") > 0)
                         }
                     }
                 }
+                (function(list){
+                    var l = list.length;
+                    var i = 0;
+                    for(i = 0 ; i < l ; i++){
+                        $("#FilterSwitch" + list[i]).click([list[i]],function(e){
+                            var j = e.data[0];
+                            if ($("#FormFilter" + j).css("display")!="none"){
+                                $("#FormFilter" + j).hide();
+                                $("#FilterSwitch" + j).html("Show Filter");
+                            }
+                            else{
+                                $("#FormFilter" + j).show();
+                                $("#FilterSwitch" + j).html("Hide Filter");
+                                if ($("#SDate" + j).val() =="" || $("#SDate" + j).val() =="undefined"){
+                                    $("#SDate" + j).val("01/01/1900");
+                                }
+                                if ($("#EDate" + j).val() =="" || $("#EDate" + j).val() =="undefined"){
+                                    var today = new Date();
+                                    $("#EDate" + j).val($.datepicker.formatDate("m/d/yy",today));
+                                }
+                            }
+                        });
+                    }
+                })([1,2]);
                 
             });
             function hideEquakePanel(o){
@@ -1931,14 +1915,14 @@ if(strpos($dirname,"WOVOdat") > 0)
                 switch (option){
                     case 0:
                         dLat = 0;
-                        dLon = (lon-vlon).toRad();
+                        dLon = toRad(lon-vlon);
                         tlat1 = toRad(vlat);
                         tlat2 = toRad(vlat);
                         diff = lon - vlon;
                         break;
                     case 1:
                         dLon = 0;
-                        dLat = (lat-vlat).toRad();
+                        dLat = toRad(lat-vlat);
                         diff = lat - vlat;
                         tlat1 = toRad(vlat);
                         tlat2 = toRad(lat);
