@@ -422,7 +422,9 @@ if (strpos($dirname, "WOVOdat") > 0)
                         var title = this.getTitle();
                         title = title.split('_');
                         title = Wovodat.trim(title[1]);
-                        for (var i in selectDom.options){
+                        var l = selectDom.options.length;
+                        for (var i = 0 ; i < l ; i++){
+                            if(selectDom.options[i].text == undefined) continue;
                             if ((selectDom.options[i].text).indexOf(title) > -1){
                                 selectDom.selectedIndex = i;
                                 selectj.change();
