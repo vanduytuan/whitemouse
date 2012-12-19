@@ -620,7 +620,7 @@ if (isset($_SESSION['login'])) {
                     timeSeriesList.innerHTML = "<tr><td>No data is available yet.</td></tr>";
                     optionList.style.height = '30px';
                 }else{
-                    if(count > 5) count = 5;
+                    if(count > 3) count = 3;
                     optionList.style.height  = 40 + (count-1)*17 + 'px';
                 }
             }
@@ -2443,11 +2443,12 @@ if (isset($_SESSION['login'])) {
             .PrintButton{
                 margin-top: 10px;
                 padding: 2px;
-                width: 60px;
+                width: 65px;
                 float: right;
                 border-radius: 3px;
                 border: 1px solid #cccccc;
                 cursor: pointer;
+                font-weight: bold;
                 /* IE10 Consumer Preview */ 
                 background-image: -ms-linear-gradient(bottom, #D6D0D0 0%, #FFFFFF 100%);
 
@@ -2497,7 +2498,7 @@ if (isset($_SESSION['login'])) {
                 margin-right: 5px;
             }
             .app-icon{
-                height: 24px;
+                height: 16px;
                 width: 30px;
                 display:block;
                 float: left;
@@ -2506,9 +2507,8 @@ if (isset($_SESSION['login'])) {
                 background-repeat: no-repeat;
             }
             .app-button-text{
-                height: 24px;
                 display: block;
-                line-height: 24px;
+                line-height: 16px;
                 text-align: center;
             }
         </style>
