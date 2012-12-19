@@ -2361,7 +2361,7 @@ if (strpos($dirname, "WOVOdat") > 0)
                 -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
                 box-shadow: 0 1px 2px rgba(0,0,0,.2);
                 margin-top: 8px;
-                height: 22px;
+                height: 16px;
             }
             .button a:visited,.button a:link{
                 color: rgb(58,89,184);
