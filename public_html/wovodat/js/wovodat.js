@@ -913,7 +913,7 @@ Wovodat.Printer = {
             var t;
             t = window.document.createElement('div');
             t.style.margin = '0px 0px 0px 20px';
-            t.innerHTML = '<b>www.WOVOdat.org</b>: Database of Volcanic Unrest<br/> Brought to you by the Earth Observatory of Singapore <br/><br/>';
+            t.innerHTML = '<b>www.wovodat.org</b>: Database of Volcanic Unrest<br/> Brought to you by the Earth Observatory of Singapore <br/><br/>';
             t.innerHTML += obj.info;
             w.document.body.appendChild(t);    
             
@@ -961,7 +961,7 @@ Wovodat.Printer = {
             var t;
             t = window.document.createElement('div');
             t.style.margin = '0px 0px 0px 20px';
-            t.innerHTML = '<b>www.WOVOdat.org</b>: Database of Volcanic Unrest<br/> Brought to you by the Earth Observatory of Singapore <br/><br/>';
+            t.innerHTML = '<b>www.wovodat.org</b>: Database of Volcanic Unrest<br/> Brought to you by the Earth Observatory of Singapore <br/><br/>';
             t.innerHTML += obj.info;
             w.document.body.appendChild(t);    
             t = window.document.createElement('div');
@@ -985,7 +985,7 @@ Wovodat.Printer = {
             var t,i,j;
             t = window.document.createElement('div');
             t.style.margin = '0px 0px 0px 20px';
-            t.innerHTML = '<b>www.WOVOdat.org</b>: Database of Volcanic Unrest<br/> Brought to you by the Earth Observatory of Singapore <br/><br/>';
+            t.innerHTML = '<b>www.wovodat.org</b>: Database of Volcanic Unrest<br/> Brought to you by the Earth Observatory of Singapore <br/><br/>';
             t.innerHTML += obj.info;
             w.document.body.appendChild(t);    
             var table = obj.graphsTable;
