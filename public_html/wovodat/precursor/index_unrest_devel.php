@@ -19,6 +19,12 @@ if (isset($_SESSION['login'])) {
     header('Location:/precursor/index_unrest.php');
     exit();
 }
+// if this code run on server then we need to cache the wovodat.js file on the 
+// client code. Otherwise, we do not cach it for the purpose of development
+$cache = time();
+$dirname = dirname(__FILE__);
+if(strpos($dirname,"WOVOdat") > 0)
+    $cache = "";
 ?>
 <html>
     <head>
@@ -37,9 +43,7 @@ if (isset($_SESSION['login'])) {
         <script type="text/javascript" src="/js/flot/jquery.flot.selection.js"></script>
         <script type="text/javascript" src="/js/flot/jquery.flot.marks.js"></script>
 
-      <!--<script type="text/javascript" src="/js/flot/jquery.flot.navigate.js"></script> -->
-        <!-- this is to prevent caching of js file, will need to amend when produce for production -->
-        <script type="text/javascript" src="/js/wovodat.js?<?php echo time(); ?>"></script>
+        <script type="text/javascript" src="/js/wovodat.js?<?php echo $cache; ?>"></script>
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCQ9kUvUtmawmFJ62hWVsigWFTh3CKUzzM&sensor=false"></script>
         <script type="text/javascript" src="/js/Tooltip_v3.js"></script>
         <script type="text/javascript">
@@ -88,6 +92,7 @@ if (isset($_SESSION['login'])) {
                 //to which data is populated
                 Wovodat.getVolcanoList(insertVolcanoList,["VolcanoList","CompVolcanoList"]);
                 
+                // store the eruption data for later use
                 eruptionsData = {
                     marks: { 
                         show: true,
@@ -98,6 +103,7 @@ if (isset($_SESSION['login'])) {
                     data: [], 
                     markdata: []
                 };
+                // store the eruption data for the second volcano
                 eruptionsData.compEruptions = {
                     marks: { 
                         show: true,
@@ -108,6 +114,7 @@ if (isset($_SESSION['login'])) {
                     data: [], 
                     markdata: []
                 };
+                
                 lat = 1.29;
                 lon = 103.85;
                 var myOptions = {
@@ -2295,6 +2302,13 @@ if (isset($_SESSION['login'])) {
                 $("#asciiDataFile",tmp).attr('href','');
                 $("#gmtScriptFile",tmp).attr('href','');
             } 
+            
+            /*
+             * Time series module
+             * 
+             */
+            
+            
         </script>
         <style type="text/css">
             #contentrview_x #StationList tr td:first-child{
