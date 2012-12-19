@@ -650,7 +650,6 @@ Wovodat.getDetailedStationData = function(o){
         },
         error: function(html){
             console.log('Wovodat.getDetailedStationData: error in getting the detailed data.');
-            console.log(html);
         }
     });
 }

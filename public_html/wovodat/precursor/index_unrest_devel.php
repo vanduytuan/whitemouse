@@ -1010,22 +1010,22 @@ if (isset($_SESSION['login'])) {
             }
             // draw overview graph
             function drawOverviewGraph(tableId){
-                if(!tableId) tableId = ''; 
-                var a = $("#overview" + tableId);
-                if(a){
-                    a.empty();
+                if(!tableId) {
+                    console.log("Error in method [drawOverviewGraph]: need to specify the map used.");
+                    return; 
                 }
+                var placeholder= document.getElementById('overview' + tableId);
+                placeholder.innerHTML = '';
                 var id;
                 var data = [];
+                
                 // consider two case when we are in comparison view or in single view
                 // get the correct id for the graph data, this is different with the graphs id
                 for(id in graphs){
-                    if(tableId){
-                        var j = id.length;
-                        j = parseInt(id.substring(j-1,j));
-                        if( j != tableId) continue;
-                        else id = id.substring(0,id.length -1 );
-                    }
+                    var j = id.length;
+                    j = parseInt(id.substring(j-1,j));
+                    if( j != tableId) continue;
+                    else id = id.substring(0,id.length -1 );
                     data.push(graphData[id][0]);
                 }
                 var options = {
@@ -1034,10 +1034,16 @@ if (isset($_SESSION['login'])) {
                         shadowSize: 0
                     },
                     xaxis: { mode:'time'},
-                    yaxis: { ticks: []},
+                    yaxis: { ticks: []}, // no tick for the yaxis
                     selection: { mode: "x", color: '#451A2B' }
                 };
-                $.plot($("#overview" + tableId),data,options);
+                $.plot(placeholder,data,options);
+                
+                /*
+                 * This section of code allow the user to see the updated version
+                 * of every graph below the overview graph when user selecs a 
+                 * portion of the overview graph.
+                 */
                 // clear previous handler
                 $("#overview" + tableId).unbind('plotselected');
                 // draw other main graphs when user select a portion of this graph
