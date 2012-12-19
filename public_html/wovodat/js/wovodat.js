@@ -429,8 +429,10 @@ Wovodat.loadEarthquakes = function(o){
         success:function(html){
             if(html.indexOf('Can\'t') >= 0) 
                 return;
-            handlers[0](html,volInfo.cavw,mapUsed);
-            handlers[1](volInfo.cavw,"",mapUsed);
+            if(handlers[0])
+                handlers[0](html,volInfo.cavw,mapUsed);
+            if(handlers[1])
+                handlers[1](volInfo.cavw,"",mapUsed);
             $("#EquakePanel"+mapUsed).show();
         }
     });

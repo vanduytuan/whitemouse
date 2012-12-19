@@ -2157,6 +2157,17 @@ if (strpos($dirname, "WOVOdat") > 0)
                     $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
                     placeholder.style.display = 'block';
                 }
+                if (!earthquakes[cavw]){
+                    Wovodat.loadEarthquakes({
+                        numberOfEvents: document.getElementById('Evn' + mapUsed).value,
+                        mapUsed: o.mapUsed,
+                        volInfo: volcanoInfo[o.mapUsed],
+                        handlers: [insertMarkersForEarthquakes]
+                    });
+                }
+                else{
+                    insertMarkersForEarthquakes("",cavw,o.mapUsed);
+                }
             }
             
             /*
@@ -2237,6 +2248,17 @@ if (strpos($dirname, "WOVOdat") > 0)
                     $("#asciiDataFile",placeholder).attr('href',ar['dataFile']);
                     $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
                     placeholder.show();
+                }
+                if (!earthquakes[cavw]){
+                    Wovodat.loadEarthquakes({
+                        numberOfEvents: document.getElementById('Evn' + mapUsed).value,
+                        mapUsed: o.mapUsed,
+                        volInfo: volcanoInfo[o.mapUsed],
+                        handlers: [insertMarkersForEarthquakes]
+                    });
+                }
+                else{
+                    insertMarkersForEarthquakes("",cavw,o.mapUsed);
                 }
             }
             /*
