@@ -243,23 +243,12 @@ if (strpos($dirname, "WOVOdat") > 0)
                     // reset the local list of available stations for each data type
                     delete(stationsDatabase);
                     stationsDatabase = {};
-                
-                
+                    
                     hideEquakePanel({mapUsed:1});
                     hideMarkers({mapUsed:1});
                     clearEquakedrawingData({mapUsed:1});
                 });
                 
-                $("#HideTimeSeriesPanel1").click(function(){
-                    $("#TimeSeriesView1").hide();
-                    $(".TimeSeriesGraphPanel1").hide();
-                    return false;
-                });
-                $("#HideTimeSeriesPanel2").click(function(){
-                    $("#TimeSeriesView2").hide();
-                    $(".TimeSeriesGraphPanel2").hide();
-                    return false;
-                });
                 $("#HideVolcanoInformation1").click(function(){
                     $("#VolcanoPanel1").hide();
                     return false;
@@ -358,6 +347,7 @@ if (strpos($dirname, "WOVOdat") > 0)
                     hideMarkers({mapUsed:2});
                     clearEquakedrawingData({mapUsed:2});
                 });
+                
                 // get all the available graph move to the eruption
                 $("#EruptionList").change(function(){
                     moveGraphsToEruptionTime.apply(this);
@@ -424,7 +414,8 @@ if (strpos($dirname, "WOVOdat") > 0)
                         title = Wovodat.trim(title[1]);
                         var l = selectDom.options.length;
                         for (var i = 0 ; i < l ; i++){
-                            if(selectDom.options[i].text == undefined) continue;
+                            if(selectDom.options[i].text == undefined) 
+                                continue;
                             if ((selectDom.options[i].text).indexOf(title) > -1){
                                 selectDom.selectedIndex = i;
                                 selectj.change();
@@ -1799,10 +1790,9 @@ if (strpos($dirname, "WOVOdat") > 0)
                             continue;
 						
                         // choose icon size base on magnitude of the equake event
-                        size = Math.round(mag*2);
-                        if (size<5) 
-                            size = 5;
-                        
+                        size = Math.sqrt(mag) * 3;
+                        if (size < 4 ) 
+                            size = 4;
                         // choose icon image base on depth of the equake event
                         if (depth <= 2.5) 
                             color = '../img/pin_ge.png'; // Green
@@ -2291,9 +2281,14 @@ if (strpos($dirname, "WOVOdat") > 0)
                             $("#TimeSeriesView" + mapUsed).show();
                             $(".TimeSeriesGraphPanel" + mapUsed).show();
                         });
+                        $("#HideTimeSeriesPanel" + j).click([j],function(e){
+                            var mapUsed = e.data[0];
+                            $("#TimeSeriesView" + mapUsed).hide();
+                            $(".TimeSeriesGraphPanel" + mapUsed).hide();
+                            return false;
+                        });
                     }
                 })([1,2]);
-                
             });
             
         </script>
