@@ -8,7 +8,7 @@ var wovodatMenu =
     _cmSplit,
 	['', 'Documentation', '/doc', '_self', ''], 
     _cmSplit,
-	['', 'Display', '/precursor/index_unrest_devel_v5.2.php', '_self', ''],
+	['', 'Display', '/precursor/index_unrest_devel.php', '_self', ''],
     _cmSplit,
 	['', 'Populate', '/populate/index.php', '_self', ''],
     _cmSplit,
