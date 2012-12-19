@@ -2534,6 +2534,9 @@ if(strpos($dirname,"WOVOdat") > 0)
                 line-height: 16px;
                 text-align: center;
             }
+            .eruptionList{
+                width: 150px;
+            }
         </style>
     </head>
     <body>
@@ -2626,7 +2629,7 @@ if(strpos($dirname,"WOVOdat") > 0)
                                                     <table>
                                                         <tr>
                                                             <td valign="top"style="text-align:left;height:5px;width:180px;"><b>Eruption:</b><br/>
-                                                                <select id="EruptionList" style="width:140px">
+                                                                <select id="EruptionList" class="eruptionList" >
                                                                 </select>
                                                             </td>
                                                             <td colspan="2" style="height:20px;width:250px">
@@ -2973,7 +2976,7 @@ if(strpos($dirname,"WOVOdat") > 0)
                                                         <tr>
                                                             <td valign="top"style="text-align:left;height:5px;width:180px;"><b>Eruption:</b><br/>
 
-                                                                <select id="CompEruptionList" style="width:140px">
+                                                                <select id="CompEruptionList"  class="eruptionList">
                                                                 </select>
                                                             </td>
                                                             <td colspan="2" style="height:20px;width:250px">
