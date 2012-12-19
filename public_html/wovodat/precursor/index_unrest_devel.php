@@ -127,12 +127,6 @@ if (strpos($dirname, "WOVOdat") > 0)
                 map[1] = new google.maps.Map(document.getElementById("Map"),myOptions);		
                 map[2] = new google.maps.Map(document.getElementById("Map2"),myOptions);	
                 
-                
-                
-				
-                
-                
-                
                 $("#gvp1").click(function() {
                     var locat= $("#VolcanoList :selected").text();
                     var locati=locat.split("_");
@@ -145,6 +139,7 @@ if (strpos($dirname, "WOVOdat") > 0)
                     open("http://www.volcano.si.edu/world/volcano.cfm?vnum="+locati[1]);
                     return false;
                 });
+                
                 $("#HideStationButton1").click(function(){
                     hideStation(1);
                     $(this).hide();
@@ -154,16 +149,7 @@ if (strpos($dirname, "WOVOdat") > 0)
                     $(this).hide();
                 });          
             
-                
                 Wovodat.showProcessingIcon($("#loading"));
-                $("#TimeSeriesHeader2").click(function(){
-                    $("#TimeSeriesView2").show();
-                    $(".TimeSeriesGraphPanel2").show();
-                });
-                $("#TimeSeriesHeader1").click(function(){
-                    $("#TimeSeriesView1").show();
-                    $(".TimeSeriesGraphPanel1").show();
-                });
                 // when the volcano option is changed
                 $("#VolcanoList").change(function(){
                     var volcano = $("#VolcanoList").val();
@@ -2291,7 +2277,22 @@ if (strpos($dirname, "WOVOdat") > 0)
              * Time series module
              * 
              */
-            
+            $(function(){
+                // show/hide the time series panel
+                (function(list){
+                    var l = list.length;
+                    var i = 0;
+                    for(i = 0 ; i < l ; i++){
+                        var j = list[i];
+                        $("#TimeSeriesHeader" + j).click([j],function(e){
+                            var mapUsed = e.data[0];
+                            $("#TimeSeriesView" + mapUsed).show();
+                            $(".TimeSeriesGraphPanel" + mapUsed).show();
+                        });
+                    }
+                })([1,2]);
+                
+            });
             
         </script>
         <style type="text/css">
