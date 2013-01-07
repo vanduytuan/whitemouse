@@ -1087,11 +1087,11 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                         break;
                     case 'GPSVector':
                         if ($component == "NS")
-                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_N from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
+                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_N, b.cc_id, b.cc_id2, b.cc_id3 from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
                         else if ($component == "EW")
-                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_E from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
+                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_E, b.cc_id, b.cc_id2, b.cc_id3 from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
                         else if ($component == "Z")
-                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_vert from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
+                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_vert, b.cc_id, b.cc_id2, b.cc_id3 from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
                         break;
                     case 'Leveling':
                         $result = mysql_query("select b.dd_lev_stime, b.dd_lev_dlev from ds a, dd_lev where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() order by b.dd_lev_stime desc");
@@ -1206,7 +1206,8 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             if ($result == false)
                 return;
             while ($array = mysql_fetch_array($result, MYSQL_NUM)) {
-                $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]));
+                $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
+                
             }
             echo json_encode($data);
         }
@@ -1871,7 +1872,29 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
 
         return "$tmpdir/gmt.legend";
     }
-
+    function getOwnerList($ownerList){
+        $i = 0;
+        $length = count($ownerList);
+        $queryString = "select cc_id, cc_code from cc where ";
+        $results = array();
+        if($length == 0){
+            echo json_encode($results);
+            return;
+        }
+        for($i = 0 ; $i < $length; $i++){
+            $queryString = $queryString . "cc_id = " . $ownerList[$i] . " ";
+            if($i != $length - 1)
+                $queryString = $queryString . " or ";
+        }
+        $queryString = $queryString . ";";
+        $resources = mysql_query($queryString);
+        $row = mysql_fetch_array($resources);
+        while($row){
+            $results[$row[0]] = $row[1];
+            $row = mysql_fetch_array($resources);
+        }
+        echo json_encode($results);
+    }
 }
 
 class Station {

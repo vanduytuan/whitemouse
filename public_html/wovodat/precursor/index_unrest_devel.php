@@ -614,7 +614,27 @@ if (strpos($dirname, "WOVOdat") > 0) {
                     deleteGraph({id:obj.value,tableId:tableId});
                 }
             }
-            
+            // get the list of owners based on the data         
+            function getOwnerList(data){
+                var mySet = {}, temp;
+                var length = data[0].length;
+                if(length == 0) 
+                    return;
+                var i,j;
+                for( i = 0 ; i < length; i++){
+                    for(j = 2; j <5; j++){
+                        temp = data[0][i][j];
+                        mySet[temp] = true;
+                    }
+                }
+                var ownerList = [];
+                j = 0;
+                for(i in mySet){
+                    if(i != '0' && i != 'undefined')
+                        ownerList[j++] = parseInt(i);
+                }
+                return ownerList;
+            }
             // main function to draw the time series graph
             // data has the format [[[x1,y1],[x2,y2],[x3,y3]]]
             // id is the string to specify the type of the data
@@ -661,8 +681,10 @@ if (strpos($dirname, "WOVOdat") > 0) {
                 }else{
                     isDetailedDataAvailable = true;
                 }
+                
                 if(graphData[id] == undefined)
                     graphData[id] = data;
+                    
                 var minValue ,maxValue;
                 var maxXValue = Number.MIN_VALUE;
                 var sixMonths = 6*30*24*60*60*1000; // in milliseconds
@@ -673,12 +695,15 @@ if (strpos($dirname, "WOVOdat") > 0) {
                 minValue = data[0][0][1];
                 maxValue = minValue;
                 xRangeMin = data[0][length-1][0];
+                
                 for(i = 0 ; i < length; i++){
-                    if(data[0][i][1] == null) continue;
+                    if(data[0][i][1] == null) 
+                        continue;
                     if(data[0][i][1] > maxValue) maxValue = data[0][i][1];
                     if(data[0][i][1] < minValue) minValue = data[0][i][1];
                 }
-                // get the maxXValue of every graph
+                
+                // get the maxXValue of every graph that is currently 
                 for(var a in graphData){
                     if(tableId != side(a)) continue;
                     for(var b in graphs){
@@ -702,6 +727,8 @@ if (strpos($dirname, "WOVOdat") > 0) {
                         }
                     }
                 }
+                
+                // dynamically create the table row for drawing the time series graph
                 var tr = document.createElement('tr');
                 tr.id = id + "Row" + tableId;
                 document.getElementById("GraphList" + tableId ).appendChild(tr);
@@ -712,8 +739,63 @@ if (strpos($dirname, "WOVOdat") > 0) {
                     display = display[0]  + "&" + display[1] + "&" + display[2];
                 }
                 
+                // create the dropdown list for selecting the owner the data
                 var td = document.createElement('td');
-                if(tableId) td.innerHTML = label;
+                var ownerLists = document.createElement('select');
+                ownerLists.id = id + 'OwnerList' + tableId;
+                ownerLists.style.setProperty('float','right');
+                ownerLists.style.setProperty('height','16px');
+                var ownerOption = document.createElement('option');
+                ownerOption.value = '';
+                ownerOption.innerHTML = 'Select Owner';
+                ownerLists.appendChild(ownerOption);
+                ownerLists.style.width = '100px';
+                td.appendChild(ownerLists);
+                var ownerList = getOwnerList(data);
+                Wovodat.getOwnerList(ownerList,function(obj){
+                    var j;
+                    ownerLists = document.getElementById(ownerLists.id);
+                    for(j in obj){
+                        ownerOption = document.createElement('option');
+                        ownerOption.value = j;
+                        ownerOption.innerHTML = obj[j];
+                        ownerLists.appendChild(ownerOption);
+                    }
+                    ownerOption = document.createElement('option');
+                    ownerOption.value = 'All';
+                    ownerOption.innerHTML = 'All';
+                    ownerLists.appendChild(ownerOption);
+                    // redraw the graph based on the owner that user has chosen
+                    ownerLists.onchange = function(){
+                        var graph = graphs[id+tableId];
+                        var ccid = ownerLists.value;
+                        var data = graph.getData();
+                        var initialData = graphData[id];
+                        var tempData = [];
+                        tempData[0] = [];
+                        var length = initialData[0].length;
+                        var i = 0;
+                        if(ccid == 'All'){
+                            data = initialData;
+                        }else if(ccid == ''){
+                            data[0].data = null;
+                        }else{
+                            for(i = 0 ; i < length; i++){
+                                if(initialData[0][i][2] == ccid || initialData[0][i][3] == ccid || initialData[0][i][4] == ccid)
+                                    tempData.push(initialData[0][i]);
+                            }
+                            data[0].data = tempData;
+                        }
+                        var placeholder = graph.getPlaceholder();
+                        placeholder = placeholder[0];
+                        placeholder.innerHTML = '';
+                        graphs[id+tableId] = $.plot(placeholder,data,graph.getOptions());
+                    };
+                });
+                
+                // the label is taken from the checked element
+                if(tableId) td.innerHTML += label;
+                // div element to draw the graph into
                 var div = document.createElement('div');
                 div.id = id + "Graph" + tableId;
                 if(tableId){
@@ -842,8 +924,6 @@ if (strpos($dirname, "WOVOdat") > 0) {
                     }
                 }
                 
-                $("#GraphList" + tableId).sortable();
-                
                 // showing the tooltip of information for the graphs when
                 // user hovers mouse over a point on the graph.
                 var previousPoint = null;
@@ -914,16 +994,10 @@ if (strpos($dirname, "WOVOdat") > 0) {
                                 }
                                 if(currentIndex > 0){
                                     var m = side(index);
-                                    if(m == '1' || m == '2'){
-                                        index = index.substring(0,index.length-1);
-                                        var k = document.getElementById(index + 'Row' + m).getElementsByTagName('td')[0].innerHTML;
-                                        
-                                        m = k.indexOf('<');
-                                        k = k.substring(0,m);
-                                        content += "<br/>" + k + ": " + data[currentIndex][1];
-                                    }
-                                    else    
-                                        content += "<br/>" + graphs[index].getData()[0].label + ": " + data[currentIndex][1];
+                                    index = index.substring(0,index.length-1);
+                                    var k = document.getElementById(index + 'Row' + m).getElementsByTagName('td')[0];
+                                    // the text of the graph is the second child node of the row
+                                    content += "<br/>" + k.childNodes[1].nodeValue + ": " + data[currentIndex][1];
                                 }
                             }
                             Wovodat.showTooltip(item.pageX, item.pageY,content);
@@ -957,6 +1031,7 @@ if (strpos($dirname, "WOVOdat") > 0) {
                 }
                 
             }
+            
             // draw overview graph
             function drawOverviewGraph(tableId){
                 if(!tableId) {
@@ -1570,780 +1645,780 @@ if ($dev) {
     <?php
 } else {
     ?>     
-                     randomSelectVolcano(selectId);
+                    randomSelectVolcano(selectId);
     <?php
 }
 ?>
-                    }
-                }
+        }
+    }
             
             
-                /*
-                 * Equake module
-                 * Handle the event related to the equake panels
-                 * Provide the function to work with various equake data
-                 */
+    /*
+     * Equake module
+     * Handle the event related to the equake panels
+     * Provide the function to work with various equake data
+     */
             
-                /*
-                 * 
-                 * Object to store the list of earthquake values that user has requested
-                 * from the server. These values are organized according to the volcano 
-                 * that they are close to. That means some data will be duplicated 
-                 * at the client side this is the problem that the script in the future 
-                 * needs to address. This data will be used in the future when we 
-                 * need to filter the equake and redraw the data using Flot. This
-                 * object is also used to store the information about the GMT output
-                 * value.
-                 * First level of this object is the CAVW of the volcano
-                 * {cavw1,cavw2,cavw3,...}
-                 * To retrieve: earthquakes[cavw]
-                 * 
-                 * The earthquakes[cavw] object contains the following attributes:
-                 * - vlat: the latitude of the volcano
-                 * - vlon: the longitude of the volcano
-                 * - many objects that represent specific earthquakes that happened
-                 * 
-                 * Each earthquake event object has the followoing attributes:
-                 * - marker: show the position of the event in Google Map
-                 * - infoWindow: showed when mouse hovers over the positon of the marker
-                 * - eqtype: the type of the earthquake, please refer to the documentation of 
-                 * WOVOdat to see different type of earthquakes
-                 * - lat: latitude of the event
-                 * - lon: longitude of the event
-                 * - available: to mark if we should display this event on the graph and the map
-                 * - mag: magnitude of the event
-                 * - depth: the depth of the event
-                 * - latDistance: the distance from the event to the volcano projected in the latitude axis
-                 * - lonDistance: the distance from the event to the volcano projected in the longitude axis
-                 * - time: the happended time of the event in the standard format
-                 * - timestamp: the number of milliseconds starting from 1/1/1970 that 
-                 * this earthquake happens
-                 */ 
-                var earthquakes = {};
-                /*
-                 * Object to store the queried array of data for the 3D display
-                 */
-                var gmt3DData = {};
-                var gmt2DData = {};
-                // store reference to the plotted graphs in the equake section
-                // this variable will help us when we need to do the printing
-                var equakeGraphs = [];
-                // left graphs
-                equakeGraphs[1] = {};
-                // right graphs
-                equakeGraphs[2] = {};
-                $(document).ready(function(){
-                    /*
-                     * Drop down the display equake panel
-                     * Draw the Flot equake graph of current volcano if no display type is selected 
+    /*
+     * 
+     * Object to store the list of earthquake values that user has requested
+     * from the server. These values are organized according to the volcano 
+     * that they are close to. That means some data will be duplicated 
+     * at the client side this is the problem that the script in the future 
+     * needs to address. This data will be used in the future when we 
+     * need to filter the equake and redraw the data using Flot. This
+     * object is also used to store the information about the GMT output
+     * value.
+     * First level of this object is the CAVW of the volcano
+     * {cavw1,cavw2,cavw3,...}
+     * To retrieve: earthquakes[cavw]
+     * 
+     * The earthquakes[cavw] object contains the following attributes:
+     * - vlat: the latitude of the volcano
+     * - vlon: the longitude of the volcano
+     * - many objects that represent specific earthquakes that happened
+     * 
+     * Each earthquake event object has the followoing attributes:
+     * - marker: show the position of the event in Google Map
+     * - infoWindow: showed when mouse hovers over the positon of the marker
+     * - eqtype: the type of the earthquake, please refer to the documentation of 
+     * WOVOdat to see different type of earthquakes
+     * - lat: latitude of the event
+     * - lon: longitude of the event
+     * - available: to mark if we should display this event on the graph and the map
+     * - mag: magnitude of the event
+     * - depth: the depth of the event
+     * - latDistance: the distance from the event to the volcano projected in the latitude axis
+     * - lonDistance: the distance from the event to the volcano projected in the longitude axis
+     * - time: the happended time of the event in the standard format
+     * - timestamp: the number of milliseconds starting from 1/1/1970 that 
+     * this earthquake happens
+     */ 
+    var earthquakes = {};
+    /*
+     * Object to store the queried array of data for the 3D display
+     */
+    var gmt3DData = {};
+    var gmt2DData = {};
+    // store reference to the plotted graphs in the equake section
+    // this variable will help us when we need to do the printing
+    var equakeGraphs = [];
+    // left graphs
+    equakeGraphs[1] = {};
+    // right graphs
+    equakeGraphs[2] = {};
+    $(document).ready(function(){
+        /*
+         * Drop down the display equake panel
+         * Draw the Flot equake graph of current volcano if no display type is selected 
              
-                     */
-                    $("#DisplayEquake1").click(function(){
-                        $('#EquakePanel1').show();
-                        $("#2DEquakeFlotGraph1").hide();
-                        $("#2DGMTEquakeGraph1").hide();
-                    });
-                    $("#DisplayEquake2").click(function(){
-                        $("#EquakePanel2").show();
-                        $("#2DEquakeFlotGraph2").hide();
-                        $("#2DGMTEquakeGraph2").hide();
-                    }); 
-                    /*
-                     * Hide the entire earthquake panel when the x button is click
-                     */
-                    $("#HideEquake1").click(function(){
-                        hideEquakePanel({mapUsed:1});
-                        hideMarkers({mapUsed:1});
-                        return false;
-                    });
-                    $("#HideEquake2").click(function(){
-                        hideEquakePanel({mapUsed:2});
-                        hideMarkers({mapUsed:2});
-                        return false;
-                    });
+         */
+        $("#DisplayEquake1").click(function(){
+            $('#EquakePanel1').show();
+            $("#2DEquakeFlotGraph1").hide();
+            $("#2DGMTEquakeGraph1").hide();
+        });
+        $("#DisplayEquake2").click(function(){
+            $("#EquakePanel2").show();
+            $("#2DEquakeFlotGraph2").hide();
+            $("#2DGMTEquakeGraph2").hide();
+        }); 
+        /*
+         * Hide the entire earthquake panel when the x button is click
+         */
+        $("#HideEquake1").click(function(){
+            hideEquakePanel({mapUsed:1});
+            hideMarkers({mapUsed:1});
+            return false;
+        });
+        $("#HideEquake2").click(function(){
+            hideEquakePanel({mapUsed:2});
+            hideMarkers({mapUsed:2});
+            return false;
+        });
                 
-                    // hide the earth quake map during initialization
-                    hideEquakePanel({mapUsed:1});
-                    hideEquakePanel({mapUsed:2});
+        // hide the earth quake map during initialization
+        hideEquakePanel({mapUsed:1});
+        hideEquakePanel({mapUsed:2});
                 
-                    /*
-                     * Javascript to handle button click of 2D, 2D using GMT and 3D using GMT
-                     */
-                    $(".equakeDisplayBox1").click(function() {
-                        $(".equakeDisplayBox1").closest("label").removeClass("equakeDisplayButtonChecked");
-                        $(this).closest("label").addClass("equakeDisplayButtonChecked");
-                    });
-                    $(".equakeDisplayBox2").click(function() {
-                        $(".equakeDisplayBox2").closest("label").removeClass("equakeDisplayButtonChecked");
-                        $(this).closest("label").addClass("equakeDisplayButtonChecked");
+        /*
+         * Javascript to handle button click of 2D, 2D using GMT and 3D using GMT
+         */
+        $(".equakeDisplayBox1").click(function() {
+            $(".equakeDisplayBox1").closest("label").removeClass("equakeDisplayButtonChecked");
+            $(this).closest("label").addClass("equakeDisplayButtonChecked");
+        });
+        $(".equakeDisplayBox2").click(function() {
+            $(".equakeDisplayBox2").closest("label").removeClass("equakeDisplayButtonChecked");
+            $(this).closest("label").addClass("equakeDisplayButtonChecked");
                     
-                    });
-                    $("#3DGMTEquakeGraph1, #3DGMTEquakeGraph2").hide();
+        });
+        $("#3DGMTEquakeGraph1, #3DGMTEquakeGraph2").hide();
             
-                    //handle the Filter buttons
-                    $("#FilterBtn1").click(function(){
-                        registerFilter({mapUsed:1});
-                    });
-                    $("#FilterBtn2").click(function(){
-                        registerFilter({mapUsed:2});
-                    });
-                    function registerFilter(o){
-                        var mapUsed = o.mapUsed;
-                        if (volcanoInfo[mapUsed]){
-                            var cavw = volcanoInfo[mapUsed].cavw;
-                            if( document.getElementById('2DEquakeFlotGraph' + mapUsed).style.display == 'block'){
-                                if (earthquakes[cavw]){
-                                    filterData(cavw,mapUsed);
-                                    $("#DisplayEquake" + mapUsed).click();
-                                }
-                                else{
-                                    $("#DisplayEquake" + mapUsed).click();
-                                }
-                            }else if(document.getElementById('3DGMTEquakeGraph' + mapUsed).style.display == 'block'){
-                                gmt3DData[cavw] = undefined;
-                                drawEquake({mapUsed:mapUsed,
-                                    source:document.getElementById('equakeDisplayType' + mapUsed + '3D')
-                                });
-                            }else if(document.getElementById('2DGMTEquakeGraph' + mapUsed).style.display == 'block'){
-                                gmt2DData[cavw] = undefined;
-                                drawEquake({mapUsed:mapUsed,
-                                    source:document.getElementById('equakeDisplayType' + mapUsed + '2DGMT')
-                                });
-                            }
-                        }
-                    }
-                    (function(list){
-                        var l = list.length;
-                        var i = 0;
-                        for(i = 0 ; i < l ; i++){
-                            $("#FilterSwitch" + list[i]).click([list[i]],function(e){
-                                var j = e.data[0];
-                                if ($("#FormFilter" + j).css("display")!="none"){
-                                    $("#FormFilter" + j).hide();
-                                    $("#FilterSwitch" + j).html("Show Filter");
-                                }
-                                else{
-                                    $("#FormFilter" + j).show();
-                                    $("#FilterSwitch" + j).html("Hide Filter");
-                                    if ($("#SDate" + j).val() =="" || $("#SDate" + j).val() =="undefined"){
-                                        $("#SDate" + j).val("01/01/1900");
-                                    }
-                                    if ($("#EDate" + j).val() =="" || $("#EDate" + j).val() =="undefined"){
-                                        var today = new Date();
-                                        $("#EDate" + j).val($.datepicker.formatDate("m/d/yy",today));
-                                    }
-                                }
-                            });
-                        }
-                    })([1,2]);
-                
-                });
-                function hideEquakePanel(o){
-                    $("#EquakePanel" + o.mapUsed).hide();
-                }
-                /*
-                 * This function is used for the filtering of the equake events.
-                 * All of the event that are filtered will be marked unavailable by
-                 * setting the available variable to false.
-                 */
-                function filterData(cavw,panelUsed){
+        //handle the Filter buttons
+        $("#FilterBtn1").click(function(){
+            registerFilter({mapUsed:1});
+        });
+        $("#FilterBtn2").click(function(){
+            registerFilter({mapUsed:2});
+        });
+        function registerFilter(o){
+            var mapUsed = o.mapUsed;
+            if (volcanoInfo[mapUsed]){
+                var cavw = volcanoInfo[mapUsed].cavw;
+                if( document.getElementById('2DEquakeFlotGraph' + mapUsed).style.display == 'block'){
                     if (earthquakes[cavw]){
-                        var nEvent = $("#Evn"+panelUsed).val();
-                        var sDate = parseDateVal($("#SDate"+panelUsed).val());
-                        var eDate = parseDateVal($("#EDate"+panelUsed).val());
-                        var dhigh = parseFloat($("#DepthHigh"+panelUsed).val());
-                        var dlow = parseFloat($("#DepthLow"+panelUsed).val());
-                        var type = document.getElementById("EqType"+panelUsed);
-                        type = type.options[type.selectedIndex].value;
-                        var count = 0;
-                        // some error here, what if i is 'vlat' or 'vlon'
-                        for (var i in earthquakes[cavw]){
-                        
-                            if (count>nEvent){
-                                earthquakes[cavw][i]['available'] = false;
-                                continue;
-                            }
-                            if (typeof earthquakes[cavw][i]['marker']!="undefined"&& earthquakes[cavw][i]['time']!="" && typeof earthquakes[cavw][i]['time']!="undefined"){
-                                var eType = earthquakes[cavw][i]['eqtype'];
-                                var eDepth = parseFloat(earthquakes[cavw][i]['depth']);
-                                var eMag = earthquakes[cavw][i]['mag'];
-                                var eTime = parseDateVal(earthquakes[cavw][i]['time']);
-                                var chosen = true;
-                                earthquakes[cavw][i]['available'] = false;
-                                if ((eType!=type && type!="") || (eDepth>dhigh || eDepth<dlow) || (eTime>eDate || eTime<sDate))
-                                chosen = false;
-                                if (chosen){
-                                    count++;
-                                    earthquakes[cavw][i]['available'] = true;
-                                }
-                            }
+                        filterData(cavw,mapUsed);
+                        $("#DisplayEquake" + mapUsed).click();
+                    }
+                    else{
+                        $("#DisplayEquake" + mapUsed).click();
+                    }
+                }else if(document.getElementById('3DGMTEquakeGraph' + mapUsed).style.display == 'block'){
+                    gmt3DData[cavw] = undefined;
+                    drawEquake({mapUsed:mapUsed,
+                        source:document.getElementById('equakeDisplayType' + mapUsed + '3D')
+                    });
+                }else if(document.getElementById('2DGMTEquakeGraph' + mapUsed).style.display == 'block'){
+                    gmt2DData[cavw] = undefined;
+                    drawEquake({mapUsed:mapUsed,
+                        source:document.getElementById('equakeDisplayType' + mapUsed + '2DGMT')
+                    });
+                }
+            }
+        }
+        (function(list){
+            var l = list.length;
+            var i = 0;
+            for(i = 0 ; i < l ; i++){
+                $("#FilterSwitch" + list[i]).click([list[i]],function(e){
+                    var j = e.data[0];
+                    if ($("#FormFilter" + j).css("display")!="none"){
+                        $("#FormFilter" + j).hide();
+                        $("#FilterSwitch" + j).html("Show Filter");
+                    }
+                    else{
+                        $("#FormFilter" + j).show();
+                        $("#FilterSwitch" + j).html("Hide Filter");
+                        if ($("#SDate" + j).val() =="" || $("#SDate" + j).val() =="undefined"){
+                            $("#SDate" + j).val("01/01/1900");
+                        }
+                        if ($("#EDate" + j).val() =="" || $("#EDate" + j).val() =="undefined"){
+                            var today = new Date();
+                            $("#EDate" + j).val($.datepicker.formatDate("m/d/yy",today));
                         }
                     }
+                });
+            }
+        })([1,2]);
+                
+    });
+    function hideEquakePanel(o){
+        $("#EquakePanel" + o.mapUsed).hide();
+    }
+    /*
+     * This function is used for the filtering of the equake events.
+     * All of the event that are filtered will be marked unavailable by
+     * setting the available variable to false.
+     */
+    function filterData(cavw,panelUsed){
+        if (earthquakes[cavw]){
+            var nEvent = $("#Evn"+panelUsed).val();
+            var sDate = parseDateVal($("#SDate"+panelUsed).val());
+            var eDate = parseDateVal($("#EDate"+panelUsed).val());
+            var dhigh = parseFloat($("#DepthHigh"+panelUsed).val());
+            var dlow = parseFloat($("#DepthLow"+panelUsed).val());
+            var type = document.getElementById("EqType"+panelUsed);
+            type = type.options[type.selectedIndex].value;
+            var count = 0;
+            // some error here, what if i is 'vlat' or 'vlon'
+            for (var i in earthquakes[cavw]){
+                        
+                if (count>nEvent){
+                    earthquakes[cavw][i]['available'] = false;
+                    continue;
                 }
-                /*
-                 * Insert markers for earthquakes
-                 * This function will also show the marker of earthquake event in the
-                 * Google map of either mapUsed
-                 * Author: Tran Thien Nam
-                 * 2012-07-19
-                 */
-                function insertMarkersForEarthquakes(data,cavw, mapUsed){
-                    // the function will initialize the earthquake variable when 
-                    // there is no equake data stored at the client side for a
-                    // specific volcano. 
-                    if (!earthquakes[cavw]){
-                        earthquakes[cavw]={};
-                        earthquakes[cavw]['vlat']=volcanoInfo[mapUsed]['lat'];
-                        earthquakes[cavw]['vlon']=volcanoInfo[mapUsed]['lon'];
-                        var equakeSet = {},vlat = volcanoInfo[mapUsed]['lat'],
-                        vlon = volcanoInfo[mapUsed]['lon'];
-                        equakeSet = data.split(";");
-                        // eliminate the empty elements at the end of the ajax data
-                        while (equakeSet[equakeSet.length-1] == "")
-                            equakeSet.length--;
-                        for (var i in equakeSet){
-                            index = Wovodat.trim(equakeSet[i]);
-                            nextQuake = index.split(",");
-                            lat = nextQuake[0];
-                            lon = nextQuake[1];
-                            depth = nextQuake[2];
-                            mag = nextQuake[3];
-                            time = nextQuake[4];
-                            type = nextQuake[5];
+                if (typeof earthquakes[cavw][i]['marker']!="undefined"&& earthquakes[cavw][i]['time']!="" && typeof earthquakes[cavw][i]['time']!="undefined"){
+                    var eType = earthquakes[cavw][i]['eqtype'];
+                    var eDepth = parseFloat(earthquakes[cavw][i]['depth']);
+                    var eMag = earthquakes[cavw][i]['mag'];
+                    var eTime = parseDateVal(earthquakes[cavw][i]['time']);
+                    var chosen = true;
+                    earthquakes[cavw][i]['available'] = false;
+                    if ((eType!=type && type!="") || (eDepth>dhigh || eDepth<dlow) || (eTime>eDate || eTime<sDate))
+                    chosen = false;
+                    if (chosen){
+                        count++;
+                        earthquakes[cavw][i]['available'] = true;
+                    }
+                }
+            }
+        }
+    }
+    /*
+     * Insert markers for earthquakes
+     * This function will also show the marker of earthquake event in the
+     * Google map of either mapUsed
+     * Author: Tran Thien Nam
+     * 2012-07-19
+     */
+    function insertMarkersForEarthquakes(data,cavw, mapUsed){
+        // the function will initialize the earthquake variable when 
+        // there is no equake data stored at the client side for a
+        // specific volcano. 
+        if (!earthquakes[cavw]){
+            earthquakes[cavw]={};
+            earthquakes[cavw]['vlat']=volcanoInfo[mapUsed]['lat'];
+            earthquakes[cavw]['vlon']=volcanoInfo[mapUsed]['lon'];
+            var equakeSet = {},vlat = volcanoInfo[mapUsed]['lat'],
+            vlon = volcanoInfo[mapUsed]['lon'];
+            equakeSet = data.split(";");
+            // eliminate the empty elements at the end of the ajax data
+            while (equakeSet[equakeSet.length-1] == "")
+                equakeSet.length--;
+            for (var i in equakeSet){
+                index = Wovodat.trim(equakeSet[i]);
+                nextQuake = index.split(",");
+                lat = nextQuake[0];
+                lon = nextQuake[1];
+                depth = nextQuake[2];
+                mag = nextQuake[3];
+                time = nextQuake[4];
+                type = nextQuake[5];
 						
-                            // ignore earthquakes that have no information on depth and/or magnitude
-                            if (depth=="" || typeof depth=="undefined" || mag=="" || typeof mag=="undefined")
-                                continue;
+                // ignore earthquakes that have no information on depth and/or magnitude
+                if (depth=="" || typeof depth=="undefined" || mag=="" || typeof mag=="undefined")
+                    continue;
 						
-                            // choose icon size base on magnitude of the equake event
-                            size = Math.round(4+((mag)*2)/4);
+                // choose icon size base on magnitude of the equake event
+                size = Math.round(4+((mag)*2)/4);
                         
-                            if (size<4) 
-                                size = 4;
-                            if (size>12) 
-                                size = 12;
+                if (size<4) 
+                    size = 4;
+                if (size>12) 
+                    size = 12;
                         
-                            // choose icon image base on depth of the equake event
-                            if (depth <= 2.5) 
-                                color = '../img/blankCircles/pin_org.png'; // Red
-                            else if (depth >2.5 && depth <= 5) 
-                                color = '../img/blankCircles/pin_re.png'; // YELLOW
-                            else if (depth >5 && depth <= 10) 
-                                color = '../img/blankCircles/pin_dge.png'; // DARK BLUE
-                            else if (depth >10 && depth <= 50) 
-                                color ='../img/blankCircles/pin_be.png'; // BLUE
-                            else 
-                                color = '../img/blankCircles/pin_lbe.png'; // Green 
+                // choose icon image base on depth of the equake event
+                if (depth <= 2.5) 
+                    color = '../img/blankCircles/pin_org.png'; // Red
+                else if (depth >2.5 && depth <= 5) 
+                    color = '../img/blankCircles/pin_re.png'; // YELLOW
+                else if (depth >5 && depth <= 10) 
+                    color = '../img/blankCircles/pin_dge.png'; // DARK BLUE
+                else if (depth >10 && depth <= 50) 
+                    color ='../img/blankCircles/pin_be.png'; // BLUE
+                else 
+                    color = '../img/blankCircles/pin_lbe.png'; // Green 
 							
 						
-                            // set icon
-                            icon = new google.maps.MarkerImage(color,null,null,null,new google.maps.Size(size,size));
+                // set icon
+                icon = new google.maps.MarkerImage(color,null,null,null,new google.maps.Size(size,size));
                         
-                            // set marker
-                            var marker = new google.maps.Marker({
-                                position: new google.maps.LatLng(lat,lon),
-                                map: map[mapUsed],
-                                icon:icon
-                            });
-                        
-                            // the content for the popup window when the mouse hovers
-                            // over this equake event
-                            var contentText = "<table><tr><td><b>Lat</b> </td><td>" + 
-                                lat + "</td></tr><tr><td><b>Lon</b></td><td>" + 
-                                lon + "</td></tr><tr><td><b>Time</b></td><td>" + 
-                                time + "</td></tr><tr><td><b>Depth</b></td><td>" + 
-                                depth + "</td></tr><tr><td><b>Magnitude</b></td><td>" 
-                                + mag+"</td></tr></table>";
-                            var infoWindow = new google.maps.InfoWindow({content:contentText});
-			
-                            //infoWindow.open(map[mapUsed],marker);
-                            // store the quake data in the earthquakes[cavw] object
-                            earthquakes[cavw][index]=[];
-                            earthquakes[cavw][index]['marker']= marker;
-                            earthquakes[cavw][index]['infoWindow']= infoWindow;
-                            earthquakes[cavw][index]['eqtype'] = type;
-                            earthquakes[cavw][index]['lat']=lat;
-                            earthquakes[cavw][index]['lon']=lon;
-                            earthquakes[cavw][index]['time']=time;
-                            earthquakes[cavw][index]['available'] = true;
-                            earthquakes[cavw][index]['mag']=mag;
-                            earthquakes[cavw][index]['depth']=depth;
-                            earthquakes[cavw][index]['latDistance'] = calculateD(lat,lon,vlat,vlon,0);
-                            earthquakes[cavw][index]['londistance'] = calculateD(lat,lon,vlat,vlon,1);
-                            earthquakes[cavw][index]['timestamp'] = Date.parse(time);
-                        }
-                    }
-                    else{
-                        // if we already had the cached data, just display it in the specific 
-                        // map
-                        for (var i in earthquakes[cavw]){
-                            if (typeof earthquakes[cavw][i]['marker']!="undefined"){
-                                if (earthquakes[cavw][i]['available'])
-                                    earthquakes[cavw][i]['marker'].setMap(map[mapUsed]);
-                                else{
-                                    earthquakes[cavw][i]['marker'].setMap(null);
-                                }	
-                            }	
-                        }
-                    }
-                }
-                /*
-                 * hide all the markers when user closes the Earthquakes panel section
-                 * This function is accomplished by setting the map of each pointer
-                 * to null value
-                 */
-                function hideMarkers(o){
-                    var mapUsed = o.mapUsed;
-                    if(volcanoInfo[mapUsed] == undefined) return;
-                    var cavw = volcanoInfo[mapUsed].cavw;
-                    for (var i in earthquakes[cavw])
-                        if (typeof earthquakes[cavw][i]['marker']!="undefined")
-                            earthquakes[cavw][i]['marker'].setMap(null);
-                }
-                /*
-                 * Function to format the X-axis for Latitude and Longtitude axises
-                 * This function will set axis.tickDecimals number after the '.' and
-                 * append the ' km' part to each tick label.
-                 */
-                function kmFormatter(v, axis){
-                    return v.toFixed(axis.tickDecimals) + " km";
-                }
-                /*
-                 * Compute the distant of the two point on the earth surface based on their
-                 * latitude and longitude vales. 
-                 * lat,lon is the position of the first point
-                 * vlat,vlon is the postion of the second point
-                 * option: calculate the distance following the latitude and longitude side
-                 */
-                function calculateD(lat,lon,vlat,vlon,option){
-                    var R = 6371; //earth radius in kilometer
-                    // 
-                    if (typeof lat=="undefined" || typeof lon=="undefined" || typeof vlat=="undefined" || typeof vlon=="undefined"){
-                        return 0;
-                    }
-                    var dLat, dLon, diff, tlat1, tlat2;
-                    switch (option){
-                        case 0:
-                            dLat = 0;
-                            dLon = toRad(lon-vlon);
-                            tlat1 = toRad(vlat);
-                            tlat2 = toRad(vlat);
-                            diff = lon - vlon;
-                            break;
-                        case 1:
-                            dLon = 0;
-                            dLat = toRad(lat-vlat);
-                            diff = lat - vlat;
-                            tlat1 = toRad(vlat);
-                            tlat2 = toRad(lat);
-                            break;
-                    }
-                    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(tlat1) * Math.cos(tlat2);
-                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                    var d = R * c;
-                    if ((diff<0&&diff>-180)||diff>90)
-                        d = -d;
-                    return d;
-                }
-                /*
-                 * Plot the equake data
-                 */
-                function plotEarthquakeData(cavw, eqtype, mapUsed){
-                    // skip this function if we can not find the data to draw
-                    if(!earthquakes[cavw]) 
-                        return;
-                
-                    // This is the height and width for the 
-                    // flot graph. Flot is for 2D javascript drawing
-                    var CONSTANTS = {
-                        height :"130px",
-                        width:"450px",
-                        fontSize: '9px',
-                        labelHeight: '70px',
-                        labelWidth: '45px',
-                        labelFontSize: '14px',
-                        labelPaddingTop: '60px',
-                        marginTop: '15px'
-                    };
-                
-                    // Options for drawing lat-lon plot. Please refer to the documentation
-                    // of Flot to see the meaning of the each value
-                    var plotOptions = {
-                        legend:{position:"nw"},
-                        series:{points:{show:true,radius: 1.0}},
-                        colors:["#3a4cb2"],
-                        grid:{
-                            backgroundColor:{colors:["#f3ffed","#f3ffdc"]},
-                            // this option is for changing the color of the border
-                            borderColor: ["white"],
-                            clickable:true,
-                            hoverable:true,
-                            autoHighlight:true
-                        },
-                        yaxis:{
-                            tickFormatter : kmFormatter,
-                            tickDecimals: 0,
-                            labelWidth: 25
-                        },
-                        xaxis:{
-                            position:"top",
-                            tickDecimals:0,
-                            tickFormatter : kmFormatter
-                        },
-                        zoom:{ interactive: true},
-                        pan: {interactive: true}
-                    };
-                    // Options for drawing time view. 
-                    var timeOptions = {
-                        legend:{position:"nw"},
-                        series:{points:{show:true,radius: 1.0}},
-                        colors:["#3a4cb2"],
-                        grid:{
-                            backgroundColor:{colors:["#f3ffed","#f3ffdc"]},
-                            // this option is for changing the color of the border
-                            borderColor: ["white"],
-                            clickable:true,
-                            hoverable:true,
-                            autoHighlight:true
-                        },
-                        yaxis:{
-                            tickFormatter: kmFormatter,
-                            tickDecimals:0,
-                            labelWidth:25
-                        },
-                        xaxis:{position:"top", mode:"time",timeformat:"%d/%m/%y",ticks:4},
-                        zoom:{ interactive: true},
-                        pan: {interactive: true}
-                    }
-                    // Arrays that store data for the 3 graphs that we are about to draw.
-                    var latArray = new Array(), lonArray = new Array(), timeArray = new Array();
-                    // The latitude and longitude of the volcano
-                    var time, latPlot, lonPlot, timePlot;
-                
-                    // get the data for each earthquakes, put them into arrays for 
-                    // flot library to draw
-                    for (var i in earthquakes[cavw]){
-                        lat = earthquakes[cavw][i]['lat'];
-                        lon = earthquakes[cavw][i]['lon'];
-                        // skip this value when there is no latitude or longitude value 
-                        // for them
-                        if(typeof lat == 'undefined' || typeof lon == 'undefined')
-                            continue;
-                        // skip this event when it is not supposed to be displayed
-                        if(earthquakes[cavw][i]['available'] == false)
-                            continue;
-                        // skip this event when it does not have the earthquake type required
-                        if(earthquakes[cavw][i]['eqtype'] != eqtype)
-                            continue;
-                        // the timestampe of the event
-                        time = earthquakes[cavw][i]['timestamp'];
-                        // set lat, lon coordination
-                        latArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth']]);
-                        lonArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth']]);
-                        // set time coordination
-                        //if time is not convertible by javascript native functions
-                        //then use own-created function
-                        if(isNaN(time)){
-                            time = earthquakes[cavw][i]['time'];
-                            time = new Date(time.substring(0,4),parseInt(time.substring(5,7))-1,time.substring(8,10),time.substring(11,13),time.substring(14,16),time.substring(17,19),0);
-                            time = time.getTime();
-                        }
-                        timeArray.push([time,-earthquakes[cavw][i]['depth']]);
-                    }
-                    // prepare the data object for the plot functions
-                    latPlot = [{
-                            data:latArray
-                        }];
-                    lonPlot = [{
-                            data:lonArray
-                        }];
-                    timePlot = [{
-                            data:timeArray
-                        }];
-                    // draw the latitude map
-                    var latitudePlotArea =$("#FlotDisplayLat"+mapUsed);
-                    latitudePlotArea.css("height", CONSTANTS.height);
-                    latitudePlotArea.css("width",CONSTANTS.width);
-                    latitudePlotArea.css("font-size", CONSTANTS.fontSize);
-                    latitudePlotArea.css("margin-top", CONSTANTS.marginTop);
-                    equakeGraphs[mapUsed].latGraph = $.plot(latitudePlotArea,latPlot,plotOptions);
-                    Wovodat.enableTooltip({type:'single',
-                        id:"FlotDisplayLat"+mapUsed,
-                        firstValueFront:'Distance from volcano',
-                        firstValueBack:'km',
-                        secondValueFront:'Depth',
-                        secondValueBack:'km'
-                    });
-                    // draw the longitude map
-                    var longitudePlotArea =$("#FlotDisplayLon"+mapUsed);
-                    longitudePlotArea.css("height", CONSTANTS.height);
-                    longitudePlotArea.css("width",CONSTANTS.width);
-                    longitudePlotArea.css("font-size", CONSTANTS.fontSize);
-                    longitudePlotArea.css("margin-top", CONSTANTS.marginTop);
-                    equakeGraphs[mapUsed].lonGraph = $.plot(longitudePlotArea,lonPlot,plotOptions);
-                    Wovodat.enableTooltip({type:'single',
-                        id:"FlotDisplayLon"+mapUsed,
-                        firstValueFront:'Distance from volcano',
-                        firstValueBack:'km',
-                        secondValueFront:'Depth',
-                        secondValueBack:'km'
-                    });
-                    // draw the time series map        
-                    var timePlotArea =$("#FlotDisplayTime"+mapUsed);
-                    timePlotArea.css("height", CONSTANTS.height);
-                    timePlotArea.css("width",CONSTANTS.width);
-                    timePlotArea.css("font-size", CONSTANTS.fontSize);
-                    timePlotArea.css("margin-top", CONSTANTS.marginTop);
-                    equakeGraphs[mapUsed].timeGraph = $.plot(timePlotArea,timePlot,timeOptions);
-                    Wovodat.enableTooltip({type:'single',id:"FlotDisplayTime"+mapUsed,
-                        firstValueFront:'Time',
-                        firstValueBack:'UTC',
-                        secondValueFront:'Depth',
-                        secondValueBack:'km',
-                        xValueType: 'time'
-                    });
-                
-                    // adjust the flot label for all the graph ('E-W','N-S','Time')
-                    $('.plot-label').css({
-                        'float': 'right',
-                        'display': 'block-inline',
-                        'height': CONSTANTS.labelHeight,
-                        'width': CONSTANTS.labelWidth,
-                        'font-size': CONSTANTS.labelFontSize,
-                        'vertical-align': 'middle',
-                        'padding-top': CONSTANTS.labelPaddingTop
-                    });
-                    $('#2DEquakeFlotGraph' + mapUsed).show();
-                }  
-                /*
-                 * Draw the equake graphs under the equake panels
-                 */
-                function drawEquake(o){
-                    var source = o.source;
-                    var id=source.id;
-                    $("#2DEquakeFlotGraph" + o.mapUsed).hide();
-                    $("#2DGMTEquakeGraph" + o.mapUsed).hide();
-                    $("#3DGMTEquakeGraph" + o.mapUsed).hide();
-                    if(id.indexOf('3D') >0)
-                        drawEquake3DGMT(o);
-                    else if(id.indexOf('2DGMT') >0)
-                        drawEquake2DGMT(o);
-                    else drawEquake2D(o);
-                }
-                /*
-                 * Help function to draw equake in 2 dimensions using Flot
-                 */
-                function drawEquake2D(o){
-                    var cavw = volcanoInfo[o.mapUsed].cavw;
-                    if (!earthquakes[cavw]){
-                        Wovodat.loadEarthquakes({
-                            numberOfEvents: 500,
-                            mapUsed: o.mapUsed,
-                            volInfo: volcanoInfo[o.mapUsed],
-                            handlers: [insertMarkersForEarthquakes,plotEarthquakeData]
-                        });
-                    }
-                    else{
-                        insertMarkersForEarthquakes("",cavw,o.mapUsed);
-                        plotEarthquakeData(cavw,"",o.mapUsed);
-                        $('#2DEquakeFlotGraph' + o.mapUsed).show();	
-                    }
-                }
-                /*
-                 * Draw the earthquakes around the volcano displayed in the
-                 * map in two dimensions. This function is using GMT to draw the map in case
-                 * the user don't have access to googel map
-                 */
-                function drawEquake2DGMT(o){
-                    var mapUsed = o.mapUsed;
-                    var cavw = volcanoInfo[mapUsed].cavw;
-                    var id = o.source.id;
-                    var placeholder = document.getElementById('2DGMTEquakeGraph' + mapUsed);
-                    if(gmt2DData[cavw] == undefined){
-                        Wovodat.get2DGMTMap({
-                            cavw: cavw,
-                            qty: document.getElementById('Evn' + mapUsed).value,
-                            date_start: document.getElementById('SDate' + mapUsed).value,
-                            date_end: document.getElementById('EDate' + mapUsed).value,
-                            dr_start: document.getElementById('DepthLow' + mapUsed).value,
-                            dr_end: document.getElementById('DepthHigh' + mapUsed).value,
-                            eqtype: document.getElementById('EqType' + mapUsed).value,
-                            degree: document.getElementById('degree' + mapUsed).value,
-                            init_azim: document.getElementById('azim' + mapUsed).value,
-                            handler: function(ar){
-                                gmt2DData[cavw] = ar; 
-                                show2DGMT(ar);
-                            }
-                        });
-                
-                    }else{
-                        show2DGMT(gmt2DData[cavw]);
-                    }
-                    function show2DGMT(ar){
-                        var directory = ar['directory'];
-                        $("#imageLink",placeholder).attr('href',directory + "/" + ar['imageSrc']);
-                        $("#image",placeholder).attr('src',directory + "/" + ar['imageSrc']);
-                        $("#gifImage",placeholder).attr('href',directory + "/" + ar['imageSrc']);
-                        $("#asciiDataFile",placeholder).attr('href',ar['dataFile']);
-                        $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
-                        placeholder.style.display = 'block';
-                    }
-                    if (!earthquakes[cavw]){
-                        Wovodat.loadEarthquakes({
-                            numberOfEvents: document.getElementById('Evn' + mapUsed).value,
-                            mapUsed: o.mapUsed,
-                            volInfo: volcanoInfo[o.mapUsed],
-                            handlers: [insertMarkersForEarthquakes]
-                        });
-                    }
-                    else{
-                        insertMarkersForEarthquakes("",cavw,o.mapUsed);
-                    }
-                }
-            
-                /*
-                 * Draw the earthquakes around the volcano displayed in the
-                 * map in three dimensions. This function is using GMT to draw the map in case
-                 * the user don't have access to googel map.
-                 * 
-                 */
-                function drawEquake3DGMT(o){
-                    var mapUsed = o.mapUsed;
-                    var cavw = volcanoInfo[mapUsed].cavw;
-                    if(gmt3DData[cavw] == undefined){
-                        Wovodat.get3DMap({
-                            cavw: cavw,
-                            qty: document.getElementById('Evn' + mapUsed).value,
-                            date_start: document.getElementById('SDate' + mapUsed).value,
-                            date_end: document.getElementById('EDate' + mapUsed).value,
-                            dr_start: document.getElementById('DepthLow' + mapUsed).value,
-                            dr_end: document.getElementById('DepthHigh' + mapUsed).value,
-                            eqtype: document.getElementById('EqType' + mapUsed).value,
-                            degree: document.getElementById('degree' + mapUsed).value,
-                            init_azim: document.getElementById('azim' + mapUsed).value,
-                            handler: function(ar){
-                                gmt3DData[cavw] = ar; 
-                                show3DGMT(ar);
-                            }
-                        });
-                    }else{
-                        show3DGMT(gmt3DData[cavw]);
-                    }
-                    /*
-                     * Private function to help putting the 3D images and information
-                     * on the equake panel
-                     * This function will set the image , add the function for the 
-                     */
-                    function show3DGMT(ar){
-                        function padding(value){
-                            value = value + "";
-                            var l = value.length;
-                            l = 6 - l;
-                            while(l > 0){
-                                value = "0" + value;
-                                l--;
-                            }
-                            return "/frame_" + value + ".jpg";
-                        }
-                        var placeholder = $('#3DGMTEquakeGraph' + mapUsed);
-                        var numberOfImages = ar['numberOfImages'];
-                        var imageLink = ar['directory'] + '/frame_000000.jpg';
-                        var currentLink = 0;
-                        $("#3DImage #title",placeholder).html(ar['title']);
-                        $("#3DImage #image",placeholder).attr('src',imageLink);
-                        $("#3DImage #imageLink",placeholder).attr('href',imageLink);
-                    
-                        // clear previous registered handlers
-                        $("#showAnimation",placeholder).unbind('click');
-                        $("#previousButton",placeholder).unbind('click');
-                        $("#nextButton",placeholder).unbind('click');
-                    
-                        // add handlers for navigation button
-                        $("#showAnimation",placeholder).click(function(){
-                            $("#3DImage #image",placeholder).attr('src',ar['animationImage']);
-                            $("#3DImage #imageLink",placeholder).attr('href',ar['animationImage']);
-                        });
-                        $("#previousButton",placeholder).click(function(){
-                            currentLink = (currentLink - 1 + numberOfImages) % numberOfImages;
-                            $("#3DImage #image",placeholder).attr('src',ar['directory'] + padding(currentLink));
-                            $("#3DImage #imageLink",placeholder).attr('href',ar['directory'] + padding(currentLink));
-                        });
-                        $("#nextButton",placeholder).click(function(){
-                            currentLink = (currentLink + 1 + numberOfImages) % numberOfImages;
-                            $("#3DImage #image",placeholder).attr('src',ar['directory'] + padding(currentLink));
-                            $("#3DImage #imageLink",placeholder).attr('href',ar['directory'] + padding(currentLink));
-                        });
-                    
-                    
-                        $("#gifImage",placeholder).attr('href',ar['animationImage']);
-                        $("#asciiDataFile",placeholder).attr('href',ar['dataFile']);
-                        $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
-                        placeholder.show();
-                    }
-                    if (!earthquakes[cavw]){
-                        Wovodat.loadEarthquakes({
-                            numberOfEvents: document.getElementById('Evn' + mapUsed).value,
-                            mapUsed: o.mapUsed,
-                            volInfo: volcanoInfo[o.mapUsed],
-                            handlers: [insertMarkersForEarthquakes]
-                        });
-                    }
-                    else{
-                        insertMarkersForEarthquakes("",cavw,o.mapUsed);
-                    }
-                }
-                /*
-                 */
-                function clearEquakedrawingData(o){
-                    var mapUsed = o.mapUsed;
-                    var placeholder = $("#equakeGraphs" + mapUsed);
-                    var tmp = $("#2DEquakeFlotGraph" + mapUsed,placeholder)
-                    tmp.hide();
-                    $("#FlotDisplayLat" + mapUsed).html('');
-                    $("#FlotDisplayLon" + mapUsed).html('');
-                    $("#FlotDisplayTime" + mapUsed).html('');
-                    tmp = $("#2DGMTEquakeGraph" + mapUsed,placeholder);
-                    tmp.hide()
-                    $("#imageLink",tmp).attr('href','');
-                    $("#image",tmp).attr('src','');
-                    $("#gifImage",tmp).attr('href','');
-                    $("#asciiDataFile",tmp).attr('href','');
-                    $("#gmtScriptFile",tmp).attr('href','');
-                    tmp = $("#3DGMTEquakeGraph" + mapUsed,placeholder);
-                    tmp.hide()
-                    $("#imageLink",tmp).attr('href','');
-                    $("#image",tmp).attr('src','');
-                    $("#gifImage",tmp).attr('href','');
-                    $("#asciiDataFile",tmp).attr('href','');
-                    $("#gmtScriptFile",tmp).attr('href','');
-                } 
-            
-                /*
-                 * Time series module
-                 * 
-                 */
-                $(function(){
-                    // show/hide the time series panel
-                    (function(list){
-                        var l = list.length;
-                        var i = 0;
-                        for(i = 0 ; i < l ; i++){
-                            var j = list[i];
-                            $("#TimeSeriesHeader" + j).click([j],function(e){
-                                var mapUsed = e.data[0];
-                                $("#TimeSeriesView" + mapUsed).show();
-                                $(".TimeSeriesGraphPanel" + mapUsed).show();
-                            });
-                            $("#HideTimeSeriesPanel" + j).click([j],function(e){
-                                var mapUsed = e.data[0];
-                                $("#TimeSeriesView" + mapUsed).hide();
-                                $(".TimeSeriesGraphPanel" + mapUsed).hide();
-                                return false;
-                            });
-                        }
-                    })([1,2]);
+                // set marker
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(lat,lon),
+                    map: map[mapUsed],
+                    icon:icon
                 });
+                        
+                // the content for the popup window when the mouse hovers
+                // over this equake event
+                var contentText = "<table><tr><td><b>Lat</b> </td><td>" + 
+                    lat + "</td></tr><tr><td><b>Lon</b></td><td>" + 
+                    lon + "</td></tr><tr><td><b>Time</b></td><td>" + 
+                    time + "</td></tr><tr><td><b>Depth</b></td><td>" + 
+                    depth + "</td></tr><tr><td><b>Magnitude</b></td><td>" 
+                    + mag+"</td></tr></table>";
+                var infoWindow = new google.maps.InfoWindow({content:contentText});
+			
+                //infoWindow.open(map[mapUsed],marker);
+                // store the quake data in the earthquakes[cavw] object
+                earthquakes[cavw][index]=[];
+                earthquakes[cavw][index]['marker']= marker;
+                earthquakes[cavw][index]['infoWindow']= infoWindow;
+                earthquakes[cavw][index]['eqtype'] = type;
+                earthquakes[cavw][index]['lat']=lat;
+                earthquakes[cavw][index]['lon']=lon;
+                earthquakes[cavw][index]['time']=time;
+                earthquakes[cavw][index]['available'] = true;
+                earthquakes[cavw][index]['mag']=mag;
+                earthquakes[cavw][index]['depth']=depth;
+                earthquakes[cavw][index]['latDistance'] = calculateD(lat,lon,vlat,vlon,0);
+                earthquakes[cavw][index]['londistance'] = calculateD(lat,lon,vlat,vlon,1);
+                earthquakes[cavw][index]['timestamp'] = Date.parse(time);
+            }
+        }
+        else{
+            // if we already had the cached data, just display it in the specific 
+            // map
+            for (var i in earthquakes[cavw]){
+                if (typeof earthquakes[cavw][i]['marker']!="undefined"){
+                    if (earthquakes[cavw][i]['available'])
+                        earthquakes[cavw][i]['marker'].setMap(map[mapUsed]);
+                    else{
+                        earthquakes[cavw][i]['marker'].setMap(null);
+                    }	
+                }	
+            }
+        }
+    }
+    /*
+     * hide all the markers when user closes the Earthquakes panel section
+     * This function is accomplished by setting the map of each pointer
+     * to null value
+     */
+    function hideMarkers(o){
+        var mapUsed = o.mapUsed;
+        if(volcanoInfo[mapUsed] == undefined) return;
+        var cavw = volcanoInfo[mapUsed].cavw;
+        for (var i in earthquakes[cavw])
+            if (typeof earthquakes[cavw][i]['marker']!="undefined")
+                earthquakes[cavw][i]['marker'].setMap(null);
+    }
+    /*
+     * Function to format the X-axis for Latitude and Longtitude axises
+     * This function will set axis.tickDecimals number after the '.' and
+     * append the ' km' part to each tick label.
+     */
+    function kmFormatter(v, axis){
+        return v.toFixed(axis.tickDecimals) + " km";
+    }
+    /*
+     * Compute the distant of the two point on the earth surface based on their
+     * latitude and longitude vales. 
+     * lat,lon is the position of the first point
+     * vlat,vlon is the postion of the second point
+     * option: calculate the distance following the latitude and longitude side
+     */
+    function calculateD(lat,lon,vlat,vlon,option){
+        var R = 6371; //earth radius in kilometer
+        // 
+        if (typeof lat=="undefined" || typeof lon=="undefined" || typeof vlat=="undefined" || typeof vlon=="undefined"){
+            return 0;
+        }
+        var dLat, dLon, diff, tlat1, tlat2;
+        switch (option){
+            case 0:
+                dLat = 0;
+                dLon = toRad(lon-vlon);
+                tlat1 = toRad(vlat);
+                tlat2 = toRad(vlat);
+                diff = lon - vlon;
+                break;
+            case 1:
+                dLon = 0;
+                dLat = toRad(lat-vlat);
+                diff = lat - vlat;
+                tlat1 = toRad(vlat);
+                tlat2 = toRad(lat);
+                break;
+        }
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(tlat1) * Math.cos(tlat2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        if ((diff<0&&diff>-180)||diff>90)
+            d = -d;
+        return d;
+    }
+    /*
+     * Plot the equake data
+     */
+    function plotEarthquakeData(cavw, eqtype, mapUsed){
+        // skip this function if we can not find the data to draw
+        if(!earthquakes[cavw]) 
+            return;
+                
+        // This is the height and width for the 
+        // flot graph. Flot is for 2D javascript drawing
+        var CONSTANTS = {
+            height :"130px",
+            width:"450px",
+            fontSize: '9px',
+            labelHeight: '70px',
+            labelWidth: '45px',
+            labelFontSize: '14px',
+            labelPaddingTop: '60px',
+            marginTop: '15px'
+        };
+                
+        // Options for drawing lat-lon plot. Please refer to the documentation
+        // of Flot to see the meaning of the each value
+        var plotOptions = {
+            legend:{position:"nw"},
+            series:{points:{show:true,radius: 1.0}},
+            colors:["#3a4cb2"],
+            grid:{
+                backgroundColor:{colors:["#f3ffed","#f3ffdc"]},
+                // this option is for changing the color of the border
+                borderColor: ["white"],
+                clickable:true,
+                hoverable:true,
+                autoHighlight:true
+            },
+            yaxis:{
+                tickFormatter : kmFormatter,
+                tickDecimals: 0,
+                labelWidth: 25
+            },
+            xaxis:{
+                position:"top",
+                tickDecimals:0,
+                tickFormatter : kmFormatter
+            },
+            zoom:{ interactive: true},
+            pan: {interactive: true}
+        };
+        // Options for drawing time view. 
+        var timeOptions = {
+            legend:{position:"nw"},
+            series:{points:{show:true,radius: 1.0}},
+            colors:["#3a4cb2"],
+            grid:{
+                backgroundColor:{colors:["#f3ffed","#f3ffdc"]},
+                // this option is for changing the color of the border
+                borderColor: ["white"],
+                clickable:true,
+                hoverable:true,
+                autoHighlight:true
+            },
+            yaxis:{
+                tickFormatter: kmFormatter,
+                tickDecimals:0,
+                labelWidth:25
+            },
+            xaxis:{position:"top", mode:"time",timeformat:"%d/%m/%y",ticks:4},
+            zoom:{ interactive: true},
+            pan: {interactive: true}
+        }
+        // Arrays that store data for the 3 graphs that we are about to draw.
+        var latArray = new Array(), lonArray = new Array(), timeArray = new Array();
+        // The latitude and longitude of the volcano
+        var time, latPlot, lonPlot, timePlot;
+                
+        // get the data for each earthquakes, put them into arrays for 
+        // flot library to draw
+        for (var i in earthquakes[cavw]){
+            lat = earthquakes[cavw][i]['lat'];
+            lon = earthquakes[cavw][i]['lon'];
+            // skip this value when there is no latitude or longitude value 
+            // for them
+            if(typeof lat == 'undefined' || typeof lon == 'undefined')
+                continue;
+            // skip this event when it is not supposed to be displayed
+            if(earthquakes[cavw][i]['available'] == false)
+                continue;
+            // skip this event when it does not have the earthquake type required
+            if(earthquakes[cavw][i]['eqtype'] != eqtype)
+                continue;
+            // the timestampe of the event
+            time = earthquakes[cavw][i]['timestamp'];
+            // set lat, lon coordination
+            latArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth']]);
+            lonArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth']]);
+            // set time coordination
+            //if time is not convertible by javascript native functions
+            //then use own-created function
+            if(isNaN(time)){
+                time = earthquakes[cavw][i]['time'];
+                time = new Date(time.substring(0,4),parseInt(time.substring(5,7))-1,time.substring(8,10),time.substring(11,13),time.substring(14,16),time.substring(17,19),0);
+                time = time.getTime();
+            }
+            timeArray.push([time,-earthquakes[cavw][i]['depth']]);
+        }
+        // prepare the data object for the plot functions
+        latPlot = [{
+                data:latArray
+            }];
+        lonPlot = [{
+                data:lonArray
+            }];
+        timePlot = [{
+                data:timeArray
+            }];
+        // draw the latitude map
+        var latitudePlotArea =$("#FlotDisplayLat"+mapUsed);
+        latitudePlotArea.css("height", CONSTANTS.height);
+        latitudePlotArea.css("width",CONSTANTS.width);
+        latitudePlotArea.css("font-size", CONSTANTS.fontSize);
+        latitudePlotArea.css("margin-top", CONSTANTS.marginTop);
+        equakeGraphs[mapUsed].latGraph = $.plot(latitudePlotArea,latPlot,plotOptions);
+        Wovodat.enableTooltip({type:'single',
+            id:"FlotDisplayLat"+mapUsed,
+            firstValueFront:'Distance from volcano',
+            firstValueBack:'km',
+            secondValueFront:'Depth',
+            secondValueBack:'km'
+        });
+        // draw the longitude map
+        var longitudePlotArea =$("#FlotDisplayLon"+mapUsed);
+        longitudePlotArea.css("height", CONSTANTS.height);
+        longitudePlotArea.css("width",CONSTANTS.width);
+        longitudePlotArea.css("font-size", CONSTANTS.fontSize);
+        longitudePlotArea.css("margin-top", CONSTANTS.marginTop);
+        equakeGraphs[mapUsed].lonGraph = $.plot(longitudePlotArea,lonPlot,plotOptions);
+        Wovodat.enableTooltip({type:'single',
+            id:"FlotDisplayLon"+mapUsed,
+            firstValueFront:'Distance from volcano',
+            firstValueBack:'km',
+            secondValueFront:'Depth',
+            secondValueBack:'km'
+        });
+        // draw the time series map        
+        var timePlotArea =$("#FlotDisplayTime"+mapUsed);
+        timePlotArea.css("height", CONSTANTS.height);
+        timePlotArea.css("width",CONSTANTS.width);
+        timePlotArea.css("font-size", CONSTANTS.fontSize);
+        timePlotArea.css("margin-top", CONSTANTS.marginTop);
+        equakeGraphs[mapUsed].timeGraph = $.plot(timePlotArea,timePlot,timeOptions);
+        Wovodat.enableTooltip({type:'single',id:"FlotDisplayTime"+mapUsed,
+            firstValueFront:'Time',
+            firstValueBack:'UTC',
+            secondValueFront:'Depth',
+            secondValueBack:'km',
+            xValueType: 'time'
+        });
+                
+        // adjust the flot label for all the graph ('E-W','N-S','Time')
+        $('.plot-label').css({
+            'float': 'right',
+            'display': 'block-inline',
+            'height': CONSTANTS.labelHeight,
+            'width': CONSTANTS.labelWidth,
+            'font-size': CONSTANTS.labelFontSize,
+            'vertical-align': 'middle',
+            'padding-top': CONSTANTS.labelPaddingTop
+        });
+        $('#2DEquakeFlotGraph' + mapUsed).show();
+    }  
+    /*
+     * Draw the equake graphs under the equake panels
+     */
+    function drawEquake(o){
+        var source = o.source;
+        var id=source.id;
+        $("#2DEquakeFlotGraph" + o.mapUsed).hide();
+        $("#2DGMTEquakeGraph" + o.mapUsed).hide();
+        $("#3DGMTEquakeGraph" + o.mapUsed).hide();
+        if(id.indexOf('3D') >0)
+            drawEquake3DGMT(o);
+        else if(id.indexOf('2DGMT') >0)
+            drawEquake2DGMT(o);
+        else drawEquake2D(o);
+    }
+    /*
+     * Help function to draw equake in 2 dimensions using Flot
+     */
+    function drawEquake2D(o){
+        var cavw = volcanoInfo[o.mapUsed].cavw;
+        if (!earthquakes[cavw]){
+            Wovodat.loadEarthquakes({
+                numberOfEvents: 500,
+                mapUsed: o.mapUsed,
+                volInfo: volcanoInfo[o.mapUsed],
+                handlers: [insertMarkersForEarthquakes,plotEarthquakeData]
+            });
+        }
+        else{
+            insertMarkersForEarthquakes("",cavw,o.mapUsed);
+            plotEarthquakeData(cavw,"",o.mapUsed);
+            $('#2DEquakeFlotGraph' + o.mapUsed).show();	
+        }
+    }
+    /*
+     * Draw the earthquakes around the volcano displayed in the
+     * map in two dimensions. This function is using GMT to draw the map in case
+     * the user don't have access to googel map
+     */
+    function drawEquake2DGMT(o){
+        var mapUsed = o.mapUsed;
+        var cavw = volcanoInfo[mapUsed].cavw;
+        var id = o.source.id;
+        var placeholder = document.getElementById('2DGMTEquakeGraph' + mapUsed);
+        if(gmt2DData[cavw] == undefined){
+            Wovodat.get2DGMTMap({
+                cavw: cavw,
+                qty: document.getElementById('Evn' + mapUsed).value,
+                date_start: document.getElementById('SDate' + mapUsed).value,
+                date_end: document.getElementById('EDate' + mapUsed).value,
+                dr_start: document.getElementById('DepthLow' + mapUsed).value,
+                dr_end: document.getElementById('DepthHigh' + mapUsed).value,
+                eqtype: document.getElementById('EqType' + mapUsed).value,
+                degree: document.getElementById('degree' + mapUsed).value,
+                init_azim: document.getElementById('azim' + mapUsed).value,
+                handler: function(ar){
+                    gmt2DData[cavw] = ar; 
+                    show2DGMT(ar);
+                }
+            });
+                
+        }else{
+            show2DGMT(gmt2DData[cavw]);
+        }
+        function show2DGMT(ar){
+            var directory = ar['directory'];
+            $("#imageLink",placeholder).attr('href',directory + "/" + ar['imageSrc']);
+            $("#image",placeholder).attr('src',directory + "/" + ar['imageSrc']);
+            $("#gifImage",placeholder).attr('href',directory + "/" + ar['imageSrc']);
+            $("#asciiDataFile",placeholder).attr('href',ar['dataFile']);
+            $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
+            placeholder.style.display = 'block';
+        }
+        if (!earthquakes[cavw]){
+            Wovodat.loadEarthquakes({
+                numberOfEvents: document.getElementById('Evn' + mapUsed).value,
+                mapUsed: o.mapUsed,
+                volInfo: volcanoInfo[o.mapUsed],
+                handlers: [insertMarkersForEarthquakes]
+            });
+        }
+        else{
+            insertMarkersForEarthquakes("",cavw,o.mapUsed);
+        }
+    }
+            
+    /*
+     * Draw the earthquakes around the volcano displayed in the
+     * map in three dimensions. This function is using GMT to draw the map in case
+     * the user don't have access to googel map.
+     * 
+     */
+    function drawEquake3DGMT(o){
+        var mapUsed = o.mapUsed;
+        var cavw = volcanoInfo[mapUsed].cavw;
+        if(gmt3DData[cavw] == undefined){
+            Wovodat.get3DMap({
+                cavw: cavw,
+                qty: document.getElementById('Evn' + mapUsed).value,
+                date_start: document.getElementById('SDate' + mapUsed).value,
+                date_end: document.getElementById('EDate' + mapUsed).value,
+                dr_start: document.getElementById('DepthLow' + mapUsed).value,
+                dr_end: document.getElementById('DepthHigh' + mapUsed).value,
+                eqtype: document.getElementById('EqType' + mapUsed).value,
+                degree: document.getElementById('degree' + mapUsed).value,
+                init_azim: document.getElementById('azim' + mapUsed).value,
+                handler: function(ar){
+                    gmt3DData[cavw] = ar; 
+                    show3DGMT(ar);
+                }
+            });
+        }else{
+            show3DGMT(gmt3DData[cavw]);
+        }
+        /*
+         * Private function to help putting the 3D images and information
+         * on the equake panel
+         * This function will set the image , add the function for the 
+         */
+        function show3DGMT(ar){
+            function padding(value){
+                value = value + "";
+                var l = value.length;
+                l = 6 - l;
+                while(l > 0){
+                    value = "0" + value;
+                    l--;
+                }
+                return "/frame_" + value + ".jpg";
+            }
+            var placeholder = $('#3DGMTEquakeGraph' + mapUsed);
+            var numberOfImages = ar['numberOfImages'];
+            var imageLink = ar['directory'] + '/frame_000000.jpg';
+            var currentLink = 0;
+            $("#3DImage #title",placeholder).html(ar['title']);
+            $("#3DImage #image",placeholder).attr('src',imageLink);
+            $("#3DImage #imageLink",placeholder).attr('href',imageLink);
+                    
+            // clear previous registered handlers
+            $("#showAnimation",placeholder).unbind('click');
+            $("#previousButton",placeholder).unbind('click');
+            $("#nextButton",placeholder).unbind('click');
+                    
+            // add handlers for navigation button
+            $("#showAnimation",placeholder).click(function(){
+                $("#3DImage #image",placeholder).attr('src',ar['animationImage']);
+                $("#3DImage #imageLink",placeholder).attr('href',ar['animationImage']);
+            });
+            $("#previousButton",placeholder).click(function(){
+                currentLink = (currentLink - 1 + numberOfImages) % numberOfImages;
+                $("#3DImage #image",placeholder).attr('src',ar['directory'] + padding(currentLink));
+                $("#3DImage #imageLink",placeholder).attr('href',ar['directory'] + padding(currentLink));
+            });
+            $("#nextButton",placeholder).click(function(){
+                currentLink = (currentLink + 1 + numberOfImages) % numberOfImages;
+                $("#3DImage #image",placeholder).attr('src',ar['directory'] + padding(currentLink));
+                $("#3DImage #imageLink",placeholder).attr('href',ar['directory'] + padding(currentLink));
+            });
+                    
+                    
+            $("#gifImage",placeholder).attr('href',ar['animationImage']);
+            $("#asciiDataFile",placeholder).attr('href',ar['dataFile']);
+            $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
+            placeholder.show();
+        }
+        if (!earthquakes[cavw]){
+            Wovodat.loadEarthquakes({
+                numberOfEvents: document.getElementById('Evn' + mapUsed).value,
+                mapUsed: o.mapUsed,
+                volInfo: volcanoInfo[o.mapUsed],
+                handlers: [insertMarkersForEarthquakes]
+            });
+        }
+        else{
+            insertMarkersForEarthquakes("",cavw,o.mapUsed);
+        }
+    }
+    /*
+     */
+    function clearEquakedrawingData(o){
+        var mapUsed = o.mapUsed;
+        var placeholder = $("#equakeGraphs" + mapUsed);
+        var tmp = $("#2DEquakeFlotGraph" + mapUsed,placeholder)
+        tmp.hide();
+        $("#FlotDisplayLat" + mapUsed).html('');
+        $("#FlotDisplayLon" + mapUsed).html('');
+        $("#FlotDisplayTime" + mapUsed).html('');
+        tmp = $("#2DGMTEquakeGraph" + mapUsed,placeholder);
+        tmp.hide()
+        $("#imageLink",tmp).attr('href','');
+        $("#image",tmp).attr('src','');
+        $("#gifImage",tmp).attr('href','');
+        $("#asciiDataFile",tmp).attr('href','');
+        $("#gmtScriptFile",tmp).attr('href','');
+        tmp = $("#3DGMTEquakeGraph" + mapUsed,placeholder);
+        tmp.hide()
+        $("#imageLink",tmp).attr('href','');
+        $("#image",tmp).attr('src','');
+        $("#gifImage",tmp).attr('href','');
+        $("#asciiDataFile",tmp).attr('href','');
+        $("#gmtScriptFile",tmp).attr('href','');
+    } 
+            
+    /*
+     * Time series module
+     * 
+     */
+    $(function(){
+        // show/hide the time series panel
+        (function(list){
+            var l = list.length;
+            var i = 0;
+            for(i = 0 ; i < l ; i++){
+                var j = list[i];
+                $("#TimeSeriesHeader" + j).click([j],function(e){
+                    var mapUsed = e.data[0];
+                    $("#TimeSeriesView" + mapUsed).show();
+                    $(".TimeSeriesGraphPanel" + mapUsed).show();
+                });
+                $("#HideTimeSeriesPanel" + j).click([j],function(e){
+                    var mapUsed = e.data[0];
+                    $("#TimeSeriesView" + mapUsed).hide();
+                    $(".TimeSeriesGraphPanel" + mapUsed).hide();
+                    return false;
+                });
+            }
+        })([1,2]);
+    });
             
         </script>
         <style type="text/css">

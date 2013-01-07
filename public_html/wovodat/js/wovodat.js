@@ -648,10 +648,9 @@ Wovodat.getDetailedStationData = function(o){
                     handler: handler
                 });
             }
-            
         },
         error: function(html){
-            console.log('Wovodat.getDetailedStationData: error in getting the detailed data.');
+            console.log('Wovodat.getDetailedStationData: No detailed data for: ' + type + '.');
         }
     });
 }
@@ -839,6 +838,18 @@ Wovodat.get3DMap = function(o){
         }
     });
 }
+
+Wovodat.getOwnerList = function(ownerList,handler){
+    $.ajax({
+       method:"post",
+       data:{'ownerList':ownerList,'get':'OwnerList'},
+       url:"/php/switch.php",
+       dataType:'json',
+       success:function(obj){
+           handler(obj);
+       }
+    });
+};
 
 Wovodat.get2DGMTMap = function(o){
     var cavw = isEmpty(o.cavw);
