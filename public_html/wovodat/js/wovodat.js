@@ -1018,6 +1018,22 @@ Wovodat.Printer = {
                     }
                 }
             }
+            
+            // set the dropdown list to the selected value in the printed page
+            var originalTable = obj.graphsTable;
+            var trs = originalTable.getElementsByTagName('tr');
+            var length = trs.length;
+            var i = 0;
+            var td,tr,select,value;
+            for(;i < length; i++){
+                tr = trs[i];
+                td = tr.childNodes[0];
+                select = td.childNodes[0];
+                value = select.value;
+                id = select.id;
+                select = w.document.getElementById(id);
+                select.value = value;
+            }
         }
         type = o.type;
         var info = o.info;
