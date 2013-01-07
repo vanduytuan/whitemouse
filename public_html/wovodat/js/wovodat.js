@@ -1023,9 +1023,9 @@ Wovodat.Printer = {
             var originalTable = obj.graphsTable;
             var trs = originalTable.getElementsByTagName('tr');
             var length = trs.length;
-            var i = 0;
-            var td,tr,select,value;
-            for(;i < length; i++){
+            i = 0;
+            var td,select,value;
+            for(i = 0;i < length; i++){
                 tr = trs[i];
                 td = tr.childNodes[0];
                 select = td.childNodes[0];

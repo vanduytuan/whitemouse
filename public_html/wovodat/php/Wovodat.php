@@ -29,18 +29,20 @@ class Wovodat {
         rmdir($dir);
     }
 
-    public function deleteOutputFolder($folderName){
-        if(substr($folderName,0,7) != 'wovodat') return;
+    public function deleteOutputFolder($folderName) {
+        if (substr($folderName, 0, 7) != 'wovodat')
+            return;
         $outputDir = opendir($this->gmt_output_folder);
-        if($outputDir){
+        if ($outputDir) {
             $folder = $this->gmt_output_folder . $folderName . "/";
-            foreach(glob($folder . "*") as $file)
+            foreach (glob($folder . "*") as $file)
                 unlink($file);
-            foreach(glob($folder . ".gmt*") as $file)
+            foreach (glob($folder . ".gmt*") as $file)
                 unlink($file);
             rmdir($folder);
         }
     }
+
     public function clearOutputFolder() {
         $outputDir = opendir($this->gmt_output_folder);
         if ($outputDir) {
@@ -49,7 +51,7 @@ class Wovodat {
             $currentTime = time();
             $change = 0;
             $temp = 0;
-            
+
             $subfolder = "";
             $subfolder_array = Array();
             while (false !== ($subfolder = readdir($outputDir)))
@@ -65,9 +67,9 @@ class Wovodat {
             for ($i = 0; $i < $length; $i++) {
                 $temp = stat($this->gmt_output_folder . $files[$i]);
                 $change = $currentTime - $temp['ctime'];
-                if($change <= $MAX_TIME)
+                if ($change <= $MAX_TIME)
                     continue;
-                
+
                 if (substr($files[$i], 0, 7) != 'wovodat')
                     continue;
                 // Delete one array room per one time
@@ -978,14 +980,19 @@ class Wovodat {
         $data = '';
         $result = '';
         $array = '';
+        $cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
         switch ($type) {
             case 'seismic':
                 switch ($table) {
                     case 'Interval':
-                        $result = mysql_query("select b.sd_ivl_stime, b.sd_ivl_nrec from ss a, sd_ivl b where a.ss_code = '$code' and a.ss_id = b.ss_id and a.ss_pubdate <= now() and b.sd_ivl_pubdate <= now() order by b.sd_ivl_stime desc");
+                        $result = mysql_query("select b.sd_ivl_stime, b.sd_ivl_nrec$cc from ss a, sd_ivl b where a.ss_code = '$code' and a.ss_id = b.ss_id and a.ss_pubdate <= now() and b.sd_ivl_pubdate <= now() order by b.sd_ivl_stime desc");
                         break;
                     case 'RSAM':
-                        $result = mysql_query("select sd_rsm.sd_rsm_stime, sd_rsm.sd_rsm_count from sd_rsm,sd_sam,ss where ss.ss_code = '$code' and sd_sam.ss_id = ss.ss_id and sd_sam.sd_sam_id = sd_rsm.sd_sam_id and ss.ss_pubdate <= now() and sd_sam.sd_sam_pubdate <= now() order by sd_rsm.sd_rsm_stime desc");
+                        //$result = mysql_query("select sd_rsm.sd_rsm_stime, sd_rsm.sd_rsm_count from sd_rsm,sd_sam,ss where ss.ss_code = '$code' and sd_sam.ss_id = ss.ss_id and sd_sam.sd_sam_id = sd_rsm.sd_sam_id and ss.ss_pubdate <= now() and sd_sam.sd_sam_pubdate <= now() order by sd_rsm.sd_rsm_stime desc");
+                        $result = mysql_query("select c.sd_rsm_stime, c.sd_rsm_count$cc from ss a,sd_sam b,sd_rsm c where a.ss_code = '$code' and b.ss_id = a.ss_id and b.sd_sam_id = c.sd_sam_id and a.ss_pubdate <= now() and b.sd_sam_pubdate <= now() order by c.sd_rsm_stime desc");
+                        
+                        //$result = mysql_query("select c.sd_rsm_stime, c.sd_rsm_count $cc from ss a, sd_sam b, sd_rsm c where a.ss_code = '$code' and b.ss_id = a.ss_id and b.sd_sam_id = c.sd_sam_id and a.ss_pubdate <= now() and b.sd_sam_pubdate <= now() order by c.sd_rsm_stime desc");
+                        
                         break;
                 }
                 break;
@@ -997,123 +1004,123 @@ class Wovodat {
                             if ($component == "Tilt1") {
                                 mysql_query("set time_zome = 'UTC';");
 //                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt1 from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id order by b.dd_tlt_time desc");
-                                $result = mysql_query("select b.dd_tlt_time as dd_tlt_time,b.dd_tlt1 as dd_tlt1 from
+                                $result = mysql_query("select b.dd_tlt_time as dd_tlt_time,b.dd_tlt1 as dd_tlt1$cc from
 ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id and ($referenceTime - UNIX_TIMESTAMP(b.dd_tlt_time)) mod 43200 < 600 and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() order by b.dd_tlt_time desc;");
                             } else if ($component == "Tilt2") {
                                 mysql_query("set time_zome = 'UTC';");
 //                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt2 from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id order by b.dd_tlt_time desc");
-                                $result = mysql_query("select b.dd_tlt_time as dd_tlt_time,b.dd_tlt2 as dd_tlt2 from
+                                $result = mysql_query("select b.dd_tlt_time as dd_tlt_time,b.dd_tlt2 as dd_tlt2$cc from
 ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id and ($referenceTime - UNIX_TIMESTAMP(b.dd_tlt_time)) mod 43200 < 600 and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() order by b.dd_tlt_time desc;");
                             }
                         } else {
                             if ($component == "Tilt1") {
 //                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt1 from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id order by b.dd_tlt_time desc");
-                                $result = mysql_query("select b.dd_tlt_time as dd_tlt_time,b.dd_tlt1 as dd_tlt1 from
+                                $result = mysql_query("select b.dd_tlt_time as dd_tlt_time,b.dd_tlt1 as dd_tlt1$cc from
 ds a, dd_tlt b,(select UNIX_TIMESTAMP(b.dd_tlt_time) as max from ds a , dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id limit 1) as c
 where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd_tlt_time)) mod 43200 < 600  and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now()  order by b.dd_tlt_time desc");
                             } else if ($component == "Tilt2") {
 //                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt2 from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id order by b.dd_tlt_time desc");
-                                $result = mysql_query("select b.dd_tlt_time as dd_tlt_time,b.dd_tlt2 as dd_tlt2 from
+                                $result = mysql_query("select b.dd_tlt_time as dd_tlt_time,b.dd_tlt2 as dd_tlt2$cc from
 ds a, dd_tlt b,(select UNIX_TIMESTAMP(b.dd_tlt_time) as max from ds a , dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id limit 1) as c
 where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd_tlt_time)) mod 43200 < 600  and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now()  order by b.dd_tlt_time desc");
                             }
                         }
                         break;
                     case 'TiltVector':
-                        $result = mysql_query("select b.dd_tlv_stime, b.dd_tlv_mag from ds a, dd_tlv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlv_pubdate <= now() order by dd_tlv_stime desc");
+                        $result = mysql_query("select b.dd_tlv_stime, b.dd_tlv_mag$cc from ds a, dd_tlv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlv_pubdate <= now() order by dd_tlv_stime desc");
                         break;
                     case 'Strain':
                         $com = strtolower($component);
                         $com = "dd_str_" . $com;
                         switch ($component) {
                             case 'Comp1':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp1 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp1$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Comp2':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp2 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp2$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Comp3':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp3 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp3$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Comp4':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp4 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp4$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Vdstr':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_vdstr from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_vdstr$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Ax1':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax1 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax1$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Ax2':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax2 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax2$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                             case 'Ax3':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax3 from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax3$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
                                 break;
                         }
-                        
+
                         break;
                     case 'EDM':
-                        $result = mysql_query("select b.dd_edm_time, b.dd_edm_line from ds a, dd_edm b where a.ds_code = '$code' and b.ds_id = a.ds_id and a.ds_pubdate <= now() and b.dd_edm_pubdate <= now()  order by b.dd_edm_time desc");
+                        $result = mysql_query("select b.dd_edm_time, b.dd_edm_line$cc from ds a, dd_edm b where a.ds_code = '$code' and b.ds_id = a.ds_id and a.ds_pubdate <= now() and b.dd_edm_pubdate <= now()  order by b.dd_edm_time desc");
                         break;
                     case 'Angle':
                         switch ($component) {
                             case 'Hort1':
-                                $result = mysql_query("select b.dd_ang_time, b.dd_ang_hort1 form ds a, dd_ang b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_ang_pubdate <= now()  order by b.dd_ang_time desc");
+                                $result = mysql_query("select b.dd_ang_time, b.dd_ang_hort1$cc form ds a, dd_ang b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_ang_pubdate <= now()  order by b.dd_ang_time desc");
                                 break;
                             case 'Hort2':
-                                $result = mysql_query("select b.dd_ang_time, b.dd_ang_hort2 form ds a, dd_ang b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_ang_pubdate <= now() order by b.dd_ang_time desc");
+                                $result = mysql_query("select b.dd_ang_time, b.dd_ang_hort2$cc form ds a, dd_ang b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_ang_pubdate <= now() order by b.dd_ang_time desc");
                                 break;
                             case 'Vert1':
-                                $result = mysql_query("select b.dd_ang_time, b.dd_ang_vert1 form ds a, dd_ang b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_ang_pubdate <= now() order by b.dd_ang_time desc");
+                                $result = mysql_query("select b.dd_ang_time, b.dd_ang_vert1$cc form ds a, dd_ang b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_ang_pubdate <= now() order by b.dd_ang_time desc");
                                 break;
                             case 'Vert2':
-                                $result = mysql_query("select b.dd_ang_time, b.dd_ang_vert2 form ds a, dd_ang b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_ang_pubdate <= now() order by b.dd_ang_time desc");
+                                $result = mysql_query("select b.dd_ang_time, b.dd_ang_vert2$cc form ds a, dd_ang b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_ang_pubdate <= now() order by b.dd_ang_time desc");
                                 break;
                         }
                         break;
                     case 'GPS':
                         switch ($component) {
                             case 'Lat':
-                                $result = mysql_query("select b.dd_gps_stime, b.dd_gps_lat form ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() order by b.dd_gps_stime desc");
+                                $result = mysql_query("select b.dd_gps_stime, b.dd_gps_lat$cc form ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() order by b.dd_gps_stime desc");
                                 break;
                             case 'Lon':
-                                $result = mysql_query("select b.dd_gps_stime, b.dd_gps_lon form ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() order by b.dd_gps_stime desc");
+                                $result = mysql_query("select b.dd_gps_stime, b.dd_gps_lon$cc form ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() order by b.dd_gps_stime desc");
                                 break;
                             case 'Elev':
-                                $result = mysql_query("select b.dd_gps_stime, b.dd_gps_elev form ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() order by b.dd_gps_stime desc");
+                                $result = mysql_query("select b.dd_gps_stime, b.dd_gps_elev$cc form ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() order by b.dd_gps_stime desc");
                                 break;
                         }
                         break;
                     case 'GPSVector':
                         if ($component == "NS")
-                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_N, b.cc_id, b.cc_id2, b.cc_id3 from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
+                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_N$cc from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
                         else if ($component == "EW")
-                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_E, b.cc_id, b.cc_id2, b.cc_id3 from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
+                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_E$cc from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
                         else if ($component == "Z")
-                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_vert, b.cc_id, b.cc_id2, b.cc_id3 from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
+                            $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_vert$cc from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
                         break;
                     case 'Leveling':
-                        $result = mysql_query("select b.dd_lev_stime, b.dd_lev_dlev from ds a, dd_lev where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() order by b.dd_lev_stime desc");
+                        $result = mysql_query("select b.dd_lev_stime, b.dd_lev_dlev$cc from ds a, dd_lev where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() order by b.dd_lev_stime desc");
                         break;
                 }
                 break;
             case 'field':
                 switch ($table) {
                     case 'ElectricFields':
-                        $result = mysql_query("select b.fd_ele_time, b.fd_ele_field from fs a, fd_ele b  where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_ele_pubdate <= now() order by b.fd_ele_time desc");
+                        $result = mysql_query("select b.fd_ele_time, b.fd_ele_field$cc from fs a, fd_ele b  where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_ele_pubdate <= now() order by b.fd_ele_time desc");
                         break;
                     case 'Gravity':
-                        $result = mysql_query("select b.fd_gra_time, b.fd_gra_fstr from fs a, fd_gra b where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_gra_pubdate <= now() order by b.fd_gra_time desc");
+                        $result = mysql_query("select b.fd_gra_time, b.fd_gra_fstr$cc from fs a, fd_gra b where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_gra_pubdate <= now() order by b.fd_gra_time desc");
                         break;
                     case 'MagneticFields':
-                        $result = mysql_query("select b.fd_mag_time, b.fd_mag_f from fs a, fd_mag b where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_mag_pubdate <= now() order by b.fd_mag_time desc");
+                        $result = mysql_query("select b.fd_mag_time, b.fd_mag_f$cc from fs a, fd_mag b where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_mag_pubdate <= now() order by b.fd_mag_time desc");
                         break;
                     case 'MagneticVector':
                         if ($component == "Dec")
-                            $result = mysql_query("select b.fd_mgv_time, b.fd_mgv_dec from fs a, fd_mgv b where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_mgv_pubdate <= now() order by b.fd_mgv_time desc");
+                            $result = mysql_query("select b.fd_mgv_time, b.fd_mgv_dec$cc from fs a, fd_mgv b where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_mgv_pubdate <= now() order by b.fd_mgv_time desc");
                         else if ($component == "Incl")
-                            $result = mysql_query("select b.fd_mgv_time, b.fd_mgv_incl from fs a, fd_mgv b where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_mgv_pubdate <= now() order by b.fd_mgv_time desc");
+                            $result = mysql_query("select b.fd_mgv_time, b.fd_mgv_incl$cc from fs a, fd_mgv b where a.fs_code = '$code' and a.fs_code = b.fs_code and a.fs_pubdate <= now() and b.fd_mgv_pubdate <= now() order by b.fd_mgv_time desc");
 
                         break;
                 }
@@ -1121,13 +1128,13 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             case 'gas':
                 switch ($table) {
                     case 'SampledGas':
-                        $result = mysql_query("select b.gd_time, b.gd_concentration from gs a, gd b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_pubdate <= now() order by b.gd_time desc");
+                        $result = mysql_query("select b.gd_time, b.gd_concentration$cc from gs a, gd b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_pubdate <= now() order by b.gd_time desc");
                         break;
                     case 'Plume':
-                        $result = mysql_query("select b.gd_plu_time, b.gd_plu_emit  from gs a, gd_plu b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_plu_pubdate <= now() order by b.gd_plu_time desc");
+                        $result = mysql_query("select b.gd_plu_time, b.gd_plu_emit$cc  from gs a, gd_plu b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_plu_pubdate <= now() order by b.gd_plu_time desc");
                         break;
                     case 'SoilEfflux':
-                        $result = mysql_query("select b.gd_sol_time, b.gd_sol_tfulx from gs a, gd_sol b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_sol_pubdate <= now() order by b.gd_sol_time desc");
+                        $result = mysql_query("select b.gd_sol_time, b.gd_sol_tfulx$cc from gs a, gd_sol b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_sol_pubdate <= now() order by b.gd_sol_time desc");
                         break;
                 }
                 break;
@@ -1207,7 +1214,6 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                 return;
             while ($array = mysql_fetch_array($result, MYSQL_NUM)) {
                 $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
-                
             }
             echo json_encode($data);
         }
@@ -1230,7 +1236,6 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                         break;
                 }
                 break;
-            
             default:
                 break;
         }
@@ -1240,14 +1245,23 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
 
         // return nothing when it is not the specific type of data that needs to
         // do specficial data handling before giving it back to the client
-        if ($result == '') {
+        if ($result == '')
             return;
-        }
-        
-        while ($array = mysql_fetch_array($result, MYSQL_NUM)) {
+        // Be care in the future with these line of code
+        // as the data in our database getting bigger and bigger, the size of the
+        // data can be larger than the memory_limit and cause unexpected termination
+        // of this script. It will lead to a error because the line to output json
+        // data cannot be executed.
+        ini_set('memory_limit', '1024M');
+        while (true) {
+            $array = mysql_fetch_array($result, MYSQL_NUM);
+            if ($array == false)
+                break;
             $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]));
         }
         echo json_encode($data);
+        mysql_free_result($result);
+        ini_set('memory_limit', '100M');
     }
 
     public function getEarthquakes($qty, $cavw, $lat, $lon, $elev) {
@@ -1312,10 +1326,10 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         $result = array();
         $htmroot = dirname(__FILE__) . "/..";
         // This path is important for GMT to work, please change this path into where you put it in the main server
-        if(strpos($htmroot,"WOVOdat") > 0){
+        if (strpos($htmroot, "WOVOdat") > 0) {
             putenv("PATH=/bin:/usr/bin:/usr/lib/gmt/bin:/usr/lib/gmt/share:/usr/lib/gmt/lib:/usr/lib/gmt/include");
             putenv("GMTHOME=/usr/lib/gmt");
-        }else{
+        } else {
             putenv("PATH=/bin:/usr/bin:/usr/local/gmt440/bin:/usr/local/gmt440/share:/usr/local/gmt440/lib:/usr/local/gmt440/include");
             putenv("GMTHOME=/usr/local/gmt440");
         }
@@ -1515,10 +1529,10 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         // This path is important for GMT to work, please change this path into where you put it in the main server
         $htmroot = dirname(__FILE__) . "/..";
         // This path is important for GMT to work, please change this path into where you put it in the main server
-        if(strpos($htmroot,"WOVOdat") > 0){
+        if (strpos($htmroot, "WOVOdat") > 0) {
             putenv("PATH=/bin:/usr/bin:/usr/lib/gmt/bin:/usr/lib/gmt/share:/usr/lib/gmt/lib:/usr/lib/gmt/include");
             putenv("GMTHOME=/usr/lib/gmt");
-        }else{
+        } else {
             putenv("PATH=/bin:/usr/bin:/usr/local/gmt440/bin:/usr/local/gmt440/share:/usr/local/gmt440/lib:/usr/local/gmt440/include");
             putenv("GMTHOME=/usr/local/gmt440");
         }
@@ -1872,29 +1886,31 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
 
         return "$tmpdir/gmt.legend";
     }
-    function getOwnerList($ownerList){
+
+    function getOwnerList($ownerList) {
         $i = 0;
         $length = count($ownerList);
         $queryString = "select cc_id, cc_code from cc where ";
         $results = array();
-        if($length == 0){
+        if ($length == 0) {
             echo json_encode($results);
             return;
         }
-        for($i = 0 ; $i < $length; $i++){
+        for ($i = 0; $i < $length; $i++) {
             $queryString = $queryString . "cc_id = " . $ownerList[$i] . " ";
-            if($i != $length - 1)
+            if ($i != $length - 1)
                 $queryString = $queryString . " or ";
         }
         $queryString = $queryString . ";";
         $resources = mysql_query($queryString);
         $row = mysql_fetch_array($resources);
-        while($row){
+        while ($row) {
             $results[$row[0]] = $row[1];
             $row = mysql_fetch_array($resources);
         }
         echo json_encode($results);
     }
+
 }
 
 class Station {
