@@ -640,7 +640,6 @@ if (strpos($dirname, "WOVOdat") > 0) {
             // id is the string to specify the type of the data
             function drawGraph(args){
                 var id = args.id;
-                console.log(args);
                 // the map used
                 var tableId = args.tableId;
                 if(!tableId)

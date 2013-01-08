@@ -259,6 +259,7 @@ Wovodat.getStationData = function(args){
         +"&code="+code + "&component=" + component + "&ref=" + referenceData,
         dataType: "json",
         success: function(html){
+            console.log(html);
             if(handler != undefined)
                 handler({
                     data: html,

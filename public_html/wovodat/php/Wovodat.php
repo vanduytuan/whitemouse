@@ -981,6 +981,8 @@ class Wovodat {
         $result = '';
         $array = '';
         $cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+        $attribute = '';
+        $databaseTable = '';
         switch ($type) {
             case 'seismic':
                 switch ($table) {
@@ -1034,31 +1036,32 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                         $com = "dd_str_" . $com;
                         switch ($component) {
                             case 'Comp1':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp1$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $attribute = 'dd_str_comp1';
                                 break;
                             case 'Comp2':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp2$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $attribute = 'dd_str_comp2';
                                 break;
                             case 'Comp3':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp3$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $attribute = 'dd_str_comp3';
                                 break;
                             case 'Comp4':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_comp4$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $attribute = 'dd_str_comp4';
                                 break;
                             case 'Vdstr':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_vdstr$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $attribute = 'dd_str_vdstr';
                                 break;
                             case 'Ax1':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax1$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $attribute = 'dd_str_sstr_ax1';
                                 break;
                             case 'Ax2':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax2$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $attribute = 'dd_str_sstr_ax2';
                                 break;
                             case 'Ax3':
-                                $result = mysql_query("select b.dd_str_time, b.dd_str_sstr_ax3$cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                $attribute = 'dd_str_sstr_ax3';
                                 break;
                         }
-
+                        $result = mysql_query("select b.dd_str_time, b.$attribute $cc from ds a, dd_str b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_str_pubdate <= now() order by b.dd_str_time desc");
+                                
                         break;
                     case 'EDM':
                         $result = mysql_query("select b.dd_edm_time, b.dd_edm_line$cc from ds a, dd_edm b where a.ds_code = '$code' and b.ds_id = a.ds_id and a.ds_pubdate <= now() and b.dd_edm_pubdate <= now()  order by b.dd_edm_time desc");
@@ -1128,74 +1131,86 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             case 'gas':
                 switch ($table) {
                     case 'SampledGas':
-                        $result = mysql_query("select b.gd_time, b.gd_concentration$cc from gs a, gd b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_pubdate <= now() order by b.gd_time desc");
+                        $attribute = 'gd_concentration';
+                        $databaseTable = 'gd';
+                        //$result = mysql_query("select b.gd_time, b.gd_concentration $cc from gs a, gd b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_pubdate <= now() order by b.gd_time desc");
                         break;
                     case 'Plume':
-                        $result = mysql_query("select b.gd_plu_time, b.gd_plu_emit$cc  from gs a, gd_plu b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_plu_pubdate <= now() order by b.gd_plu_time desc");
+                        $attribute = 'gd_plu_emit';
+                        $databaseTable = 'gd_plu';
+                        //$result = mysql_query("select b.gd_plu_time, b.gd_plu_emit $cc  from gs a, gd_plu b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_plu_pubdate <= now() order by b.gd_plu_time desc");
                         break;
                     case 'SoilEfflux':
-                        $result = mysql_query("select b.gd_sol_time, b.gd_sol_tfulx$cc from gs a, gd_sol b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_sol_pubdate <= now() order by b.gd_sol_time desc");
+                        $attribute = 'gd_sol_tfulx';
+                        $databaseTable = 'gd_sol';
+                        //$result = mysql_query("select b.gd_sol_time, b.gd_sol_tfulx $cc from gs a, gd_sol b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_sol_pubdate <= now() order by b.gd_sol_time desc");
                         break;
                 }
+                $result = mysql_query("select b." . $databaseTable . "_time, b.$attribute $cc from gs a, $databaseTable b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b." . $databaseTable . "_pubdate <= now() order by b." . $databaseTable . "_time desc");
+                        
                 break;
             case 'hydrologic':
                 switch ($component) {
                     case 'Welev':
-                        $result = mysql_query("select b.hd_time, b.hd_welev from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
+                        $attribute = 'hd_welev';
                         break;
                     case 'Temp':
-                        $result = mysql_query("select b.hd_time, b.hd_temp from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
+                        $attribute = 'hd_temp';
                         break;
                     case 'Wdepth':
-                        $result = mysql_query("select b.hd_time, b.hd_wdepth from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
+                        $attribute = 'hd_wdepth';
                         break;
                     case 'Bp':
-                        $result = mysql_query("select b.hd_time, b.hd_bp from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
+                        $attribute = 'hd_bp';
                         break;
                     case 'Dwlev':
-                        $result = mysql_query("select b.hd_time, b.hd_dwlev from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
+                        $attribute = 'hd_dwlev';
                         break;
                     case 'Sdisc':
-                        $result = mysql_query("select b.hd_time, b.hd_sdisc from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
+                        $attribute = 'hd_sdisc';
                         break;
                     case 'Prec':
-                        $result = mysql_query("select b.hd_time, b.hd_Prec from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
+                        $attribute = 'hd_prec';
                         break;
                     case 'Cond':
-                        $result = mysql_query("select b.hd_time, b.hd_cond from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
+                        $attribute = 'hd_cond';
                         break;
                     case 'Comp':
-                        $result = mysql_query("select b.hd_time, b.hd_comp_content from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
+                        $attribute = 'hd_comp_content';
                         break;
                 }
+                $result = mysql_query("select b.hd_time, b.$attribute $cc from hs a, hd b where a.hs_code = '$code' and a.hs_id = b.hs_id and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc");
                 break;
             case 'thermal':
-                $result = mysql_query("select b.td_time, b.td_temp from ts a , td b where a.ts_code = '$code' and a.ts_id = b.ts_id and a.ts_pubdate <= now() and b.td_pubdate <= now()  order by b.td_time desc");
+                $attribute = 'td_temp';
+                $result = mysql_query("select b.td_time, b.$attribute $cc from ts a , td b where a.ts_code = '$code' and a.ts_id = b.ts_id and a.ts_pubdate <= now() and b.td_pubdate <= now()  order by b.td_time desc");
                 break;
             case 'meteo':
                 switch ($component) {
                     case 'Temp':
-                        $result = mysql_query("select b.med_time, b.med_temp from ms a, med b where a.ms_code = '$code' and a.ms_id = b.ms_id and a.ms_pubdate <= now() and b.med_pubdate <= now() order by b.med_time desc");
+                        $attribute = 'med_temp';
                         break;
                     case 'Stemp':
-                        $result = mysql_query("select b.med_time, b.med_stemp from ms a, med b where a.ms_code = '$code' and a.ms_id = b.ms_id and a.ms_pubdate <= now() and b.med_pubdate <= now() order by b.med_time desc");
+                        $attribute = 'med_stemp';
                         break;
                     case 'Bp':
-                        $result = mysql_query("select b.med_time, b.med_bp from ms a, med b where a.ms_code = '$code' and a.ms_id = b.ms_id and a.ms_pubdate <= now() and b.med_pubdate <= now() order by b.med_time desc");
+                        $attribute = 'med_bp';
                         break;
                     case 'Prec':
-                        $result = mysql_query("select b.med_time, b.med_prec from ms a, med b where a.ms_code = '$code' and a.ms_id = b.ms_id and a.ms_pubdate <= now() and b.med_pubdate <= now() order by b.med_time desc");
+                        $attribute = 'med_prec';
                         break;
                     case 'Hd':
-                        $result = mysql_query("select b.med_time, b.med_hd from ms a, med b where a.ms_code = '$code' and a.ms_id = b.ms_id and a.ms_pubdate <= now() and b.med_pubdate <= now() order by b.med_time desc");
+                        $attribute = 'med_hd';
                         break;
                     case 'Wind':
-                        $result = mysql_query("select b.med_time, b.med_wind from ms a, med b where a.ms_code = '$code' and a.ms_id = b.ms_id and a.ms_pubdate <= now() and b.med_pubdate <= now() order by b.med_time desc");
+                        $attribute = 'med_wind';
                         break;
                     case 'Wdir':
-                        $result = mysql_query("select b.med_time, b.med_wdir from ms a, med b where a.ms_code = '$code' and a.ms_id = b.ms_id and a.ms_pubdate <= now() and b.med_pubdate <= now() order by b.med_time desc");
+                        $attribute = 'med_wdir';
                         break;
                 }
+                $result = mysql_query("select b.med_time, b.$attribute $cc from ms a, med b where a.ms_code = '$code' and a.ms_id = b.ms_id and a.ms_pubdate <= now() and b.med_pubdate <= now() order by b.med_time desc");
+                        
                 break;
             default:
                 throw new Exception('Not relevant data');
@@ -1204,7 +1219,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         date_default_timezone_set("UTC");
         $numberOfRows = mysql_num_rows($result);
         if ($numberOfRows > 50000) {
-// 12 hours ranges
+            // 12 hours ranges
             $this->filterData($result, 3600 * 12);
         } else {
             $data = Array();
@@ -1223,14 +1238,16 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         $data = '';
         $result = '';
         $array = '';
+        
+        $cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
         switch ($type) {
             case 'deformation':
                 switch ($table) {
                     case 'ElectronicTilt':
                         if ($component == "Tilt1")
-                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt1 from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() order by b.dd_tlt_time desc");
+                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt1 $cc from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() order by b.dd_tlt_time desc");
                         else if ($component == "Tilt2")
-                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt2 from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() order by b.dd_tlt_time desc");
+                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt2 $cc from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() order by b.dd_tlt_time desc");
                         break;
                     default:
                         break;
@@ -1257,7 +1274,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             $array = mysql_fetch_array($result, MYSQL_NUM);
             if ($array == false)
                 break;
-            $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]));
+            $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
         }
         echo json_encode($data);
         mysql_free_result($result);
@@ -1291,7 +1308,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                 continue;
             else
                 $i = 1;
-            $data[0][$count++] = array(strtotime($array[0]) * 1000, floatval($array[1]));
+            $data[0][$count++] = array(strtotime($array[0]) * 1000, floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
         }
         echo json_encode($data);
     }
@@ -1305,14 +1322,14 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         $data = Array();
         $data[0] = Array();
         $array = mysql_fetch_array($resource);
-        $data[0][0] = array(1000 * strtotime($array[0]), floatval($array[1]));
+        $data[0][0] = array(1000 * strtotime($array[0]), floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
         $nextValue = $data[0][0][0] - $milliseconds;
         $count = 1;
         while ($array = mysql_fetch_array($resource)) {
             $current = 1000 * strtotime($array[0]);
             if ($current <= $nextValue) {
                 $nextValue = $current - $milliseconds;
-                $data[0][$count++] = array($current, floatval($array[1]));
+                $data[0][$count++] = array($current, floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
             }
         }
 
