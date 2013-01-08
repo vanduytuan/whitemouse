@@ -467,6 +467,39 @@ Wovodat.highlightNoDataRange = function(data){
     return [newData];
 };
 /*
+ * fix the issue of data that are significantly larger than their value
+ */
+
+Wovodat.fixBigData = function(data){
+    var timeSeriesData = [];
+    var l = data[0].length;
+    if(l <= 4) 
+        return data;
+    // add the first value if it does not differ too much from the second value
+    if(Math.abs(data[0][0][1] - data[0][1][1]) < 1000 * Math.abs(data[0][1][1] - data[0][2][1]))
+        timeSeriesData.push(data[0][0]);
+    var i = 0;
+    var currentValue = data[0][2][1];
+    var previousValue = data[0][1][1];
+    var currentDif = Math.abs(currentValue - previousValue);
+    previousValue = currentValue;
+    var newDif = 0;
+    timeSeriesData.push(data[0][1]);
+    timeSeriesData.push(data[0][2]);
+    for(i = 3 ; i < l ; i++){
+        currentValue = data[0][i][1];
+        newDif = Math.abs(currentValue - previousValue);
+        // significantly different from the previous value
+        if(newDif > 1000 * currentDif)
+            continue;
+        if(newDif != 0) currentDif = newDif;
+        previousValue = currentValue;
+        timeSeriesData.push(data[0][i]);
+    }
+    data[0] = timeSeriesData;
+    return data;
+}
+/*
  * data is passed in the from: [[x1,y1],[x2,y2],[x3,y3],....,[xn,yn]]
  * x1 > x2 > x3 > ... > xn
  * from < to

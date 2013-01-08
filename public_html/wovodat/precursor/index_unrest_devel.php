@@ -649,6 +649,8 @@ if (strpos($dirname, "WOVOdat") > 0) {
                 var label = document.getElementById(id + 'Tr' + tableId).getElementsByTagName('td')[1].innerHTML;
                 
                 var data = Wovodat.highlightNoDataRange(args.data);
+                data = Wovodat.fixBigData(data);
+                
                 // set up the reference time
                 if(referenceTime == null){
                     referenceTime = data[0][0][0];
@@ -841,8 +843,8 @@ if (strpos($dirname, "WOVOdat") > 0) {
                         min: minValue,
                         color: 'rgb(123,1,100)',
                         labelWidth: 25,
-                        labelHeight: 40,
-                        tickDecimals: 1
+                        labelHeight: 40
+                        //,tickDecimals: 1
                     },
                     zoom:{
                         interactive: true

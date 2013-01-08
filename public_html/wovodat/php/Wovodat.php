@@ -1236,18 +1236,56 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
 
     public function getFullStationData($type, $table, $code, $component) {
         $data = '';
-        $result = '';
         $array = '';
         
         $cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+        $attribute = '';
+        $databaseTable = '';
+        $mainTable = '';
         switch ($type) {
             case 'deformation':
+                $mainTable = 'ds';
                 switch ($table) {
                     case 'ElectronicTilt':
-                        if ($component == "Tilt1")
-                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt1 $cc from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() order by b.dd_tlt_time desc");
-                        else if ($component == "Tilt2")
-                            $result = mysql_query("select b.dd_tlt_time,b.dd_tlt2 $cc from ds a, dd_tlt b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() order by b.dd_tlt_time desc");
+                        $databaseTable = 'dd_tlt';
+                        switch($component){
+                            case 'Tilt1':
+                                $attribute = 'dd_tlt1';
+                                break;
+                            case 'Tilt2':
+                                $attribute = 'dd_tlt2';
+                                break;
+                        }
+                        break;
+                    case 'Strain':
+                        $databaseTable = 'dd_str';
+                        switch ($component) {
+                            case 'Comp1':
+                                $attribute = 'dd_str_comp1';
+                                break;
+                            case 'Comp2':
+                                $attribute = 'dd_str_comp2';
+                                break;
+                            case 'Comp3':
+                                $attribute = 'dd_str_comp3';
+                                break;
+                            case 'Comp4':
+                                $attribute = 'dd_str_comp4';
+                                break;
+                            case 'Vdstr':
+                                $attribute = 'dd_str_vdstr';
+                                break;
+                            case 'Ax1':
+                                $attribute = 'dd_str_sstr_ax1';
+                                break;
+                            case 'Ax2':
+                                $attribute = 'dd_str_sstr_ax2';
+                                break;
+                            case 'Ax3':
+                                $attribute = 'dd_str_sstr_ax3';
+                                break;
+                        }
+                        
                         break;
                     default:
                         break;
@@ -1256,6 +1294,8 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             default:
                 break;
         }
+        $result = mysql_query("select b." . $databaseTable . "_time,b.$attribute $cc from $mainTable a, $databaseTable b where a." . $mainTable . "_code = '$code' and a." . $mainTable . "_id = b." . $mainTable . "_id and a." . $mainTable . "_pubdate <= now() and b.". $databaseTable . "_pubdate <= now() order by b.". $databaseTable . "_time desc");
+                        
         $data = Array();
         $data[0] = Array();
         $count = 0;
