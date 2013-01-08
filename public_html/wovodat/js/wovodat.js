@@ -467,9 +467,8 @@ Wovodat.highlightNoDataRange = function(data){
     return [newData];
 };
 /*
- * fix the issue of data that are significantly larger than their value
+ * fix the issue of data that are significantly larger than their near by data
  */
-
 Wovodat.fixBigData = function(data){
     var timeSeriesData = [];
     var l = data[0].length;
