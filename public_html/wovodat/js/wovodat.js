@@ -1097,3 +1097,35 @@ Wovodat.Printer = {
         }
     }
 };
+
+/*
+*   show notification for user 
+*/
+Wovodat.showNotification = function(obj){
+    var message = obj.message;
+    var div = document.createElement('div');
+    var style = "position: fixed;" +
+        "border: 1px solid #fdd;" +
+        "padding: 5px;" +
+        "opacity: 0.9;" +
+        "bottom: 10px;" +
+        "background-color: #fee;"+
+        "margin-left: auto; margin-right: auto;";
+    div.setAttribute("style",style);
+    div.innerHTML = message;
+    $(div).appendTo('body').fadeIn(200);
+}
+/*
+Wovodat.showTooltip = function (x, y, contents) {
+    $('<div id="tooltip">' + contents + '</div>').css( {
+        position: 'absolute',
+        display: 'none',
+        top: y,
+        left: x + 15,
+        border: '1px solid #fdd',
+        padding: '2px',
+        'background-color': '#fee',
+        opacity: 0.9
+    }).appendTo("body").fadeIn(200);
+}
+*/

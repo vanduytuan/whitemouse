@@ -654,7 +654,6 @@ if (strpos($dirname, "WOVOdat") > 0) {
                 // delete the data thar are too big compare to its neighbor
                 data = Wovodat.fixBigData(data);
                 
-                console.log(data);
                 // set up the reference time
                 if(referenceTime == null){
                     referenceTime = data[0][0][0];
@@ -1306,14 +1305,6 @@ if (strpos($dirname, "WOVOdat") > 0) {
             }
 			
             
-            function parseDateVal(date){
-                var result = Date.parse(date);
-                if (isNaN(result)){
-                    result = new Date(date.substring(0,4),parseInt(date.substring(5,7))-1,date.substring(8,10),date.substring(11,13),date.substring(14,16),date.substring(17,19),0);
-                    result = result.getTime();
-                }
-                return result;
-            }
             
         
             function toRad(number){
@@ -1765,22 +1756,30 @@ if ($dev) {
         //handle the Filter buttons
         $("#FilterBtn1").click(function(){
             registerFilter({mapUsed:1});
+            //$("#FilterSwitch1").click();
         });
         $("#FilterBtn2").click(function(){
             registerFilter({mapUsed:2});
+            //$("#FilterSwitch2").click();
         });
+        
+        // what is this?
         function registerFilter(o){
             var mapUsed = o.mapUsed;
             if (volcanoInfo[mapUsed]){
                 var cavw = volcanoInfo[mapUsed].cavw;
+                // depend on the graph that is shown when filter button
+                // is clicked, that graph will be redraw according to the the
+                // parameter set by filter value
                 if( document.getElementById('2DEquakeFlotGraph' + mapUsed).style.display == 'block'){
-                    if (earthquakes[cavw]){
-                        filterData(cavw,mapUsed);
-                        $("#DisplayEquake" + mapUsed).click();
+                    // if the earthquakes list for for this volcano haven't been
+                    // retrieve from the server, don't do anything
+                    if(!earthquakes[cavw]){
+                        return;
                     }
-                    else{
-                        $("#DisplayEquake" + mapUsed).click();
-                    }
+                    // filter all the data based on the filter table
+                    filterData(cavw,mapUsed);
+                    drawEquake({mapUsed:mapUsed,source:document.getElementById('equakeDisplayType' + mapUsed + '2D')});
                 }else if(document.getElementById('3DGMTEquakeGraph' + mapUsed).style.display == 'block'){
                     gmt3DData[cavw] = undefined;
                     drawEquake({mapUsed:mapUsed,
@@ -1791,6 +1790,8 @@ if ($dev) {
                     drawEquake({mapUsed:mapUsed,
                         source:document.getElementById('equakeDisplayType' + mapUsed + '2DGMT')
                     });
+                }else{
+                    Wovodat.showNotification({message:'Please click to one of the buttons to retrieve the data.'});
                 }
             }
         }
@@ -1824,40 +1825,57 @@ if ($dev) {
         $("#EquakePanel" + o.mapUsed).hide();
     }
     /*
-     * This function is used for the filtering of the equake events.
+     * This function is used for the filtering of the equake events based on the
+     * list of parameter in the filter.
      * All of the event that are filtered will be marked unavailable by
      * setting the available variable to false.
      */
     function filterData(cavw,panelUsed){
-        if (earthquakes[cavw]){
-            var nEvent = $("#Evn"+panelUsed).val();
-            var sDate = parseDateVal($("#SDate"+panelUsed).val());
-            var eDate = parseDateVal($("#EDate"+panelUsed).val());
-            var dhigh = parseFloat($("#DepthHigh"+panelUsed).val());
-            var dlow = parseFloat($("#DepthLow"+panelUsed).val());
-            var type = document.getElementById("EqType"+panelUsed);
-            type = type.options[type.selectedIndex].value;
-            var count = 0;
-            // some error here, what if i is 'vlat' or 'vlon'
-            for (var i in earthquakes[cavw]){
-                        
-                if (count>nEvent){
-                    earthquakes[cavw][i]['available'] = false;
-                    continue;
-                }
-                if (typeof earthquakes[cavw][i]['marker']!="undefined"&& earthquakes[cavw][i]['time']!="" && typeof earthquakes[cavw][i]['time']!="undefined"){
-                    var eType = earthquakes[cavw][i]['eqtype'];
-                    var eDepth = parseFloat(earthquakes[cavw][i]['depth']);
-                    var eMag = earthquakes[cavw][i]['mag'];
-                    var eTime = parseDateVal(earthquakes[cavw][i]['time']);
-                    var chosen = true;
-                    earthquakes[cavw][i]['available'] = false;
-                    if ((eType!=type && type!="") || (eDepth>dhigh || eDepth<dlow) || (eTime>eDate || eTime<sDate))
+        // parse the data in the start-date and end-date box
+        function parseDateVal(date){
+            var result = Date.parse(date);
+            // the function parse of the class Date 
+            if (isNaN(result)){
+                // remove all the whitespace character in the date string
+                date = date.replace(/\s+/g,'');
+                if(date.match(/^\d{2}\/\d{2}\/\d{4}$/)){
+                    // date should be in the format MM/DD/YYYY now
+                    result = new Date(date.substring(0,4),parseInt(date.substring(5,7))-1,date.substring(8,10),date.substring(11,13),date.substring(14,16),date.substring(17,19),0);
+                    result = result.getTime();
+                }else
+                    result = "";
+            }
+            return result;
+        }
+        // data is not available for filtering
+        if(!earthquakes[cavw]) 
+            return;
+        
+        var nEvent = $("#Evn"+panelUsed).val();
+        var sDate = parseDateVal($("#SDate"+panelUsed).val());
+        var eDate = parseDateVal($("#EDate"+panelUsed).val());
+        var dhigh = parseFloat($("#DepthHigh"+panelUsed).val());
+        var dlow = parseFloat($("#DepthLow"+panelUsed).val());
+        var type = document.getElementById("EqType"+panelUsed);
+        type = type.options[type.selectedIndex].value;
+        var count = 0;
+        // some error here, what if i is 'vlat' or 'vlon'
+        for (var i in earthquakes[cavw]){
+            if (count > nEvent){
+                earthquakes[cavw][i]['available'] = false;
+                continue;
+            }
+            if (typeof earthquakes[cavw][i]['marker'] != "undefined" && earthquakes[cavw][i]['time'] != "" && typeof earthquakes[cavw][i]['time'] != "undefined"){
+                var eType = earthquakes[cavw][i]['eqtype'];
+                var eDepth = parseFloat(earthquakes[cavw][i]['depth']);
+                var eTime = parseDateVal(earthquakes[cavw][i]['time']);
+                var chosen = true;
+                earthquakes[cavw][i]['available'] = false;
+                if ((eType != type && type != "") || eDepth > dhigh || eDepth < dlow || eTime > eDate || eTime < sDate)
                     chosen = false;
-                    if (chosen){
-                        count++;
-                        earthquakes[cavw][i]['available'] = true;
-                    }
+                if (chosen){
+                    count++;
+                    earthquakes[cavw][i]['available'] = true;
                 }
             }
         }
@@ -1951,7 +1969,7 @@ if ($dev) {
                 earthquakes[cavw][index]['mag']=mag;
                 earthquakes[cavw][index]['depth']=depth;
                 earthquakes[cavw][index]['latDistance'] = calculateD(lat,lon,vlat,vlon,0);
-                earthquakes[cavw][index]['londistance'] = calculateD(lat,lon,vlat,vlon,1);
+                earthquakes[cavw][index]['lonDistance'] = calculateD(lat,lon,vlat,vlon,1);
                 earthquakes[cavw][index]['timestamp'] = Date.parse(time);
             }
         }
@@ -2030,12 +2048,18 @@ if ($dev) {
     }
     /*
      * Plot the equake data
+     * The volcano to draw the earthquake data is determined using the cavw and
+     * mapUsed parameter
      */
     function plotEarthquakeData(cavw, eqtype, mapUsed){
         // skip this function if we can not find the data to draw
         if(!earthquakes[cavw]) 
             return;
-                
+        
+        // skip this function if we can not find the side of the map
+        if(!mapUsed)
+            return;
+        
         // This is the height and width for the 
         // flot graph. Flot is for 2D javascript drawing
         var CONSTANTS = {
@@ -2103,6 +2127,7 @@ if ($dev) {
         // The latitude and longitude of the volcano
         var time, latPlot, lonPlot, timePlot;
                 
+        var lat, lon;
         // get the data for each earthquakes, put them into arrays for 
         // flot library to draw
         for (var i in earthquakes[cavw]){
@@ -2112,17 +2137,23 @@ if ($dev) {
             // for them
             if(typeof lat == 'undefined' || typeof lon == 'undefined')
                 continue;
+            
             // skip this event when it is not supposed to be displayed
-            if(earthquakes[cavw][i]['available'] == false)
+            if(earthquakes[cavw][i]['available'] == 'undefined' || earthquakes[cavw][i]['available'] == false)
                 continue;
+            
             // skip this event when it does not have the earthquake type required
-            if(earthquakes[cavw][i]['eqtype'] != eqtype)
+            if(earthquakes[cavw][i]['eqtype'] != eqtype && eqtype != "")
                 continue;
+            
             // the timestampe of the event
             time = earthquakes[cavw][i]['timestamp'];
+            if(time == 'undefined') continue;
+            
             // set lat, lon coordination
             latArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth']]);
-            lonArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth']]);
+            lonArray.push([earthquakes[cavw][i]['lonDistance'],-earthquakes[cavw][i]['depth']]);
+            
             // set time coordination
             //if time is not convertible by javascript native functions
             //then use own-created function
