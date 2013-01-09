@@ -259,7 +259,6 @@ Wovodat.getStationData = function(args){
         +"&code="+code + "&component=" + component + "&ref=" + referenceData,
         dataType: "json",
         success: function(html){
-            console.log(html);
             if(handler != undefined)
                 handler({
                     data: html,
@@ -582,6 +581,7 @@ Wovodat.getLocalMaxMin = function(data,from,to){
  * in displaying the graphs.
  */
 Wovodat.redraw = function(plot,generalData,detailedData,graphs,rescale){
+    
     if( detailedData == undefined) detailedData = [generalData[0],generalData[0]];
     var o = Wovodat.getDrawRange(plot);
     var duration = o.max - o.min;
@@ -689,6 +689,8 @@ Wovodat.getDetailedStationData = function(o){
 }
 
 Wovodat.processDetailedData = function(o){
+    console.log(o);
+    o.data = Wovodat.fixBigData(Wovodat.highlightNoDataRange(o.data));
     
     var data = o.data;
     if(data == null || data == undefined || data.length == 0 || data[0].length == 0 || data[0][0].length == 0){

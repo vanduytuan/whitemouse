@@ -987,14 +987,10 @@ class Wovodat {
             case 'seismic':
                 switch ($table) {
                     case 'Interval':
-                        $result = mysql_query("select b.sd_ivl_stime, b.sd_ivl_nrec$cc from ss a, sd_ivl b where a.ss_code = '$code' and a.ss_id = b.ss_id and a.ss_pubdate <= now() and b.sd_ivl_pubdate <= now() order by b.sd_ivl_stime desc");
+                        $result = mysql_query("select b.sd_ivl_stime, b.sd_ivl_nrec $cc from ss a, sd_ivl b where a.ss_code = '$code' and a.ss_id = b.ss_id and a.ss_pubdate <= now() and b.sd_ivl_pubdate <= now() order by b.sd_ivl_stime desc");
                         break;
                     case 'RSAM':
-                        //$result = mysql_query("select sd_rsm.sd_rsm_stime, sd_rsm.sd_rsm_count from sd_rsm,sd_sam,ss where ss.ss_code = '$code' and sd_sam.ss_id = ss.ss_id and sd_sam.sd_sam_id = sd_rsm.sd_sam_id and ss.ss_pubdate <= now() and sd_sam.sd_sam_pubdate <= now() order by sd_rsm.sd_rsm_stime desc");
-                        $result = mysql_query("select c.sd_rsm_stime, c.sd_rsm_count$cc from ss a,sd_sam b,sd_rsm c where a.ss_code = '$code' and b.ss_id = a.ss_id and b.sd_sam_id = c.sd_sam_id and a.ss_pubdate <= now() and b.sd_sam_pubdate <= now() order by c.sd_rsm_stime desc");
-                        
-                        //$result = mysql_query("select c.sd_rsm_stime, c.sd_rsm_count $cc from ss a, sd_sam b, sd_rsm c where a.ss_code = '$code' and b.ss_id = a.ss_id and b.sd_sam_id = c.sd_sam_id and a.ss_pubdate <= now() and b.sd_sam_pubdate <= now() order by c.sd_rsm_stime desc");
-                        
+                        $result = mysql_query("select c.sd_rsm_stime, c.sd_rsm_count $cc from ss a,sd_sam b,sd_rsm c where a.ss_code = '$code' and b.ss_id = a.ss_id and b.sd_sam_id = c.sd_sam_id and a.ss_pubdate <= now() and b.sd_sam_pubdate <= now() order by c.sd_rsm_stime desc");
                         break;
                 }
                 break;
@@ -1228,7 +1224,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             if ($result == false)
                 return;
             while ($array = mysql_fetch_array($result, MYSQL_NUM)) {
-                $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
+                $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]), 0, intval($array[2]), intval($array[3]), intval($array[4]));
             }
             echo json_encode($data);
         }
@@ -1314,7 +1310,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             $array = mysql_fetch_array($result, MYSQL_NUM);
             if ($array == false)
                 break;
-            $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
+            $data[0][$count++] = Array(1000 * strtotime($array[0]), floatval($array[1]), 0, intval($array[2]), intval($array[3]), intval($array[4]));
         }
         echo json_encode($data);
         mysql_free_result($result);
@@ -1348,7 +1344,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                 continue;
             else
                 $i = 1;
-            $data[0][$count++] = array(strtotime($array[0]) * 1000, floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
+            $data[0][$count++] = array(strtotime($array[0]) * 1000, floatval($array[1]), 0, intval($array[2]), intval($array[3]), intval($array[4]));
         }
         echo json_encode($data);
     }
@@ -1362,14 +1358,14 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         $data = Array();
         $data[0] = Array();
         $array = mysql_fetch_array($resource);
-        $data[0][0] = array(1000 * strtotime($array[0]), floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
+        $data[0][0] = array(1000 * strtotime($array[0]), floatval($array[1]), 0, intval($array[2]), intval($array[3]), intval($array[4]));
         $nextValue = $data[0][0][0] - $milliseconds;
         $count = 1;
         while ($array = mysql_fetch_array($resource)) {
             $current = 1000 * strtotime($array[0]);
             if ($current <= $nextValue) {
                 $nextValue = $current - $milliseconds;
-                $data[0][$count++] = array($current, floatval($array[1]), intval($array[2]), intval($array[3]), intval($array[4]));
+                $data[0][$count++] = array($current, floatval($array[1]), 0, intval($array[2]), intval($array[3]), intval($array[4]));
             }
         }
 

@@ -42,7 +42,7 @@ if (strpos($dirname, "WOVOdat") > 0) {
         <script type="text/javascript" src="/js/jqueryui/js/jquery-1.6.4.min.js"></script>
         <script type="text/javascript" src="/js/jqueryui/js/jquery-ui-1.8.21.custom.min.js"></script>
         <script type="text/javascript" src="/js/flot/jquery.flot.tuan.js"></script>
-        <script type="text/javascript" src="/js/jquery.flot.navigate.tuan.js"></script> 
+        <script type="text/javascript" src="/js/flot/jquery.flot.navigate.tuan.js"></script> 
         <script type="text/javascript" src="/js/flot/jquery.flot.selection.js"></script>
         <script type="text/javascript" src="/js/flot/jquery.flot.marks.js"></script>
 
@@ -622,7 +622,7 @@ if (strpos($dirname, "WOVOdat") > 0) {
                     return;
                 var i,j;
                 for( i = 0 ; i < length; i++){
-                    for(j = 2; j <5; j++){
+                    for(j = 3; j <6; j++){
                         temp = data[0][i][j];
                         mySet[temp] = true;
                     }
@@ -648,9 +648,13 @@ if (strpos($dirname, "WOVOdat") > 0) {
                 // get the label from the list of available time series
                 var label = document.getElementById(id + 'Tr' + tableId).getElementsByTagName('td')[1].innerHTML;
                 
+                // delete the link between data that are too long from each other
                 var data = Wovodat.highlightNoDataRange(args.data);
+                
+                // delete the data thar are too big compare to its neighbor
                 data = Wovodat.fixBigData(data);
                 
+                console.log(data);
                 // set up the reference time
                 if(referenceTime == null){
                     referenceTime = data[0][0][0];
@@ -705,7 +709,7 @@ if (strpos($dirname, "WOVOdat") > 0) {
                     if(data[0][i][1] < minValue) minValue = data[0][i][1];
                 }
                 
-                // get the maxXValue of every graph that is currently 
+                // get the maxXValue of every graph that is currently displayed
                 for(var a in graphData){
                     if(tableId != side(a)) continue;
                     for(var b in graphs){
@@ -767,6 +771,7 @@ if (strpos($dirname, "WOVOdat") > 0) {
                     ownerOption.value = 'All';
                     ownerOption.innerHTML = 'All';
                     ownerLists.appendChild(ownerOption);
+                    
                     // redraw the graph based on the owner that user has chosen
                     ownerLists.onchange = function(){
                         var graph = graphs[id+tableId];
