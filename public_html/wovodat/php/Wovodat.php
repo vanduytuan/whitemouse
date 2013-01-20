@@ -1317,36 +1317,30 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         ini_set('memory_limit', '100M');
     }
 
+    private function getEarthquakeQuery($quantity,$latitude,$longitude,$startDate,$endDate,$startDepth,$endDepth){
+        
+    }
     public function getEarthquakes($qty, $cavw, $lat, $lon, $elev) {
-        $quakeQuery = "(select sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn WHERE ABS($lat - sd_evn_elat)<1 and ABS($lon - sd_evn_elon)<6 and sqrt(pow(($lat - sd_evn_elat)*110, 2) + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))<30 and sd_evn_pubdate <= now() group by sd_evn_elat, sd_evn_elon order by sd_evn_pmag desc LIMIT $qty)";
+//        $quakeQuery = "select sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, 
+//           sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1 
+//           and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2) 
+//           + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30 
+//           and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() 
+//           group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc LIMIT $qty";
+        
+        $quakeQuery = "select sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, 
+           sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1 
+           and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2) 
+           + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30 
+           and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() 
+           group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc";
+        
         $getQuakes = mysql_query($quakeQuery) or die(mysql_error());
         $count = 0;
         while ($row = mysql_fetch_array($getQuakes)) {
             echo $row['sd_evn_elat'] . "," . $row['sd_evn_elon'] . "," . $row['sd_evn_edep'] . "," . $row['sd_evn_pmag'] . "," . $row['sd_evn_time'] . "," . $row['sd_evn_eqtype'] . "," . $row['sn_id'] . ";";
             $count++;
         }
-    }
-
-    private function filterData1($resource, $seconds) {
-        $array = mysql_fetch_array($resource);
-        $value1 = strtotime($array[0]);
-        $array = mysql_fetch_array($resource);
-        $value2 = strtotime($array[0]);
-        $range = $value1 - $value2;
-        $jump = $seconds / $range;
-        $data = Array();
-        $data[0] = Array();
-        $count = 0;
-        $data[0][$count++] = array($value2 * 1000, floatval($array[1]));
-        $i = 1;
-        while ($array = mysql_fetch_array($resource)) {
-            if ($i++ < $jump)
-                continue;
-            else
-                $i = 1;
-            $data[0][$count++] = array(strtotime($array[0]) * 1000, floatval($array[1]), 0, intval($array[2]), intval($array[3]), intval($array[4]));
-        }
-        echo json_encode($data);
     }
 
     private function filterData($resource, $seconds) {
@@ -1376,6 +1370,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
 
         // clear output folder for old generated gmt files
         $this->clearOutputFolder();
+        
         $result = array();
         $htmroot = dirname(__FILE__) . "/..";
         // This path is important for GMT to work, please change this path into where you put it in the main server
@@ -1452,9 +1447,8 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         $sql_statement = "SELECT vd_inf.vd_inf_slat, vd_inf.vd_inf_slon, vd.vd_name FROM vd, vd_inf WHERE vd.vd_id = vd_inf.vd_id AND vd_inf.vd_id =  '$vd_id'";
         $query = mysql_query($sql_statement);
         $vd_latlon = mysql_fetch_assoc($query);
-
-
-
+        
+        
         # SQL query: get the data (approximate selection from map width)
         $sql_statement = "(select b.sn_code, c.sd_evn_elat, c.sd_evn_elon, c.sd_evn_edep, c.sd_evn_pmag, 
     c.sd_evn_time, c.sd_evn_eqtype, d.vd_inf_slat, d.vd_inf_slon FROM sn b, sd_evn c, vd_inf d WHERE 
@@ -1465,6 +1459,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
     AND d.vd_id = $vd_id AND a.jj_net_flag = 'S' $dates $depth $quaketype AND 
     (sqrt(power(d.vd_inf_slat - c.sd_evn_elat, 2) + power(d.vd_inf_slon - c.sd_evn_elon, 2))*111)<=1.5*$wkm 
     ORDER BY c.sd_evn_time DESC $limit)";
+        
         $query = mysql_query($sql_statement);
 
         # writes the data into a single file

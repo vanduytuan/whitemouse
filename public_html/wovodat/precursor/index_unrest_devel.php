@@ -1780,6 +1780,7 @@ if ($dev) {
                     // filter all the data based on the filter table
                     filterData(cavw,mapUsed);
                     drawEquake({mapUsed:mapUsed,source:document.getElementById('equakeDisplayType' + mapUsed + '2D')});
+                    document.getElementById('FilterSwitch' + mapUsed).click();
                 }else if(document.getElementById('3DGMTEquakeGraph' + mapUsed).style.display == 'block'){
                     gmt3DData[cavw] = undefined;
                     drawEquake({mapUsed:mapUsed,
@@ -1888,13 +1889,16 @@ if ($dev) {
      * 2012-07-19
      */
     function insertMarkersForEarthquakes(data,cavw, mapUsed){
+        
         // the function will initialize the earthquake variable when 
         // there is no equake data stored at the client side for a
         // specific volcano. 
         if (!earthquakes[cavw]){
             earthquakes[cavw]={};
+            // the latitude and longitude of the volcano that this earthquake surround
             earthquakes[cavw]['vlat']=volcanoInfo[mapUsed]['lat'];
             earthquakes[cavw]['vlon']=volcanoInfo[mapUsed]['lon'];
+            
             var equakeSet = {},vlat = volcanoInfo[mapUsed]['lat'],
             vlon = volcanoInfo[mapUsed]['lon'];
             equakeSet = data.split(";");
@@ -1912,50 +1916,54 @@ if ($dev) {
                 type = nextQuake[5];
 						
                 // ignore earthquakes that have no information on depth and/or magnitude
-                if (depth=="" || typeof depth=="undefined" || mag=="" || typeof mag=="undefined")
+                if (depth == "" || typeof depth=="undefined" || mag=="" || typeof mag=="undefined")
                     continue;
-						
+                
                 // choose icon size base on magnitude of the equake event
                 size = Math.round(4+((mag)*2)/4);
                         
                 if (size<4) 
                     size = 4;
-                if (size>12) 
-                    size = 12;
+                if (size>14) 
+                    size = 14;
                         
                 // choose icon image base on depth of the equake event
                 if (depth <= 2.5) 
-                    color = '../img/blankCircles/pin_org.png'; // Red
+                    color = '../img/blankCircles/pin_re.png'; // Red
                 else if (depth >2.5 && depth <= 5) 
-                    color = '../img/blankCircles/pin_re.png'; // YELLOW
+                    color = '../img/blankCircles/pin_org.png'; // Orange
                 else if (depth >5 && depth <= 10) 
-                    color = '../img/blankCircles/pin_dge.png'; // DARK BLUE
-                else if (depth >10 && depth <= 50) 
+                    color = '../img/blankCircles/pin.ye.png'; // Yellow
+                else if (depth >10 && depth <= 15) 
+                    color ='../img/blankCircles/pin_ge.png'; // Dark Green
+                else if (depth >15 && depth <= 25) 
+                    color ='../img/blankCircles/pin_lbe.png'; // Light BLUE
+                else if (depth >25 && depth <= 40) 
                     color ='../img/blankCircles/pin_be.png'; // BLUE
                 else 
-                    color = '../img/blankCircles/pin_lbe.png'; // Green 
-							
-						
-                // set icon
-                icon = new google.maps.MarkerImage(color,null,null,null,new google.maps.Size(size,size));
-                        
-                // set marker
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(lat,lon),
-                    map: map[mapUsed],
-                    icon:icon
-                });
-                        
-                // the content for the popup window when the mouse hovers
-                // over this equake event
-                var contentText = "<table><tr><td><b>Lat</b> </td><td>" + 
-                    lat + "</td></tr><tr><td><b>Lon</b></td><td>" + 
-                    lon + "</td></tr><tr><td><b>Time</b></td><td>" + 
-                    time + "</td></tr><tr><td><b>Depth</b></td><td>" + 
-                    depth + "</td></tr><tr><td><b>Magnitude</b></td><td>" 
-                    + mag+"</td></tr></table>";
-                var infoWindow = new google.maps.InfoWindow({content:contentText});
-			
+                    color = '../img/blankCircles/pin_dbe.png'; // Dark Blue
+		if(i < parseInt(document.getElementById('Evn' + mapUsed).value)){
+                    				
+                    // set icon
+                    icon = new google.maps.MarkerImage(color,null,null,null,new google.maps.Size(size,size));
+
+                    // set marker
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(lat,lon),
+                        map: map[mapUsed],
+                        icon:icon
+                    });
+
+                    // the content for the popup window when the mouse hovers
+                    // over this equake event
+                    var contentText = "<table><tr><td><b>Lat</b> </td><td>" + 
+                        lat + "</td></tr><tr><td><b>Lon</b></td><td>" + 
+                        lon + "</td></tr><tr><td><b>Time</b></td><td>" + 
+                        time + "</td></tr><tr><td><b>Depth</b></td><td>" + 
+                        depth + "</td></tr><tr><td><b>Magnitude</b></td><td>" 
+                        + mag+"</td></tr></table>";
+                    var infoWindow = new google.maps.InfoWindow({content:contentText});
+                }	
                 //infoWindow.open(map[mapUsed],marker);
                 // store the quake data in the earthquakes[cavw] object
                 earthquakes[cavw][index]=[];
@@ -1988,70 +1996,12 @@ if ($dev) {
         }
     }
     /*
-     * hide all the markers when user closes the Earthquakes panel section
-     * This function is accomplished by setting the map of each pointer
-     * to null value
-     */
-    function hideMarkers(o){
-        var mapUsed = o.mapUsed;
-        if(volcanoInfo[mapUsed] == undefined) return;
-        var cavw = volcanoInfo[mapUsed].cavw;
-        for (var i in earthquakes[cavw])
-            if (typeof earthquakes[cavw][i]['marker']!="undefined")
-                earthquakes[cavw][i]['marker'].setMap(null);
-    }
-    /*
-     * Function to format the X-axis for Latitude and Longtitude axises
-     * This function will set axis.tickDecimals number after the '.' and
-     * append the ' km' part to each tick label.
-     */
-    function kmFormatter(v, axis){
-        return v.toFixed(axis.tickDecimals) + " km";
-    }
-    /*
-     * Compute the distant of the two point on the earth surface based on their
-     * latitude and longitude vales. 
-     * lat,lon is the position of the first point
-     * vlat,vlon is the postion of the second point
-     * option: calculate the distance following the latitude and longitude side
-     */
-    function calculateD(lat,lon,vlat,vlon,option){
-        var R = 6371; //earth radius in kilometer
-        // 
-        if (typeof lat=="undefined" || typeof lon=="undefined" || typeof vlat=="undefined" || typeof vlon=="undefined"){
-            return 0;
-        }
-        var dLat, dLon, diff, tlat1, tlat2;
-        switch (option){
-            case 0:
-                dLat = 0;
-                dLon = toRad(lon-vlon);
-                tlat1 = toRad(vlat);
-                tlat2 = toRad(vlat);
-                diff = lon - vlon;
-                break;
-            case 1:
-                dLon = 0;
-                dLat = toRad(lat-vlat);
-                diff = lat - vlat;
-                tlat1 = toRad(vlat);
-                tlat2 = toRad(lat);
-                break;
-        }
-        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(tlat1) * Math.cos(tlat2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        var d = R * c;
-        if ((diff<0&&diff>-180)||diff>90)
-            d = -d;
-        return d;
-    }
-    /*
      * Plot the equake data
      * The volcano to draw the earthquake data is determined using the cavw and
      * mapUsed parameter
      */
     function plotEarthquakeData(cavw, eqtype, mapUsed){
+        var numberOfEarthquakes = parseInt(document.getElementById('Evn' + mapUsed).value);
         // skip this function if we can not find the data to draw
         if(!earthquakes[cavw]) 
             return;
@@ -2090,6 +2040,7 @@ if ($dev) {
             yaxis:{
                 tickFormatter : kmFormatter,
                 tickDecimals: 0,
+                min: -30,
                 labelWidth: 25
             },
             xaxis:{
@@ -2116,6 +2067,7 @@ if ($dev) {
             yaxis:{
                 tickFormatter: kmFormatter,
                 tickDecimals:0,
+                min: -30,
                 labelWidth:25
             },
             xaxis:{position:"top", mode:"time",timeformat:"%d/%m/%y",ticks:4},
@@ -2127,12 +2079,11 @@ if ($dev) {
         // The latitude and longitude of the volcano
         var time, latPlot, lonPlot, timePlot;
                 
-        var lat, lon;
         // get the data for each earthquakes, put them into arrays for 
         // flot library to draw
+        var counter = 0;
         for (var i in earthquakes[cavw]){
-            lat = earthquakes[cavw][i]['lat'];
-            lon = earthquakes[cavw][i]['lon'];
+            if(counter > numberOfEarthquakes) break;
             // skip this value when there is no latitude or longitude value 
             // for them
             if(typeof lat == 'undefined' || typeof lon == 'undefined')
@@ -2148,8 +2099,11 @@ if ($dev) {
             
             // the timestampe of the event
             time = earthquakes[cavw][i]['timestamp'];
-            if(time == 'undefined') continue;
+            if(time == undefined) 
+                continue;
             
+            // count the number of even to display
+            counter++;
             // set lat, lon coordination
             latArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth']]);
             lonArray.push([earthquakes[cavw][i]['lonDistance'],-earthquakes[cavw][i]['depth']]);
@@ -2158,12 +2112,14 @@ if ($dev) {
             //if time is not convertible by javascript native functions
             //then use own-created function
             if(isNaN(time)){
-                time = earthquakes[cavw][i]['time'];
+                time = earthquakes[cavw][i]['timestamp'];
                 time = new Date(time.substring(0,4),parseInt(time.substring(5,7))-1,time.substring(8,10),time.substring(11,13),time.substring(14,16),time.substring(17,19),0);
                 time = time.getTime();
             }
+            
             timeArray.push([time,-earthquakes[cavw][i]['depth']]);
         }
+        
         // prepare the data object for the plot functions
         latPlot = [{
                 data:latArray
@@ -2229,6 +2185,66 @@ if ($dev) {
         });
         $('#2DEquakeFlotGraph' + mapUsed).show();
     }  
+    /*
+     * hide all the markers when user closes the Earthquakes panel section
+     * This function is accomplished by setting the map of each pointer
+     * to null value
+     */
+    function hideMarkers(o){
+        var mapUsed = o.mapUsed;
+        if(volcanoInfo[mapUsed] == undefined) return;
+        var cavw = volcanoInfo[mapUsed].cavw;
+        for (var i in earthquakes[cavw])
+            if (typeof earthquakes[cavw][i]['marker']!="undefined")
+                earthquakes[cavw][i]['marker'].setMap(null);
+    }
+    /*
+     * Function to format the X-axis for Latitude and Longtitude axises
+     * This function will set axis.tickDecimals number after the '.' and
+     * append the ' km' part to each tick label.
+     */
+    function kmFormatter(v, axis){
+        return v.toFixed(axis.tickDecimals) + " km";
+    }
+    /*
+     * Compute the distant of the two point on the earth surface based on their
+     * latitude and longitude vales. 
+     * lat,lon is the position of the first point
+     * vlat,vlon is the postion of the second point
+     * option: calculate the distance following the latitude and longitude side
+     */
+    function calculateD(lat,lon,vlat,vlon,option){
+        var R = 6371; //earth radius in kilometer
+        // 
+        if (typeof lat=="undefined" || typeof lon=="undefined" || typeof vlat=="undefined" || typeof vlon=="undefined"){
+            return 0;
+        }
+        var dLat, dLon, diff, tlat1, tlat2;
+        switch (option){
+            case 0:
+                dLat = 0;
+                dLon = toRad(lon-vlon);
+                tlat1 = toRad(vlat);
+                tlat2 = toRad(vlat);
+                diff = lon - vlon;
+                break;
+            case 1:
+                dLon = 0;
+                dLat = toRad(lat-vlat);
+                diff = lat - vlat;
+                tlat1 = toRad(vlat);
+                tlat2 = toRad(lat);
+                break;
+        }
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(tlat1) * Math.cos(tlat2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        if ((diff<0&&diff>-180)||diff>90)
+            d = -d;
+        return d;
+    }
+    
     /*
      * Draw the equake graphs under the equake panels
      */
