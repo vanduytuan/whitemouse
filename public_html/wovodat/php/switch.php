@@ -1,8 +1,31 @@
 <?php
 
-if (isset($_GET['get'])) {
-    $get = $_GET['get'];
+if (isset($_GET['get']) || isset($_POST['get'])) {
+    if(isset($_GET['get']) )
+            $get = $_GET['get'];
+    else $get = $_POST['get'];
     switch ($get) {
+        case 'OwnerList':
+            $ownerList = $_REQUEST['ownerList'];
+            include_once 'Wovodat.php';
+            $wovodat = new Wovodat();
+            $wovodat->getOwnerList($ownerList);
+            break;
+        case 'Download':
+            $key = $_GET['key'];
+            if ($key == 'KJH234234jhj') {
+                $file = realpath(dirname(__FILE__) . '/../..') . '/' . $_GET['file'];
+                $content = file_get_contents($file);
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename=' . basename($file));
+                header('Content-Transfer-Encoding: binary');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                header('Pragma: public');
+                echo $content;
+            }
+            break;
         case 'VolcanoList':
             include_once 'Wovodat.php';
             $wovodat = new Wovodat();
