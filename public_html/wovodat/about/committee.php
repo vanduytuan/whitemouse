@@ -1,5 +1,5 @@
 <?php
-// Start session
+// Start session 
 	session_start();
 	// Regenerate session ID
 	session_regenerate_id(true);
@@ -67,7 +67,7 @@
 					<tr>
 						<td align="right" valign="top" width="20">3</td>
 						<td valign="top" width="155">Carniel, Roberto</td>
-						<td valign="top" width="270">Università di Udine, IT</td>
+						<td valign="top" width="270">Universitï¿½ di Udine, IT</td>
 						<td valign="top" width="20">&nbsp</td>
 						<td valign="top">Nov 2006</td>
 					</tr>
@@ -261,7 +261,7 @@
 													</tr>
 													<tr>
 														<td align="right" valign="top" width="20"></td>
-														<td valign="top" width="155">Luhr, Jim †</td>
+														<td valign="top" width="155">Luhr, Jim ï¿½</td>
 														<td valign="top" width="270">GVP, Smithsonian Institution, USA</td>
 						<td valign="top" width="20">&nbsp</td>
 														<td valign="top">Nov 2006 - Jan 2007</td>
