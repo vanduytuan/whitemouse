@@ -582,7 +582,7 @@ if (strpos($dirname, "WOVOdat") > 0) {
                 var code = value[2];
                 var component = value[3];
                 if(obj.checked){
-                    var count = 0;
+                    var count = 0; 
                     for(var i in graphs){
                         var s = side(i);
                         if(s == tableId)
@@ -1942,7 +1942,7 @@ if ($dev) {
                     color ='../img/blankCircles/pin_be.png'; // BLUE
                 else 
                     color = '../img/blankCircles/pin_dbe.png'; // Dark Blue
-		if(i < parseInt(document.getElementById('Evn' + mapUsed).value)){
+                if(i < parseInt(document.getElementById('Evn' + mapUsed).value)){
                     				
                     // set icon
                     icon = new google.maps.MarkerImage(color,null,null,null,new google.maps.Size(size,size));
@@ -2027,12 +2027,18 @@ if ($dev) {
         // of Flot to see the meaning of the each value
         var plotOptions = {
             legend:{position:"nw"},
-            series:{points:{show:true,radius: 1.0}},
-            colors:["#3a4cb2"],
+            series:{
+                points:{
+                    show:true,
+                    lineWidth: 1,
+                    symbol: drawMagnitude,
+                    fill: false
+                }
+            },
             grid:{
                 backgroundColor:{colors:["#f3ffed","#f3ffdc"]},
                 // this option is for changing the color of the border
-                borderColor: ["white"],
+                borderColor: "#9C9C9C",
                 clickable:true,
                 hoverable:true,
                 autoHighlight:true
@@ -2040,26 +2046,40 @@ if ($dev) {
             yaxis:{
                 tickFormatter : kmFormatter,
                 tickDecimals: 0,
-                min: -30,
+                min: -20,
                 labelWidth: 25
             },
             xaxis:{
                 position:"top",
                 tickDecimals:0,
+                max: 10,
+                min: -10,
                 tickFormatter : kmFormatter
             },
             zoom:{ interactive: true},
-            pan: {interactive: true}
+            pan: {interactive: true},
+            shadowSize: 0
         };
+        function drawMagnitude(ctx, x, y, radius, shadow, realRadius, color){
+            ctx.strokeStyle = color;
+            ctx.arc(x,y,realRadius,0,shadow ? Math.PI : Math.PI * 2);
+        }
         // Options for drawing time view. 
         var timeOptions = {
-            legend:{position:"nw"},
-            series:{points:{show:true,radius: 1.0}},
+            legend:{position:"Time"},
+            series:{
+                points:{
+                    show:true,
+                    lineWidth: 0,
+                    symbol: drawMagnitude,
+                    fill: false
+                }
+            },
             colors:["#3a4cb2"],
             grid:{
                 backgroundColor:{colors:["#f3ffed","#f3ffdc"]},
                 // this option is for changing the color of the border
-                borderColor: ["white"],
+                borderColor: "#9C9C9C",
                 clickable:true,
                 hoverable:true,
                 autoHighlight:true
@@ -2072,7 +2092,8 @@ if ($dev) {
             },
             xaxis:{position:"top", mode:"time",timeformat:"%d/%m/%y",ticks:4},
             zoom:{ interactive: true},
-            pan: {interactive: true}
+            pan: {interactive: true},
+            shadowSize: 0
         }
         // Arrays that store data for the 3 graphs that we are about to draw.
         var latArray = new Array(), lonArray = new Array(), timeArray = new Array();
@@ -2082,6 +2103,7 @@ if ($dev) {
         // get the data for each earthquakes, put them into arrays for 
         // flot library to draw
         var counter = 0;
+        var sizeOfEquakeDot, color, depth;
         for (var i in earthquakes[cavw]){
             if(counter > numberOfEarthquakes) break;
             // skip this value when there is no latitude or longitude value 
@@ -2104,9 +2126,20 @@ if ($dev) {
             
             // count the number of even to display
             counter++;
+            sizeOfEquakeDot = earthquakes[cavw][i]['mag'];
+            if(sizeOfEquakeDot < 2) sizeOfEquakeDot = 2;
+            
+            console.log(sizeOfEquakeDot);
+            
+            depth = earthquakes[cavw][i]['depth'];
+            if (depth <= 0) depth = 0;
+            if (depth > 40) depth = 40;
+            
+            
+            color = generateColorCode(depth);
             // set lat, lon coordination
-            latArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth']]);
-            lonArray.push([earthquakes[cavw][i]['lonDistance'],-earthquakes[cavw][i]['depth']]);
+            latArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth'],,,,,sizeOfEquakeDot,color]);
+            lonArray.push([earthquakes[cavw][i]['lonDistance'],-earthquakes[cavw][i]['depth'],,,,,sizeOfEquakeDot,color]);
             
             // set time coordination
             //if time is not convertible by javascript native functions
@@ -2117,7 +2150,22 @@ if ($dev) {
                 time = time.getTime();
             }
             
-            timeArray.push([time,-earthquakes[cavw][i]['depth']]);
+            timeArray.push([time,-earthquakes[cavw][i]['depth'],,,,,sizeOfEquakeDot,color]);
+            function generateColorCode(depth){
+                if(depth > 20) depth = 20;
+                var r,g,b;
+                if(depth <= 10){
+                    r = 255;
+                    b = 0;
+                }else{
+                    r = 0;
+                    depth = 20 - depth;
+                    b = 255;
+                }
+                g = depth / 10.0 * 255;
+                g = parseInt(g);
+                return 'rgb(' + r + ',' + g + ',' + b + ')';
+            }
         }
         
         // prepare the data object for the plot functions

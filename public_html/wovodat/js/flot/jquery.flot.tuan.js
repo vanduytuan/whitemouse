@@ -1641,6 +1641,7 @@
 
             for (var i = 0; i < series.length; ++i) {
                 executeHooks(hooks.drawSeries, [ctx, series[i]]);
+                
                 drawSeries(series[i]);
             }
 
@@ -2192,19 +2193,25 @@
         function drawSeriesPoints(series) {
             function plotPoints(datapoints, radius, fillStyle, offset, shadow, axisx, axisy, symbol) {
                 var points = datapoints.points, ps = datapoints.pointsize;
-
+                var realRadius;
+                var color;
+                var strokeStyle = ctx.strokeStyle;
                 for (var i = 0; i < points.length; i += ps) {
                     var x = points[i], y = points[i + 1];
+                    
                     if (x == null || x < axisx.min || x > axisx.max || y < axisy.min || y > axisy.max)
                         continue;
-                    
                     ctx.beginPath();
+                    
                     x = axisx.p2c(x);
                     y = axisy.p2c(y) + offset;
                     if (symbol == "circle")
                         ctx.arc(x, y, radius, 0, shadow ? Math.PI : Math.PI * 2, false);
-                    else
-                        symbol(ctx, x, y, radius, shadow);
+                    else{
+                        realRadius = parseInt(series.data[i/ps][6]);
+                        color = series.data[i/ps][7];
+                        symbol(ctx, x, y, radius, shadow, realRadius, color);
+                    }
                     ctx.closePath();
                     
                     if (fillStyle) {
@@ -2213,6 +2220,7 @@
                     }
                     ctx.stroke();
                 }
+                ctx.strokeStyle = ctx.strokeStyle;
             }
             
             ctx.save();
@@ -2728,12 +2736,12 @@
             var radius = 1.5 * pointRadius,
             x = axisx.p2c(x),
             y = axisy.p2c(y);
-            
             octx.beginPath();
             if (series.points.symbol == "circle")
                 octx.arc(x, y, radius, 0, 2 * Math.PI, false);
-            else
+            else{
                 series.points.symbol(octx, x, y, radius, false);
+            }
             octx.closePath();
             octx.stroke();
         }

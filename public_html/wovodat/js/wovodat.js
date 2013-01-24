@@ -427,6 +427,7 @@ Wovodat.loadEarthquakes = function(o){
         +"&cavw="+volInfo.cavw+"&lat="+volInfo.lat
         +"&lon="+volInfo.lon+"&elev="+volInfo.elev,
         success:function(html){
+            console.log(html);
             if(html.indexOf('Can\'t') >= 0) 
                 return;
             if(handlers[0])

@@ -17,7 +17,18 @@ function findTableSize() {
             Average Size Per Row: ' . $array[Avg_row_length] . '<br /><br />';
     }
 }
-
+function findElement(){
+    include "php/include/db_connect_view.php";
+    $result = mysql_query("select distinct sn_code from sn");
+    while ($array = mysql_fetch_array($result)) {
+        echo $array[0] . "<br/>";
+    }
+    $result = mysql_query("select distinct sd_evn_code from sd_evn");
+    while ($array = mysql_fetch_array($result)) {
+        echo $array[0] . "<br/>";
+    }
+}
+findElement();
 ?>
 <html>
     <head>

@@ -1318,7 +1318,48 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
     }
 
     private function getEarthquakeQuery($quantity,$latitude,$longitude,$startDate,$endDate,$startDepth,$endDepth){
+        $quakeQuery = "SELECT ";
+        if($quantity)
+            $quakeQuery .= "sd_evn_code, ";
+        $quakeQuery .= " sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype FROM sd_evn ";
         
+        $quakeQuery .= " WHERE ABS($latitude - sd_evn_elat) < 1 AND ABS($longitude - sd_evn_elon) < 6 ";
+        
+        $quakeQuery .= " AND SQRT(POW(($latitude - sd_evn_elat)*110, 2) + POW(($longitude - sd_evn_elon) * 111.32 * COS($latitude/57.32), 2))< 30 ";
+        
+        $quakeQuery .= " AND sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() ";
+        
+        if ($date_start && $date_end) {
+            $startDate = preg_split('/\//', $date_start);
+            $endDate = preg_split('/\//', $date_end);
+            $dates = " and sd_evn_time BETWEEN '$startDate[2]/$startDate[0]/$startDate[1]' AND '$endDate[2]/$endDate[0]/$endDate[1]' ";
+            $quakeQuery .= $dates;
+        }
+        
+        if (is_numeric($startDepth) && is_numeric($endDepth)) {
+            $depth = " and sd_evn_edep BETWEEN $startDepth AND $endDepth ";
+            $quakeQuery .= $depth;
+        }
+        
+        if ($eqtype) {
+            $quaketype = " and sd_evn_eqtype = $eqtype ";
+            $quakeQuery .= $quaketype;
+        }
+        
+        $quakeQuery .= " group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc ";
+        if ($quantity) {
+            $limit = " limit $quantity ";
+            $quakeQuery .= $limit;
+        }
+        
+        return $quakeQuery;
+        /*
+        $sql_statement = "select sd_evn_code, sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time,
+            sd_evn_eqtype FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1 
+           and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2) 
+           + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30
+            and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() $dates $depth $quaketype
+            group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc $limit";*/
     }
     public function getEarthquakes($qty, $cavw, $lat, $lon, $elev) {
 //        $quakeQuery = "select sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, 
@@ -1327,14 +1368,15 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
 //           + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30 
 //           and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() 
 //           group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc LIMIT $qty";
-        
+        /*
         $quakeQuery = "select sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, 
            sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1 
            and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2) 
            + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30 
            and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() 
-           group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc";
+           group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc";*/
         
+        $quakeQuery = $this->getEarthquakeQuery("",$lat,$lon,"","","","");
         $getQuakes = mysql_query($quakeQuery) or die(mysql_error());
         $count = 0;
         while ($row = mysql_fetch_array($getQuakes)) {
@@ -1399,56 +1441,66 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
 
         # timestamp text      
         $stamp = "by WOVOdat/EOS";
-
-        # get parameters
-        $vd_id = $_GET['vd_id'];
+        
+        # number of earthquake events
         $qty = $_GET['qty'];
-        if ($qty) {
-            $limit = " limit $qty";
-        }
-        else
-            $limit = "";
+        $limit = "";
+        if ($qty) $limit = " limit $qty";
 
         $date_start = $o['date_start'];
         $date_end = $o['date_end'];
+        
         $dr_start = $o['dr_start'];
         $dr_end = $o['dr_end'];
+        
         $eqtype = $o['eqtype'];
+        
         if ($date_start && $date_end) {
             $startDate = preg_split('/\//', $date_start);
             $endDate = preg_split('/\//', $date_end);
-            $dates = " and c.sd_evn_time BETWEEN '$startDate[2]/$startDate[0]/$startDate[1]' AND '$endDate[2]/$endDate[0]/$endDate[1]' ";
+            $dates = " and sd_evn_time BETWEEN '$startDate[2]/$startDate[0]/$startDate[1]' AND '$endDate[2]/$endDate[0]/$endDate[1]' ";
         }
+        
         $quaketype = "";
-        if ($eqtype) {
+        if ($eqtype) 
             $quaketype = " and sd_evn_eqtype = $eqtype ";
-        }
-        if (is_numeric($dr_start) && is_numeric($dr_end)) {
-            $depth = " and c.sd_evn_edep BETWEEN $dr_start AND $dr_end ";
-        }
+        
+        if (is_numeric($dr_start) && is_numeric($dr_end)) 
+            $depth = " and sd_evn_edep BETWEEN $dr_start AND $dr_end ";
 
         $wkm = $_GET['map_width'];
-        if ($wkm == "") {
+        if ($wkm == "") 
             $wkm = 20;
-        }
 
         $cavw = $o['cavw'];
         $result['cavw'] = $cavw;
-        # delete files older than 1 hour
-        //exec("find $htmroot/$outdir -name 'wovodat.*' \! \\( -newerct '1 hour ago' \\) | xargs rm -rf");
-        #exec("rm -rf $htmroot/$outdir/w*");
-        # SQL query: get the volcano position Lat/Lon, volcano name
+        
+        # SQL query: get id of the volcano close to the position Lat/Lon
         $sql_statement = "select vd_id from vd where vd_cavw = '$cavw'";
         $query = mysql_query($sql_statement);
         $vd_id = mysql_fetch_array($query);
         $vd_id = $vd_id[0];
+        
+        # get Latitude and Longitude
         $result['sql'] = $sql_statement;
         $result['vdid'] = $vd_id;
         $sql_statement = "SELECT vd_inf.vd_inf_slat, vd_inf.vd_inf_slon, vd.vd_name FROM vd, vd_inf WHERE vd.vd_id = vd_inf.vd_id AND vd_inf.vd_id =  '$vd_id'";
         $query = mysql_query($sql_statement);
         $vd_latlon = mysql_fetch_assoc($query);
+        $lon = $vd_latlon['vd_inf_slon'];
+        $lat = $vd_latlon['vd_inf_slat'];
         
         
+        /*
+        $quakeQuery = "select sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, 
+           sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1 
+           and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2) 
+           + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30 
+           and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() 
+           group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc";
+        
+        */
+        /*
         # SQL query: get the data (approximate selection from map width)
         $sql_statement = "(select b.sn_code, c.sd_evn_elat, c.sd_evn_elon, c.sd_evn_edep, c.sd_evn_pmag, 
     c.sd_evn_time, c.sd_evn_eqtype, d.vd_inf_slat, d.vd_inf_slon FROM sn b, sd_evn c, vd_inf d WHERE 
@@ -1460,6 +1512,14 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
     (sqrt(power(d.vd_inf_slat - c.sd_evn_elat, 2) + power(d.vd_inf_slon - c.sd_evn_elon, 2))*111)<=1.5*$wkm 
     ORDER BY c.sd_evn_time DESC $limit)";
         
+        $sql_statement = "select sd_evn_code, sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time,
+            sd_evn_eqtype FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1 
+           and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2) 
+           + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30
+            and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() $dates $depth $quaketype
+            group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc $limit";
+        */
+        $sql_statement = $this->getEarthquakeQuery($qty,$lat,$lon,$date_start,$date_end,$dr_start,$dr_end);
         $query = mysql_query($sql_statement);
 
         # writes the data into a single file
@@ -1794,7 +1854,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             // $3 is sd_evn_elon, $2 is sd_evn_elat, 
             // $4 is sd_evn_edep, $5 is sd_evn_pmag.  
             //
-    // Note: 1. The symbol size for magnitude 1 is 0.06i. So, 
+            // Note: 1. The symbol size for magnitude 1 is 0.06i. So, 
             //          "0.06*$5" is the symbol size for magnitude specified
             //          by $5. . The symbol size is used to show the level of 
             //          magnitude. Also see the function createLegend().

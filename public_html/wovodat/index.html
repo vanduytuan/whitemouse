@@ -1,21 +1,22 @@
 <html>
     <head>
+        <!--[if IE]><script src="excanvas.js"></script><![endif]-->
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/flot/jquery.flot.tuan.js"></script>
         <script type="text/javascript">
-            var a = [];
-            a.push(1);
-            a.push(2);
-            console.log(a);
-            if(1 in a) console.log("1 is in a");
-            if(3 in a) console.log("3 is in a");
-            else console.log("3 is not in a");
+            
+            
         </script>
     </head>
     <body>
-        <div id="body">
-            adfasdfasdfasdf
+        <div id="placeholder" style="height: 200px; width: 500px;background-color: #FF0000;">
+
         </div>
-        <div id="sup">
-            another div
-        </div>
+        <canvas id="myCanvas" width="200" height="200">
+
+        </canvas>
+        <canvas id="canvas" width="200" height="200">
+
+        </canvas>
     </body>
 </html>
