@@ -180,7 +180,7 @@ if (strpos($dirname, "WOVOdat") > 0) {
                         }
                     });
                     $("#DepthLow1").val(0);
-                    $("#DepthHigh1").val(500);
+                    $("#DepthHigh1").val(40);
                     $("#SDate1").change(function(){adjustSlider("1");});
                     $("#EDate1").change(function(){adjustSlider("1");});
                     $("#SDate1").val("01/01/1900");
@@ -290,7 +290,7 @@ if (strpos($dirname, "WOVOdat") > 0) {
                     $("#EDate2").datepicker({changeMonth:true,changeYear:true,yearRange:"1900:2100"});
                     //Create slider for earthquake filter form
                     $("#DepthLow2").val(0);
-                    $("#DepthHigh2").val(500);
+                    $("#DepthHigh2").val(40);
                     $("#SDate2").change(function(){adjustSlider("2");});
                     $("#EDate2").change(function(){adjustSlider("2");});
                     var startDate = new Date(1900, 0, 1, 0, 0, 0, 0);
@@ -1866,7 +1866,7 @@ if ($dev) {
                 earthquakes[cavw][i]['available'] = false;
                 continue;
             }
-            if (typeof earthquakes[cavw][i]['marker'] != "undefined" && earthquakes[cavw][i]['time'] != "" && typeof earthquakes[cavw][i]['time'] != "undefined"){
+            if (typeof earthquakes[cavw][i]['marker' + panelUsed] != "undefined" && earthquakes[cavw][i]['time'] != "" && typeof earthquakes[cavw][i]['time'] != "undefined"){
                 var eType = earthquakes[cavw][i]['eqtype'];
                 var eDepth = parseFloat(earthquakes[cavw][i]['depth']);
                 var eTime = parseDateVal(earthquakes[cavw][i]['time']);
@@ -1889,7 +1889,7 @@ if ($dev) {
      * 2012-07-19
      */
     function insertMarkersForEarthquakes(data,cavw, mapUsed){
-        
+        console.log(mapUsed);
         // the function will initialize the earthquake variable when 
         // there is no equake data stored at the client side for a
         // specific volcano. 
@@ -1906,14 +1906,14 @@ if ($dev) {
             while (equakeSet[equakeSet.length-1] == "")
                 equakeSet.length--;
             for (var i in equakeSet){
-                index = Wovodat.trim(equakeSet[i]);
-                nextQuake = index.split(",");
-                lat = nextQuake[0];
-                lon = nextQuake[1];
-                depth = nextQuake[2];
-                mag = nextQuake[3];
-                time = nextQuake[4];
-                type = nextQuake[5];
+                var index = Wovodat.trim(equakeSet[i]);
+                var nextQuake = index.split(",");
+                var lat = nextQuake[0];
+                var lon = nextQuake[1];
+                var depth = nextQuake[2];
+                var mag = nextQuake[3];
+                var time = nextQuake[4];
+                var type = nextQuake[5];
 						
                 // ignore earthquakes that have no information on depth and/or magnitude
                 if (depth == "" || typeof depth=="undefined" || mag=="" || typeof mag=="undefined")
@@ -1954,6 +1954,10 @@ if ($dev) {
                         icon:icon
                     });
 
+                    var marker2 = new google.maps.Marker({
+                        position: new google.maps.LatLng(lat,lon),
+                        icon:icon
+                    })
                     // the content for the popup window when the mouse hovers
                     // over this equake event
                     var contentText = "<table><tr><td><b>Lat</b> </td><td>" + 
@@ -1963,11 +1967,14 @@ if ($dev) {
                         depth + "</td></tr><tr><td><b>Magnitude</b></td><td>" 
                         + mag+"</td></tr></table>";
                     var infoWindow = new google.maps.InfoWindow({content:contentText});
+                    
                 }	
                 //infoWindow.open(map[mapUsed],marker);
                 // store the quake data in the earthquakes[cavw] object
                 earthquakes[cavw][index]=[];
-                earthquakes[cavw][index]['marker']= marker;
+                earthquakes[cavw][index]['marker' + mapUsed]= marker;
+                earthquakes[cavw][index]['marker' + (3 - mapUsed)]= marker2;
+                
                 earthquakes[cavw][index]['infoWindow']= infoWindow;
                 earthquakes[cavw][index]['eqtype'] = type;
                 earthquakes[cavw][index]['lat']=lat;
@@ -1978,18 +1985,45 @@ if ($dev) {
                 earthquakes[cavw][index]['depth']=depth;
                 earthquakes[cavw][index]['latDistance'] = calculateD(lat,lon,vlat,vlon,0);
                 earthquakes[cavw][index]['lonDistance'] = calculateD(lat,lon,vlat,vlon,1);
-                earthquakes[cavw][index]['timestamp'] = Date.parse(time);
+                // time in the format YYYY-MM-DD HH:MM:SS
+                function convertDate(time){
+                    function toInt(value){
+                        if(value[0] == '0'){
+                            value = value[1] + "";
+                        }
+                        value = parseInt(value);
+                        return value;
+                    }
+                    
+                    var time1 = time.split(" ");
+                    var date1 = time1[0];
+                    var hour1 = time1[1];
+                    var date2 = date1.split("-");
+                    var year = date2[0];
+                    var month = toInt(date2[1]);
+                    month = month - 1;
+                    var day = toInt(date2[2]);
+                    var hour2 = hour1.split(":");
+                    var hh = toInt(hour2[0]);
+                    var mm = toInt(hour2[1]);
+                    var ss = toInt([2]);
+                    var dd = new Date();
+                    dd.setUTCFullYear(year, month, day);
+                    dd.setUTCHours(hh, mm, ss, 0);
+                    return dd;
+                }
+                earthquakes[cavw][index]['timestamp'] = convertDate(time);
             }
         }
         else{
             // if we already had the cached data, just display it in the specific 
             // map
             for (var i in earthquakes[cavw]){
-                if (typeof earthquakes[cavw][i]['marker']!="undefined"){
+                if (typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
                     if (earthquakes[cavw][i]['available'])
-                        earthquakes[cavw][i]['marker'].setMap(map[mapUsed]);
+                        earthquakes[cavw][i]['marker' + mapUsed].setMap(map[mapUsed]);
                     else{
-                        earthquakes[cavw][i]['marker'].setMap(null);
+                        earthquakes[cavw][i]['marker' + mapUsed].setMap(null);
                     }	
                 }	
             }
@@ -2087,7 +2121,7 @@ if ($dev) {
             yaxis:{
                 tickFormatter: kmFormatter,
                 tickDecimals:0,
-                min: -30,
+                min: -40,
                 labelWidth:25
             },
             xaxis:{position:"top", mode:"time",timeformat:"%d/%m/%y",ticks:4},
@@ -2121,36 +2155,21 @@ if ($dev) {
             
             // the timestampe of the event
             time = earthquakes[cavw][i]['timestamp'];
-            if(time == undefined) 
+            if(time == undefined || isNaN(time)) 
                 continue;
             
             // count the number of even to display
             counter++;
             sizeOfEquakeDot = earthquakes[cavw][i]['mag'];
             if(sizeOfEquakeDot < 2) sizeOfEquakeDot = 2;
+            if(sizeOfEquakeDot > 6) sizeOfEquakeDot = 6;
+            sizeOfEquakeDot *= 1.2;
             
-            console.log(sizeOfEquakeDot);
             
             depth = earthquakes[cavw][i]['depth'];
             if (depth <= 0) depth = 0;
             if (depth > 40) depth = 40;
             
-            
-            color = generateColorCode(depth);
-            // set lat, lon coordination
-            latArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth'],,,,,sizeOfEquakeDot,color]);
-            lonArray.push([earthquakes[cavw][i]['lonDistance'],-earthquakes[cavw][i]['depth'],,,,,sizeOfEquakeDot,color]);
-            
-            // set time coordination
-            //if time is not convertible by javascript native functions
-            //then use own-created function
-            if(isNaN(time)){
-                time = earthquakes[cavw][i]['timestamp'];
-                time = new Date(time.substring(0,4),parseInt(time.substring(5,7))-1,time.substring(8,10),time.substring(11,13),time.substring(14,16),time.substring(17,19),0);
-                time = time.getTime();
-            }
-            
-            timeArray.push([time,-earthquakes[cavw][i]['depth'],,,,,sizeOfEquakeDot,color]);
             function generateColorCode(depth){
                 if(depth > 20) depth = 20;
                 var r,g,b;
@@ -2166,6 +2185,24 @@ if ($dev) {
                 g = parseInt(g);
                 return 'rgb(' + r + ',' + g + ',' + b + ')';
             }
+            
+            color = generateColorCode(depth);
+            // set lat, lon coordination
+            latArray.push([earthquakes[cavw][i]['latDistance'],-earthquakes[cavw][i]['depth'],,,,,sizeOfEquakeDot,color]);
+            lonArray.push([earthquakes[cavw][i]['lonDistance'],-earthquakes[cavw][i]['depth'],,,,,sizeOfEquakeDot,color]);
+            
+            // set time coordination
+            //if time is not convertible by javascript native functions
+            //then use own-created function
+            if(isNaN(time)){
+                time = earthquakes[cavw][i]['timestamp'];
+                console.log(time);
+                time = new Date(time.substring(0,4),parseInt(time.substring(5,7))-1,time.substring(8,10),time.substring(11,13),time.substring(14,16),time.substring(17,19),0);
+                time = time.getTime();
+            }
+            
+            timeArray.push([time,-earthquakes[cavw][i]['depth'],,,,,sizeOfEquakeDot,color]);
+            
         }
         
         // prepare the data object for the plot functions
@@ -2243,8 +2280,8 @@ if ($dev) {
         if(volcanoInfo[mapUsed] == undefined) return;
         var cavw = volcanoInfo[mapUsed].cavw;
         for (var i in earthquakes[cavw])
-            if (typeof earthquakes[cavw][i]['marker']!="undefined")
-                earthquakes[cavw][i]['marker'].setMap(null);
+            if (typeof earthquakes[cavw][i]['marker' + mapUsed]!="undefined")
+                earthquakes[cavw][i]['marker' + mapUsed].setMap(null);
     }
     /*
      * Function to format the X-axis for Latitude and Longtitude axises
@@ -2307,6 +2344,7 @@ if ($dev) {
         else if(id.indexOf('2DGMT') >0)
             drawEquake2DGMT(o);
         else drawEquake2D(o);
+        map[o.mapUsed].setZoom(10);
     }
     /*
      * Help function to draw equake in 2 dimensions using Flot
@@ -2362,7 +2400,6 @@ if ($dev) {
             $("#imageLink",placeholder).attr('href',directory + "/" + ar['imageSrc']);
             $("#image",placeholder).attr('src',directory + "/" + ar['imageSrc']);
             $("#gifImage",placeholder).attr('href',directory + "/" + ar['imageSrc']);
-            $("#asciiDataFile",placeholder).attr('href',ar['dataFile']);
             $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
             placeholder.style.display = 'block';
         }
@@ -2454,7 +2491,6 @@ if ($dev) {
                     
                     
             $("#gifImage",placeholder).attr('href',ar['animationImage']);
-            $("#asciiDataFile",placeholder).attr('href',ar['dataFile']);
             $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
             placeholder.show();
         }
@@ -2485,14 +2521,12 @@ if ($dev) {
         $("#imageLink",tmp).attr('href','');
         $("#image",tmp).attr('src','');
         $("#gifImage",tmp).attr('href','');
-        $("#asciiDataFile",tmp).attr('href','');
         $("#gmtScriptFile",tmp).attr('href','');
         tmp = $("#3DGMTEquakeGraph" + mapUsed,placeholder);
         tmp.hide()
         $("#imageLink",tmp).attr('href','');
         $("#image",tmp).attr('src','');
         $("#gifImage",tmp).attr('href','');
-        $("#asciiDataFile",tmp).attr('href','');
         $("#gmtScriptFile",tmp).attr('href','');
     } 
             
@@ -2876,7 +2910,7 @@ if ($dev) {
                                 <tr id="EquakePanel1">
                                     <td style="vertical-align:top">
                                         <button class="EquakePanel1" id="FilterSwitch1">Show Filter</button>
-                                        <form id="FormFilter1" onSubmit="return false;" style="display:none">
+                                        <form id="FormFilter1" class="FormFilter" onSubmit="return false;" style="display:none">
                                             <table>
                                                 <tr>
                                                     <td>
@@ -2918,7 +2952,7 @@ if ($dev) {
                                                     <td>
                                                         <input type="text" id="DepthLow1" value="0" size=4/>
                                                         <label for="DepthHigh1">High:</label>
-                                                        <input type="text" id="DepthHigh1" value="500" size=4/>
+                                                        <input type="text" id="DepthHigh1" value="40" size=4/>
                                                     </td>
                                                 </tr>
 
@@ -3012,7 +3046,6 @@ if ($dev) {
                                                 <div id="additionalInfomation">
                                                     Additional data:
                                                     <a id="gifImage" href="" target="_blank">Image file</a>, 
-                                                    <a id="asciiDataFile" href="" target="_blank">ASCII data file</a>, 
                                                     <a id="gmtScriptFile" href="" target="_blank">GMT script file</a><br/> 
                                                 </div>
                                             </div>
@@ -3045,7 +3078,6 @@ if ($dev) {
                                                 <div id="additionalInfomation">
                                                     Additional data:
                                                     <a id="gifImage" href=""  target="_blank">GIF image file</a>, 
-                                                    <a id="asciiDataFile" href="" target="_blank">ASCII data file</a>, 
                                                     <a id="gmtScriptFile" href="" target="_blank">GMT script file</a><br/> 
                                                 </div>
                                             </div>
@@ -3225,7 +3257,7 @@ if ($dev) {
                                 <tr id="EquakePanel2">
                                     <td style="vertical-align:top">
                                         <button class="EquakePanel2" id="FilterSwitch2">Show Filter</button>
-                                        <form id="FormFilter2" onSubmit="return false;" style="display:none">
+                                        <form id="FormFilter2" class="FormFilter" onSubmit="return false;" style="display:none">
                                             <table>
                                                 <tr>
                                                     <td>
@@ -3267,7 +3299,7 @@ if ($dev) {
                                                     <td>
                                                         <input type="text" id="DepthLow2" value="0" size=4/>
                                                         <label for="DepthHigh2">High:</label>
-                                                        <input type="text" id="DepthHigh2" value="500" size=4/>
+                                                        <input type="text" id="DepthHigh2" value="40" size=4/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -3361,7 +3393,6 @@ if ($dev) {
                                                 <div id="additionalInfomation">
                                                     Additional data:
                                                     <a id="gifImage" href="" target="_blank">Image file</a>, 
-                                                    <a id="asciiDataFile" href="" target="_blank">ASCII data file</a>, 
                                                     <a id="gmtScriptFile" href="" target="_blank">GMT script file</a><br/> 
                                                 </div>
                                             </div>
@@ -3394,7 +3425,6 @@ if ($dev) {
                                                 <div id="additionalInfomation">
                                                     Additional data:
                                                     <a id="gifImage" href="" target="_blank">GIF image file</a>, 
-                                                    <a id="asciiDataFile" href="" target="_blank">ASCII data file</a>, 
                                                     <a id="gmtScriptFile" href="" target="_blank">GMT script file</a><br/> 
                                                 </div>
                                             </div>

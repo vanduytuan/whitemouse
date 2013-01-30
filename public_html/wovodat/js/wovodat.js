@@ -427,7 +427,6 @@ Wovodat.loadEarthquakes = function(o){
         +"&cavw="+volInfo.cavw+"&lat="+volInfo.lat
         +"&lon="+volInfo.lon+"&elev="+volInfo.elev,
         success:function(html){
-            console.log(html);
             if(html.indexOf('Can\'t') >= 0) 
                 return;
             if(handlers[0])
@@ -690,7 +689,6 @@ Wovodat.getDetailedStationData = function(o){
 }
 
 Wovodat.processDetailedData = function(o){
-    console.log(o);
     o.data = Wovodat.fixBigData(Wovodat.highlightNoDataRange(o.data));
     
     var data = o.data;

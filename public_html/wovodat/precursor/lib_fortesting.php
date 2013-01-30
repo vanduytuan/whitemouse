@@ -1,3 +1,5 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <?php
 
 function findTableSize() {
@@ -17,7 +19,8 @@ function findTableSize() {
             Average Size Per Row: ' . $array[Avg_row_length] . '<br /><br />';
     }
 }
-function findElement(){
+
+function findElement() {
     include "php/include/db_connect_view.php";
     $result = mysql_query("select distinct sn_code from sn");
     while ($array = mysql_fetch_array($result)) {
@@ -28,7 +31,6 @@ function findElement(){
         echo $array[0] . "<br/>";
     }
 }
-findElement();
 ?>
 <html>
     <head>
@@ -38,24 +40,48 @@ findElement();
         <script type="text/javascript" src="/js/jqueryui/js/jquery-1.6.4.min.js"></script>
         <script type="text/javascript" src="/js/jqueryui/js/jquery-ui-1.8.21.custom.min.js"></script>
         <script type="text/javascript" src="/js/flot/jquery.flot.tuan.js"></script>
-        <script type="text/javascript" src="/js/jquery.flot.navigate.tuan.js"></script> 
+        <script type="text/javascript" src="/js/flot/jquery.flot.navigate.tuan.js"></script> 
         <script type="text/javascript" src="/js/flot/jquery.flot.selection.js"></script>
         <script type="text/javascript" src="/js/flot/jquery.flot.marks.js"></script>
 
         <script type="text/javascript" src="/js/wovodat.js"></script>
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCQ9kUvUtmawmFJ62hWVsigWFTh3CKUzzM&sensor=false"></script>
         <script type="text/javascript" src="/js/Tooltip_v3.js"></script>
-        <script type="text/javascript" src="/js/jqueryui/js/jquery-1.6.4.min.js"></script>
         <script type="text/javascript">
-            $(function(){
-                var data = [[[1,5],[2,4],[3,1]]];
-                var options = {};
-                if($.plot)
-                    $.plot(document.getElementById('test'),data,options);
+            $(function(){ 
+                var slider = $( "#slider" ).slider({
+                    range: true,
+                    max: 1,
+                    min: -41,
+                    values: [-15,-10],
+                    slide:function(event,ui){
+                        document.getElementById('value').innerHTML = "[" + $(slider).slider("values",0) + "," + slider.slider("values",1) + "]"; 
+                    }
+                });
+            });
+            
+            $(function() {
+                $( "#slider-range" ).slider({
+                    range: true,
+                    min: 0,
+                    max: 500,
+                    values: [ 75, 300 ],
+                    slide: function( event, ui ) {
+                        $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+                    }
+                });
             });
         </script>
+        <style text="text/css">
+            #slider .ui-slider-range{
+                background-color: red;
+            }
+        </style>
     </head>
     <body>
-        <div id="test" style="height:200px; width: 500px"></div>
+        <div id="slider" style="width: 100px;margin-left: 10px;"></div>
+        <div id="value"></div>
+        <div id="low"></div>
+        <div id="slider-range"></div>
     </body>
 </html>

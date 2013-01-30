@@ -1532,7 +1532,6 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             $nb++;
         }
         $result['numberOfEvents'] = $nb;
-        $result['dataFile'] = "$htmout/$tmp.txt";
         $result['gmtScriptFile'] = "$htmout/$tmp.gmt";
         fclose($fh);
 
@@ -1741,7 +1740,6 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             $nb++;
         }
         $result['numberOfEvents'] = $nb;
-        $result['dataFile'] = "$htmout/$tmp.txt";
         $result['gmtScriptFile'] = "$htmout/$tmp.gmt";
         $result['animationImage'] = "$htmout/$tmp.gif";
         fclose($fh);
