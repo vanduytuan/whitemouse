@@ -1317,11 +1317,11 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         ini_set('memory_limit', '100M');
     }
 
-    private function getEarthquakeQuery($quantity,$latitude,$longitude,$startDate,$endDate,$startDepth,$endDepth){
+    private function getEarthquakeQuery($quantity,$latitude,$longitude,$startDate,$endDate,$startDepth,$endDepth,$eqtype){
         $quakeQuery = "SELECT ";
         if($quantity)
             $quakeQuery .= "sd_evn_code, ";
-        $quakeQuery .= " sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype FROM sd_evn ";
+        $quakeQuery .= " sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn ";
         
         $quakeQuery .= " WHERE ABS($latitude - sd_evn_elat) < 1 AND ABS($longitude - sd_evn_elon) < 6 ";
         
@@ -1329,9 +1329,9 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         
         $quakeQuery .= " AND sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() ";
         
-        if ($date_start && $date_end) {
-            $startDate = preg_split('/\//', $date_start);
-            $endDate = preg_split('/\//', $date_end);
+        if ($startDate && $endDate) {
+            $startDate = preg_split('/\//', $startDate);
+            $endDate = preg_split('/\//', $endDate);
             $dates = " and sd_evn_time BETWEEN '$startDate[2]/$startDate[0]/$startDate[1]' AND '$endDate[2]/$endDate[0]/$endDate[1]' ";
             $quakeQuery .= $dates;
         }
@@ -1376,7 +1376,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
            and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() 
            group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc";*/
         
-        $quakeQuery = $this->getEarthquakeQuery("",$lat,$lon,"","","","");
+        $quakeQuery = $this->getEarthquakeQuery("",$lat,$lon,"","","","","");
         $getQuakes = mysql_query($quakeQuery) or die(mysql_error());
         $count = 0;
         while ($row = mysql_fetch_array($getQuakes)) {
@@ -1416,13 +1416,10 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         $result = array();
         $htmroot = dirname(__FILE__) . "/..";
         // This path is important for GMT to work, please change this path into where you put it in the main server
-        if (strpos($htmroot, "WOVOdat") > 0) {
-            putenv("PATH=/bin:/usr/bin:/usr/lib/gmt/bin:/usr/lib/gmt/share:/usr/lib/gmt/lib:/usr/lib/gmt/include");
-            putenv("GMTHOME=/usr/lib/gmt");
-        } else {
-            putenv("PATH=/bin:/usr/bin:/usr/local/gmt440/bin:/usr/local/gmt440/share:/usr/local/gmt440/lib:/usr/local/gmt440/include");
-            putenv("GMTHOME=/usr/local/gmt440");
-        }
+        
+        putenv("PATH=/bin:/usr/bin:/usr/lib/gmt/bin:/usr/lib/gmt/share:/usr/lib/gmt/lib:/usr/lib/gmt/include");
+        putenv("GMTHOME=/usr/lib/gmt");
+        
         # defines the public_html root directory (absolute path on the Apache server)
         # subdiretory name
         $outdir = 'output';
@@ -1519,7 +1516,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() $dates $depth $quaketype
             group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc $limit";
         */
-        $sql_statement = $this->getEarthquakeQuery($qty,$lat,$lon,$date_start,$date_end,$dr_start,$dr_end);
+        $sql_statement = $this->getEarthquakeQuery($qty,$lat,$lon,$date_start,$date_end,$dr_start,$dr_end,$eqtype);
         $query = mysql_query($sql_statement);
 
         # writes the data into a single file

@@ -15,5 +15,7 @@ if (getenv("SUDO_USER") != "vanduytuan") {
         header('Location:/precursor/index_unrest.php');
         exit();
     }
+}else{
+    $dev = true;
 }
 ?>

@@ -558,7 +558,7 @@ a.active.trigger {
     font-weight: bold;
 }
 #FilterBtn1,#FilterBtn2,#FilterSwitch1,#FilterSwitch2{
-   
+
     height: 22px;
     font-size: 12px;
 }
@@ -567,5 +567,17 @@ a.active.trigger {
 }
 
 .FormFilter{
-    
+    margin-left: 8px;
+    display: block;
+    border: 1px solid #E4E4E4;
+    padding: 7px 7px 7px 12px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.FilterButton{
+    font-size: 10px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 3px;
 }

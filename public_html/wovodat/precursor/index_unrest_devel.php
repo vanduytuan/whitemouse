@@ -13,12 +13,6 @@ include_once 'check_session.php';
 // if this code run on server then we need to cache the wovodat.js file on the 
 // client code. Otherwise, we do not cach it for the purpose of development
 $cache = time();
-$dev = true;
-$dirname = dirname(__FILE__);
-if (strpos($dirname, "WOVOdat") > 0) {
-    $cache = "";
-    $dev = false;
-}
 ?> 
 <html>
     <head>
@@ -2187,7 +2181,6 @@ if ($dev) {
             //then use own-created function
             if(isNaN(time)){
                 time = earthquakes[cavw][i]['timestamp'];
-                console.log(time);
                 time = new Date(time.substring(0,4),parseInt(time.substring(5,7))-1,time.substring(8,10),time.substring(11,13),time.substring(14,16),time.substring(17,19),0);
                 time = time.getTime();
             }
@@ -2900,7 +2893,7 @@ if ($dev) {
                                 </tr>
                                 <tr id="EquakePanel1">
                                     <td style="vertical-align:top">
-                                        <button class="EquakePanel1" id="FilterSwitch1">Show Filter</button>
+                                        <button class="FilterButton" id="FilterSwitch1">Show Filter</button>
                                         <form id="FormFilter1" class="FormFilter" onSubmit="return false;" style="display:none">
                                             <table>
                                                 <tr>
