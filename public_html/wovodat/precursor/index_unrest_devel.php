@@ -1,24 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <?php
+
 // Start session
 session_start();
 // Regenerate session ID
 session_regenerate_id(true);
 $uname = "";
-// If session was already started
-if (isset($_SESSION['login'])) {
-    // Get login ID and user name
-    $uname = $_SESSION['login']['cr_uname'];
-    $cp_access = $_SESSION['permissions']['access'];
-    if ($cp_access == 9) {
-        header('Location:/precursor/index_unrest.php');
-        exit();
-    }
-} else {
-    header('Location:/precursor/index_unrest.php');
-    exit();
-}
+
+include_once 'check_session.php';
+
 // if this code run on server then we need to cache the wovodat.js file on the 
 // client code. Otherwise, we do not cach it for the purpose of development
 $cache = time();
@@ -28,7 +19,7 @@ if (strpos($dirname, "WOVOdat") > 0) {
     $cache = "";
     $dev = false;
 }
-?>
+?> 
 <html>
     <head>
         <title>WOVOdat :: The World Organization of Volcano Observatories (WOVO): Database of Volcanic Unrest (WOVOdat), by IAVCEI</title>
@@ -1933,7 +1924,7 @@ if ($dev) {
                 else if (depth >2.5 && depth <= 5) 
                     color = '../img/blankCircles/pin_org.png'; // Orange
                 else if (depth >5 && depth <= 10) 
-                    color = '../img/blankCircles/pin.ye.png'; // Yellow
+                    color = '../img/blankCircles/pin_ye.png'; // Yellow
                 else if (depth >10 && depth <= 15) 
                     color ='../img/blankCircles/pin_ge.png'; // Dark Green
                 else if (depth >15 && depth <= 25) 

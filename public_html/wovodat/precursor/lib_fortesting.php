@@ -31,6 +31,10 @@ function findElement() {
         echo $array[0] . "<br/>";
     }
 }
+function testing(){
+    echo getenv("SUDO_USER");
+}
+testing();
 ?>
 <html>
     <head>
@@ -48,29 +52,6 @@ function findElement() {
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCQ9kUvUtmawmFJ62hWVsigWFTh3CKUzzM&sensor=false"></script>
         <script type="text/javascript" src="/js/Tooltip_v3.js"></script>
         <script type="text/javascript">
-            $(function(){ 
-                var slider = $( "#slider" ).slider({
-                    range: true,
-                    max: 1,
-                    min: -41,
-                    values: [-15,-10],
-                    slide:function(event,ui){
-                        document.getElementById('value').innerHTML = "[" + $(slider).slider("values",0) + "," + slider.slider("values",1) + "]"; 
-                    }
-                });
-            });
-            
-            $(function() {
-                $( "#slider-range" ).slider({
-                    range: true,
-                    min: 0,
-                    max: 500,
-                    values: [ 75, 300 ],
-                    slide: function( event, ui ) {
-                        $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-                    }
-                });
-            });
         </script>
         <style text="text/css">
             #slider .ui-slider-range{
