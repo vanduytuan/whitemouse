@@ -1,7 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <?php
-
 // Start session
 session_start();
 // Regenerate session ID
@@ -168,9 +167,7 @@ $cache = time();
                     $("#DepthHigh1").val(40);
                     $("#SDate1").change(function(){adjustSlider("1");});
                     $("#EDate1").change(function(){adjustSlider("1");});
-                    $("#SDate1").val("01/01/1900");
                     var today = new Date();
-                    $("#EDate1").val($.datepicker.formatDate("m/d/yy", today));
                     
                     $("#FormFilter1").hide();
                     $("#FilterSwitch1").html("Show Filter");
@@ -1765,7 +1762,7 @@ if ($dev) {
                     // filter all the data based on the filter table
                     filterData(cavw,mapUsed);
                     drawEquake({mapUsed:mapUsed,source:document.getElementById('equakeDisplayType' + mapUsed + '2D')});
-                    document.getElementById('FilterSwitch' + mapUsed).click();
+                    
                 }else if(document.getElementById('3DGMTEquakeGraph' + mapUsed).style.display == 'block'){
                     gmt3DData[cavw] = undefined;
                     drawEquake({mapUsed:mapUsed,
@@ -1779,6 +1776,8 @@ if ($dev) {
                 }else{
                     Wovodat.showNotification({message:'Please click to one of the buttons to retrieve the data.'});
                 }
+                //document.getElementById('FilterSwitch' + mapUsed).click();
+                document.getElementById('equakeGraphs' + o.mapUsed).scrollIntoView(true);
             }
         }
         (function(list){
@@ -1874,7 +1873,6 @@ if ($dev) {
      * 2012-07-19
      */
     function insertMarkersForEarthquakes(data,cavw, mapUsed){
-        console.log(mapUsed);
         // the function will initialize the earthquake variable when 
         // there is no equake data stored at the client side for a
         // specific volcano. 
@@ -2020,6 +2018,7 @@ if ($dev) {
      * mapUsed parameter
      */
     function plotEarthquakeData(cavw, eqtype, mapUsed){
+        
         var numberOfEarthquakes = parseInt(document.getElementById('Evn' + mapUsed).value);
         // skip this function if we can not find the data to draw
         if(!earthquakes[cavw]) 
@@ -2029,6 +2028,52 @@ if ($dev) {
         if(!mapUsed)
             return;
         
+        function initializeFilter(data,mapUsed){
+            var i, item, startTime, endTime, timestamp;
+            for(i in data){
+                item = data[i];
+                timestamp = item['timestamp'];
+                if(startTime == undefined) startTime = timestamp;
+                else{
+                    if(startTime > timestamp) startTime = timestamp;
+                }
+                if(endTime == undefined) endTime = timestamp;
+                else{
+                    if(endTime < timestamp) endTime = timestamp;
+                }
+            }
+            if(startTime == undefined || endTime == undefined)
+                return;
+            // no need to reset
+            if($("#SDate" + mapUsed ).datepicker( "option", "yearRange" ) == (startTime.getUTCFullYear() + ":" + endTime.getUTCFullYear()))
+                return;
+            var maxValue = Math.floor(endTime.getTime()-startTime.getTime())/86400000;
+            
+            
+            var startTimeString = startTime.getUTCMonth() + 1 + "/" + startTime.getUTCDate() + "/" + startTime.getUTCFullYear();
+            $("#SDate" + mapUsed).val(startTimeString);
+            var endTimeString = endTime.getUTCMonth() + 1 + "/" + endTime.getUTCDate() + "/" + endTime.getUTCFullYear();
+            $("#EDate" + mapUsed).val(endTimeString);
+            
+            $("#SDate" + mapUsed).datepicker("option", "yearRange", startTime.getUTCFullYear() + ":" + endTime.getUTCFullYear());
+            $("#EDate" + mapUsed).datepicker("option", "yearRange", startTime.getUTCFullYear() + ":" + endTime.getUTCFullYear());
+            
+            $("#DateRange" + mapUsed).slider({
+                range: true,
+                max: maxValue,
+                values : [0, maxValue],
+                slide: function(event,ui){
+                    var date = new Date(startTime.getTime());
+                    date.setDate(date.getDate() + ui.values[0]);
+                    $("#SDate" + mapUsed).val($.datepicker.formatDate('mm/dd/yy',date));
+                    date = new Date(startTime.getTime());
+                    date.setDate(date.getDate() + ui.values[1]);
+                    $("#EDate" + mapUsed).val($.datepicker.formatDate('mm/dd/yy',date));
+                }
+            });
+        }
+        
+        initializeFilter(earthquakes[cavw],mapUsed);
         // This is the height and width for the 
         // flot graph. Flot is for 2D javascript drawing
         var CONSTANTS = {
@@ -2893,91 +2938,93 @@ if ($dev) {
                                 </tr>
                                 <tr id="EquakePanel1">
                                     <td style="vertical-align:top">
-                                        <button class="FilterButton" id="FilterSwitch1">Show Filter</button>
+                                        <div class="FilterButton" id="FilterSwitch1"></div>
                                         <form id="FormFilter1" class="FormFilter" onSubmit="return false;" style="display:none">
-                                            <table>
-                                                <tr>
-                                                    <td>
-                                                        <label for="Evn1">Number of events</label>
-                                                    </td>
-                                                    <td>
-                                                        <select id="Evn1">
-                                                            <option value="100">100</option>
-                                                            <option value="200">200</option>
-                                                            <option value="300">300</option>
-                                                            <option value="400">400</option>
-                                                            <option value="500">500</option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="SDate1">Start date:</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="SDate1" size=10/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="EDate1">End date:</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="EDate1" size=10/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan=3><div id="DateRange1"></div></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="DepthLow1">Depth Low:</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="DepthLow1" value="0" size=4/>
-                                                        <label for="DepthHigh1">High:</label>
-                                                        <input type="text" id="DepthHigh1" value="40" size=4/>
-                                                    </td>
-                                                </tr>
+                                            <div class="pointer"></div>
+                                            <div class="row">
+                                                <div class="leftPanel">No of events:</div>
+                                                <div class="rightPanel">
+                                                    <select id="Evn1">
+                                                        <option value="100">100</option>
+                                                        <option value="200">200</option>
+                                                        <option value="300">300</option>
+                                                        <option value="400">400</option>
+                                                        <option value="500">500</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Period:</div>
+                                                <div class="rightPanel">
+                                                    <div class="subrow">
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                        Start: <input type="text" id="SDate1" class="dateInput" size=10/> 
+                                                                </td>
+                                                                <td>
+                                                        End: <input type="text" id="EDate1" class="dateInput" size=10/>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div>
+                                                        <div id="DateRange1"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Depth (km):</div>
+                                                <div class="rightPanel">
+                                                    <div class="subrow">
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                        Start: <input type="text" id="DepthLow1" class="numberInput" value="0" size=4/>
+                                                                </td>
+                                                                <td>
+                                                        End: <input type="text" id="DepthHigh1" class="numberInput" value="40" size=4/>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div>
+                                                        <div id="DepthRange1"></div>
+                                                    </div>
+                                                </div>
 
-                                                <tr>
-                                                    <td>
-                                                        <label for="">Azimuth</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="azim1" value="10" size="10"/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="">Degree</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="degree1" value="30" size="10"/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="EqType1">Type</label>
-                                                    </td>
-                                                    <td>
-                                                        <select id="EqType1">
-                                                            <option value="">All</option>
-                                                            <option value="R">Regional</option>
-                                                            <option value="Q">Quary Blast</option>
-                                                            <option value="VT">Volcano Tectonic</option>
-                                                            <option value="H">Hybrid</option>
-                                                            <option value="LF">Low Frequency</option>
-                                                            <option value="VLP">Very Long Period</option>
-                                                            <option value="E">Explosion</option>
-                                                            <option value="T">Tremor</option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td><button id="FilterBtn1">Filter</button></td>
-                                                </tr>
-                                            </table>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Azimuth:</div>
+                                                <div class="rightPanel">
+                                                    <input type="text" id="azim1" class="numberInput" value="10" size="10"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Rotation Degree:</div>
+                                                <div class="rightPanel">
+                                                    <input type="text" id="degree1" class="numberInput" value="30" size="10"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Type:</div>
+                                                <div class="rightPanel">
+                                                    <select id="EqType1">
+                                                        <option value="">All earthquake type</option>
+                                                        <option value="R">Regional</option>
+                                                        <option value="Q">Quary Blast</option>
+                                                        <option value="VT">Volcano Tectonic</option>
+                                                        <option value="H">Hybrid</option>
+                                                        <option value="LF">Low Frequency</option>
+                                                        <option value="VLP">Very Long Period</option>
+                                                        <option value="E">Explosion</option>
+                                                        <option value="T">Tremor</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="FilterBtnHolder">
+                                                <button id="FilterBtn1" class="FilterBtn">Filter</button>
+                                            </div>
                                         </form>
                                         <div>
                                             <label for="equakeDisplayType12D" class="equakeDisplayBox equakeDisplayButtonChecked equakeDisplayBox1">
@@ -3242,6 +3289,7 @@ if ($dev) {
                                     <td style="vertical-align:top">
                                         <button class="EquakePanel2" id="FilterSwitch2">Show Filter</button>
                                         <form id="FormFilter2" class="FormFilter" onSubmit="return false;" style="display:none">
+                                            <div class="pointer"></div>
                                             <table>
                                                 <tr>
                                                     <td>
@@ -3322,7 +3370,7 @@ if ($dev) {
                                                 </tr>
 
                                                 <tr>
-                                                    <td><button id="FilterBtn2">Filter</button></td>
+                                                    <td colspan="2"><button id="FilterBtn2" class="FilterBtn">Filter</button></td>
                                                 </tr>
                                             </table>
                                         </form>

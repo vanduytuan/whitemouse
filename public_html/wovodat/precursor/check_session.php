@@ -2,6 +2,7 @@
 <?php
 
 // If session was already started
+// change 'root' for wovodat server
 if (getenv("SUDO_USER") != "vanduytuan") {
     if (isset($_SESSION['login'])) {
         // Get login ID and user name

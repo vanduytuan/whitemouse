@@ -569,15 +569,66 @@ a.active.trigger {
 .FormFilter{
     margin-left: 8px;
     display: block;
-    border: 1px solid #E4E4E4;
+    border: 1px solid #D6D5D5;
     padding: 7px 7px 7px 12px;
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
+.FormFilter div.pointer{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-image: url('/img/pointer.png');
+    background-repeat: no-repeat;
+    margin-top: -13px;
+}
 .FilterButton{
-    font-size: 10px;
     margin-left: 10px;
     margin-top: 5px;
-    margin-bottom: 3px;
+    font-weight: bold;
+    color: #4A4AC0;
+    width: 80px;
+}
+.FilterButton:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.FilterBtnHolder{
+    text-align: right;
+    padding-right: 40px;
+}
+.FilterBtn{
+
+    width: 60px;
+}
+
+.FormFilter .leftPanel{
+    display: inline-block;
+    width: 120px;
+}
+.FormFilter .rightPanel{
+    display: inline-block;
+    width: 300px;
+}
+.FormFilter .subrow table td{
+    width: 150px;
+}
+.FormFilter .numberInput{
+    width: 30px;
+}
+.FormFilter .dateInput{
+    width: 72px;
+}
+.FormFilter .row{
+    margin-bottom: 4px;
+}
+.FormFilter .subrow{
+    margin-bottom: 4px;
+}
+.FormFilter input[type=text]{
+    padding-left: 2px;
+}
+.FormFilter div{
+    vertical-align: middle;
 }
