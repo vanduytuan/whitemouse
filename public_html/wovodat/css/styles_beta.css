@@ -472,14 +472,13 @@ a.active.trigger {
     border: 1px outset #C4C2C3;
     z-index: 3;
     width: 60px;
-    height: 18px;
-    margin-left: 10px;
+    height: 14px;
     padding-left: 5px;
     padding-right: 5px;
     display: inline-block;
     text-align: center;
     padding-top: 4px;
-    font-size: 12px;
+    font-size: 10px;
     /* IE10 Consumer Preview */ 
     background-image: -ms-linear-gradient(top, #FFFFFF 0%, #C2C4C4 100%);
 
@@ -500,6 +499,7 @@ a.active.trigger {
 }
 .equakeDisplayBox:hover, .equakeDisplayButtonChecked:hover{
     border-color: #B0AEAF;
+    cursor: pointer;
 }
 .equakeDisplayButtonChecked{
     border: 1px inset #E0DEDF;
@@ -557,18 +557,10 @@ a.active.trigger {
 .ThreeDImage #title{
     font-weight: bold;
 }
-#FilterBtn1,#FilterBtn2,#FilterSwitch1,#FilterSwitch2{
 
-    height: 22px;
-    font-size: 12px;
-}
-#2DEquakeFlotGraph1,#2DEquakeFlotGraph2{
-    display: none;
-}
 
 .FormFilter{
     margin-left: 8px;
-    display: block;
     border: 1px solid #D6D5D5;
     padding: 7px 7px 7px 12px;
     margin-top: 5px;
@@ -631,4 +623,111 @@ a.active.trigger {
 }
 .FormFilter div{
     vertical-align: middle;
+}
+.equakeButtonsRow{
+    margin-top: 6px;
+    margin-left: 10px;
+}
+.threeDGMTFilter{
+    border-top: 1px solid #D6D5D5;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+.FilterBtnHolder{
+    border-top: 1px solid #D6D5D5;
+    padding-top: 5px;
+}
+.earthquakeTooltip{
+    background-color: white;
+    width: 180px;
+}
+
+.twoDEquakeFlotGraph , .twoDGMTEquakeFlotGraph, .threeDGMTEquakeFlotGraph{
+    display: none;
+    border: 1px solid rgb(192, 191, 191);
+    margin-top: 5px;
+    padding-bottom: 15px;
+    margin-left: 8px;
+}
+.twoDEquakeFlotGraph .pointer{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-top: -6px;
+    margin-left: 30px;
+    background-image: url('/img/pointer.png');
+    background-repeat: no-repeat;
+}
+
+.twoDGMTEquakeFlotGraph .pointer{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-top: -6px;
+    margin-left: 100px;
+    background-image: url('/img/pointer.png');
+    background-repeat: no-repeat;
+}
+
+.threeDGMTEquakeFlotGraph .pointer{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-top: -6px;
+    margin-left: 170px;
+    background-image: url('/img/pointer.png');
+    background-repeat: no-repeat;
+}
+.threeDGMTEquakeFlotGraph .PrintButton,.twoDGMTEquakeFlotGraph .PrintButton {
+    margin-top: 35px;
+}
+.threeDNavigationBar{
+    
+    position: absolute;
+    
+}
+#previousButton{
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-image: url('/img/left.png');
+    background-repeat: no-repeat;
+    cursor: pointer;
+    border: 1px solid #C0BFBF;
+    border-radius: 5px;
+}
+#showAnimation{
+    display: inline-block;
+    cursor: pointer;
+    border: 1px solid #C0BFBF;
+    border-radius: 5px;
+    width: 25px;
+    height: 25px;
+    background-image: url('/img/repeat.png');
+    
+}
+#nextButton{
+    display: inline-block;
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+    background-image: url('/img/right.png');
+    background-repeat: no-repeat;
+    border: 1px solid #C0BFBF;
+    border-radius: 5px;
+    
+}
+.dataOwner:hover{
+    text-decoration: underline;
+}
+.stationList{
+    margin-top: -10px;
+}
+.equakeGraphPlaceholder{
+    width: 450px;
+    height: 130px;
+    font-size: 9px;
+    margin-top: 15px;
+    position: relative;
 }

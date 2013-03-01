@@ -445,6 +445,7 @@ Wovodat.loadEarthquakes = function(o){
 Wovodat.highlightNoDataRange = function(data){
     var ONE_MONTH = 31 * 24 * 3600 * 1000; // (MILLISECONDS)
     var ONE_DAY = ONE_MONTH / 30; // (MILLISECONDS)
+    if(data == null) return data;
     data = data[0];
     var length = data.length;
     var interval = ONE_DAY;
@@ -469,6 +470,8 @@ Wovodat.highlightNoDataRange = function(data){
  * fix the issue of data that are significantly larger than their near by data
  */
 Wovodat.fixBigData = function(data){
+    if(data == null) 
+        return data;
     var timeSeriesData = [];
     var l = data[0].length;
     if(l <= 4) 
@@ -581,8 +584,8 @@ Wovodat.getLocalMaxMin = function(data,from,to){
  * in displaying the graphs.
  */
 Wovodat.redraw = function(plot,generalData,detailedData,graphs,rescale){
-    
-    if( detailedData == undefined) detailedData = [generalData[0],generalData[0]];
+    if( detailedData == undefined) 
+        detailedData = [generalData[0],generalData[0]];
     var o = Wovodat.getDrawRange(plot);
     var duration = o.max - o.min;
     var zoomLevel = -1;
@@ -689,13 +692,15 @@ Wovodat.getDetailedStationData = function(o){
 }
 
 Wovodat.processDetailedData = function(o){
+    if(o.data == null){
+        return ;
+    }
     o.data = Wovodat.fixBigData(Wovodat.highlightNoDataRange(o.data));
     
     var data = o.data;
     if(data == null || data == undefined || data.length == 0 || data[0].length == 0 || data[0][0].length == 0){
         console.log("Wovodat.processDetailedData: data is emptied. Function returned without any further processing.");
     }else{
-        console.log(data);
     }
     var ref = o.referenceTime;
     var temp;
@@ -869,6 +874,8 @@ Wovodat.get3DMap = function(o){
         dataType:'json',
         success: function(html){
             handler(html);
+        },
+        error: function(html){
         }
     });
 }
@@ -928,6 +935,8 @@ Wovodat.get2DGMTMap = function(o){
         dataType:'json',
         success: function(html){
             handler(html);
+        },
+        error: function(html){
         }
     });
 }
@@ -1101,14 +1110,16 @@ Wovodat.Printer = {
 *   show notification for user 
 */
 Wovodat.showNotification = function(obj){
-    console.log(document.body.offsetWidth);
     var width = document.body.offsetWidth / 2;
     var message = obj.message;
+    var duration = obj.duration;
+    if(duration == undefined){
+        duration = 3;
+    }
     var div = document.createElement('span');
     $(div).appendTo('body');
     div.innerHTML = message;
     width = width - $(div).width() / 2;
-    console.log($(div).width());
     var style = "position: fixed;" +
         "border: 1px solid #CECECE;" +
         "padding: 5px;" +
@@ -1119,7 +1130,7 @@ Wovodat.showNotification = function(obj){
     div.setAttribute("style",style);
     window.setTimeout(function(){
         div.parentNode.removeChild(div);
-    },3000);
+    },duration * 1000);
 }
 /*
 Wovodat.showTooltip = function (x, y, contents) {
@@ -1135,3 +1146,37 @@ Wovodat.showTooltip = function (x, y, contents) {
     }).appendTo("body").fadeIn(200);
 }
 */
+
+//exceptions = "!#$%&'()*+,./:;<=>?@[\]^`{|}~";
+Wovodat.fixJSelector = function(str){
+    var id = str.replace(/&/g,"\\&");
+    id = id.replace(/=/g,"\\=");
+    return id;
+}
+
+Wovodat.convertDate = function(time){
+    function toInt(value){
+        if(value[0] == '0'){
+            value = value[1] + "";
+        }
+        value = parseInt(value);
+        return value;
+    }
+
+    var time1 = time.split(" ");
+    var date1 = time1[0];
+    var hour1 = time1[1];
+    var date2 = date1.split("-");
+    var year = date2[0];
+    var month = toInt(date2[1]);
+    month = month - 1;
+    var day = toInt(date2[2]);
+    var hour2 = hour1.split(":");
+    var hh = toInt(hour2[0]);
+    var mm = toInt(hour2[1]);
+    var ss = toInt([2]);
+    var dd = new Date();
+    dd.setUTCFullYear(year, month, day);
+    dd.setUTCHours(hh, mm, ss, 0);
+    return dd;
+}

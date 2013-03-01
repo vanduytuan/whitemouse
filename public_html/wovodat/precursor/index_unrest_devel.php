@@ -544,7 +544,7 @@ $cache = time();
                     else
                         t.id = value + 'Tr' + tableId;
                     timeSeriesList.appendChild(t);
-                    $("#" + t.id.replace(/&/g,"\\&").replace(/=/g,"\\=")).html("<td><input type='checkbox' id='" +value +  "' value='" + value + "' onclick='drawTimeSeries(this," + tableId + ")'></td><td>" + display + "</td>");          
+                    $("#" + Wovodat.fixJSelector(t.id)).html("<td><input type='checkbox' id='" +value +  "' value='" + value + "' onclick='drawTimeSeries(this," + tableId + ")'></td><td>" + display + "</td>");          
                 
                 }
                 if(count == 0){
@@ -663,6 +663,7 @@ $cache = time();
                                     Wovodat.redraw(graphs[id + tableId],graphData[id],e.data,graphs,true);
                                 });
                             }
+                            Wovodat.showNotification({message:"Updated detailed data for " + label + " graph.",duration: 10});
                         }
                     });
                 }else{
@@ -679,10 +680,13 @@ $cache = time();
                 var i;
                 var length = data[0].length;
                 maxXValue = data[0][0][0];
+                
                 minValue = data[0][0][1];
                 maxValue = minValue;
+                
                 xRangeMin = data[0][length-1][0];
                 
+                // get the min and max of y for current graph
                 for(i = 0 ; i < length; i++){
                     if(data[0][i][1] == null) 
                         continue;
@@ -691,9 +695,11 @@ $cache = time();
                 }
                 
                 // get the maxXValue of every graph that is currently displayed
-                for(var a in graphData){
-                    if(tableId != side(a)) continue;
-                    for(var b in graphs){
+                for(var b in graphs){
+                    // do not consider the graph that is not in the same side
+                    if(tableId != side(b)) continue;
+                    
+                    for(var a in graphData){
                         if (b.indexOf(a) >= 0){
                             var temp = graphData[a][0][0][0];
                             if(temp > maxXValue ) maxXValue = temp;
@@ -705,16 +711,17 @@ $cache = time();
                 }
                 minXValue = maxXValue - sixMonths;
                 minXValue = minXValue > data[0][length-1][0]? minXValue : data[0][length-1][0];
+                
                 for(var a in graphData){
                     if(tableId != side(a)) continue;
+                    
                     for(var b in graphs){
                         if( b.indexOf(a) >= 0){
                             var temp = graphData[a][0][graphData[a][0].length -1][0];
-                            if( minXValue < temp) minXValue = temp;
+                            if( minXValue > temp) minXValue = temp;
                         }
                     }
                 }
-                
                 // dynamically create the table row for drawing the time series graph
                 var tr = document.createElement('tr');
                 tr.id = id + "Row" + tableId;
@@ -725,10 +732,10 @@ $cache = time();
                 }else{
                     display = display[0]  + "&" + display[1] + "&" + display[2];
                 }
-                
                 // create the dropdown list for selecting the owner the data
                 var td = document.createElement('td');
                 var ownerLists = document.createElement('select');
+                ownerLists.style.display = 'none';
                 ownerLists.id = id + 'OwnerList' + tableId;
                 ownerLists.style.setProperty('float','right');
                 ownerLists.style.setProperty('height','16px');
@@ -786,15 +793,11 @@ $cache = time();
                 // div element to draw the graph into
                 var div = document.createElement('div');
                 div.id = id + "Graph" + tableId;
-                if(tableId){
-                    div.style.width = '440px';
-                    div.style.height = '150px';
-                }else{
-                    div.style.width = '650px';
-                    div.style.height = '200px';
-                }
+                div.style.width = '440px';
+                div.style.height = '150px';
                 td.appendChild(div);
                 tr.appendChild(td);
+                
                 // these marks will show the eruption start time 
                 
                 if(maxValue == minValue){
@@ -852,9 +855,9 @@ $cache = time();
                 };
                 if(!tableId) data.label = label;
                 if(tableId == 2)
-                    graphs[id + tableId] = $.plot($("#" + id.replace(/&/g,"\\&") + "Graph" + tableId),[data,eruptionsData.compEruptions],options);
+                    graphs[id + tableId] = $.plot($("#" + Wovodat.fixJSelector(id) + "Graph" + tableId),[data,eruptionsData.compEruptions],options);
                 else
-                    graphs[id + tableId] = $.plot($("#" + id.replace(/&/g,"\\&") + "Graph" + tableId),[data,eruptionsData],options);
+                    graphs[id + tableId] = $.plot($("#" + Wovodat.fixJSelector(id) + "Graph" + tableId),[data,eruptionsData],options);
                 graphs[id + tableId].getPlaceholder().bind('plotpan plotzoom',function(event,plot){
                     Wovodat.redraw(graphs[id + tableId],graphData[id],detailedData[id],graphs);
                 });
@@ -863,59 +866,42 @@ $cache = time();
                 var placeholder;
                 var temp;
                 for( i in graphs){
-                    if( i == id) continue;
-                    if(tableId == ""){
+                    // do not redraw itself
+                    if( i == (id + tableId)) continue;
+                    var j = side(i);
+                    // only redraw the graph that is on the similar side with this
+                    // graph
+                    if(j == tableId){
                         placeholder = graphs[i].getPlaceholder();
                         temp = graphs[i].getOptions();
                         options.yaxis.panRange = temp.yaxis.panRange;
                         options.yaxis.zoomRange = temp.yaxis.zoomRange;
                         options.yaxis.max = temp.yaxis.max;
                         options.yaxis.min = temp.yaxis.min;
+                        options.series.bars = temp.series.bars;
+                        options.series.lines = temp.series.lines;
                         data = graphs[i].getData();
                         data = {
                             data: data[0].data,
                             label: data[0].label
                         };
-                        if(placeholder == undefined) continue;
                         graphs[i] = $.plot(placeholder,[data],options);
-                    }else{
-                        var j = side(i);
-                        if(j == tableId){
-                            placeholder = graphs[i].getPlaceholder();
-                            temp = graphs[i].getOptions();
-                            options.yaxis.panRange = temp.yaxis.panRange;
-                            options.yaxis.zoomRange = temp.yaxis.zoomRange;
-                            options.yaxis.max = temp.yaxis.max;
-                            options.yaxis.min = temp.yaxis.min;
-                            data = graphs[i].getData();
-                            data = {
-                                data: data[0].data,
-                                label: data[0].label
-                            };
-                            graphs[i] = $.plot(placeholder,[data],options);
-                        }
                     }
                 }
                 
                 // this part is for synchronize the pan and zoom of the graphs
                 for( i in graphs){
-                    if(!tableId){
-                        if(i != id){
-                            synchronizeGraph(i,id);
-                        }
-                    }else{
-                        var temp = side(i);
-                        if(temp == tableId){
-                            if(i != id + tableId)
-                                synchronizeGraph(i,id + '' + tableId);
-                        }
+                    var temp = side(i);
+                    if(temp == tableId){
+                        if(i != id + tableId)
+                            synchronizeGraph(i,id + '' + tableId);
                     }
                 }
                 
                 // showing the tooltip of information for the graphs when
                 // user hovers mouse over a point on the graph.
                 var previousPoint = null;
-                $("#" + id.replace(/&/g,"\\&") + "Graph" + tableId).bind('plothover',function(event,pos,item){
+                $("#" + Wovodat.fixJSelector(id) + "Graph" + tableId).bind('plothover',function(event,pos,item){
                     if(item){
                         if(previousPoint != item.dataIndex){
                             previousPoint = item.dataIndex;
@@ -1005,10 +991,10 @@ $cache = time();
                         previousPoint = null;
                     }
                 });
+                $("#overviewPanel" + tableId).css('display','block');
                 drawOverviewGraph(tableId);
                 // making the overview shown
                 
-                $("#overviewPanel" + tableId).css('display','block');
                 if(isDetailedDataAvailable){
                     graphs[id + tableId].getPlaceholder().bind('plotpan',function(event,plot){
                         Wovodat.redraw(graphs[id + tableId],graphData[id],detailedData[id],graphs);
@@ -1028,6 +1014,7 @@ $cache = time();
                 }
                 var placeholder= document.getElementById('overview' + tableId);
                 placeholder.innerHTML = '';
+                $(placeholder).show();
                 var id;
                 var data = [];
                 
@@ -1050,7 +1037,6 @@ $cache = time();
                     selection: { mode: "x", color: '#451A2B' }
                 };
                 $.plot(placeholder,data,options);
-                
                 /*
                  * This section of code allow the user to see the updated version
                  * of every graph below the overview graph when user selecs a 
@@ -1578,7 +1564,7 @@ $cache = time();
                         t[1] = t[1] + " " + t[2];
                         data.push({label:'<div style="text-align:center"><img src="/img/SmallEruptionIcon.png"/><br/><b >' + temp + '</b></div>',position:Wovodat.toDate(t[1]).getTime()});
                     }
-                    eruptions.options[eruptions.options.length] = new Option(t[1],t[1]);
+                    eruptions.options[eruptions.options.length] = new Option(temp,t[1]);
                 }
                 if(selectId == 'CompEruptionList')
                     eruptionsData.compEruptions.markdata = data;
@@ -1617,7 +1603,7 @@ if ($dev) {
                         $("#TimeSeriesHeader1").click();
                     }else{
                         var a = document.getElementById('CompVolcanoList');
-                        a.value = "St. Helens&1201-05-";
+                        a.value = "Miyake-jima&0804-04=";
                         $(a).change();
                         $("#DisplayEquake2").click();
                         $("#TimeSeriesHeader2").click();
@@ -1695,25 +1681,35 @@ if ($dev) {
          */
         $("#DisplayEquake1").click(function(){
             $('#EquakePanel1').show();
-            $("#2DEquakeFlotGraph1").hide();
+            $("#twoDEquakeFlotGraph1").hide();
             $("#2DGMTEquakeGraph1").hide();
+            $("#showHideMarkers1").show();
         });
         $("#DisplayEquake2").click(function(){
             $("#EquakePanel2").show();
-            $("#2DEquakeFlotGraph2").hide();
+            $("#twoDEquakeFlotGraph2").hide();
             $("#2DGMTEquakeGraph2").hide();
+            $("#showHideMarkers2").show();
         }); 
         /*
          * Hide the entire earthquake panel when the x button is click
          */
         $("#HideEquake1").click(function(){
             hideEquakePanel({mapUsed:1});
-            hideMarkers({mapUsed:1});
+            var a = document.getElementById('showHideMarkers1');
+            if($(a).html() == "Hide earthquake"){
+                $(a).click();
+            }
+            $('#showHideMarkers1').hide();
             return false;
         });
         $("#HideEquake2").click(function(){
             hideEquakePanel({mapUsed:2});
-            hideMarkers({mapUsed:2});
+            var a = document.getElementById('showHideMarkers2');
+            if($(a).html() == "Hide earthquake"){
+                $(a).click();
+            }
+            $('#showHideMarkers2').hide();
             return false;
         });
                 
@@ -1753,7 +1749,7 @@ if ($dev) {
                 // depend on the graph that is shown when filter button
                 // is clicked, that graph will be redraw according to the the
                 // parameter set by filter value
-                if( document.getElementById('2DEquakeFlotGraph' + mapUsed).style.display == 'block'){
+                if( document.getElementById('twoDEquakeFlotGraph' + mapUsed).style.display == 'block'){
                     // if the earthquakes list for for this volcano haven't been
                     // retrieve from the server, don't do anything
                     if(!earthquakes[cavw]){
@@ -1804,7 +1800,16 @@ if ($dev) {
                 });
             }
         })([1,2]);
-                
+        (function(list){
+            var l = list.length;
+            var i = 0;
+            for(i = 0; i < l;  i++){
+                $("#showHideMarkers" + list[i]).click([list[i]],function(e){
+                    var j = e.data[0];
+                    hideMarkers({mapUsed:j,button:this});
+                });
+            }
+        })([1,2]);         
     });
     function hideEquakePanel(o){
         $("#EquakePanel" + o.mapUsed).hide();
@@ -1853,7 +1858,8 @@ if ($dev) {
             if (typeof earthquakes[cavw][i]['marker' + panelUsed] != "undefined" && earthquakes[cavw][i]['time'] != "" && typeof earthquakes[cavw][i]['time'] != "undefined"){
                 var eType = earthquakes[cavw][i]['eqtype'];
                 var eDepth = parseFloat(earthquakes[cavw][i]['depth']);
-                var eTime = parseDateVal(earthquakes[cavw][i]['time']);
+                var eTime = Wovodat.convertDate(earthquakes[cavw][i]['time']);
+                eTime = eTime.getTime();
                 var chosen = true;
                 earthquakes[cavw][i]['available'] = false;
                 if ((eType != type && type != "") || eDepth > dhigh || eDepth < dlow || eTime > eDate || eTime < sDate)
@@ -1940,7 +1946,8 @@ if ($dev) {
                     var marker2 = new google.maps.Marker({
                         position: new google.maps.LatLng(lat,lon),
                         icon:icon
-                    })
+                    });
+                    
                     // the content for the popup window when the mouse hovers
                     // over this equake event
                     var contentText = "<table><tr><td><b>Lat</b> </td><td>" + 
@@ -1949,11 +1956,14 @@ if ($dev) {
                         time + "</td></tr><tr><td><b>Depth</b></td><td>" + 
                         depth + "</td></tr><tr><td><b>Magnitude</b></td><td>" 
                         + mag+"</td></tr></table>";
+                    
                     var infoWindow = new google.maps.InfoWindow({content:contentText});
                     
+                    new Tooltip({marker:marker,content:contentText,cssClass:"earthquakeTooltip"});
                 }	
-                //infoWindow.open(map[mapUsed],marker);
+                // infoWindow.open(map[mapUsed],marker);
                 // store the quake data in the earthquakes[cavw] object
+                
                 earthquakes[cavw][index]=[];
                 earthquakes[cavw][index]['marker' + mapUsed]= marker;
                 earthquakes[cavw][index]['marker' + (3 - mapUsed)]= marker2;
@@ -1968,34 +1978,7 @@ if ($dev) {
                 earthquakes[cavw][index]['depth']=depth;
                 earthquakes[cavw][index]['latDistance'] = calculateD(lat,lon,vlat,vlon,0);
                 earthquakes[cavw][index]['lonDistance'] = calculateD(lat,lon,vlat,vlon,1);
-                // time in the format YYYY-MM-DD HH:MM:SS
-                function convertDate(time){
-                    function toInt(value){
-                        if(value[0] == '0'){
-                            value = value[1] + "";
-                        }
-                        value = parseInt(value);
-                        return value;
-                    }
-                    
-                    var time1 = time.split(" ");
-                    var date1 = time1[0];
-                    var hour1 = time1[1];
-                    var date2 = date1.split("-");
-                    var year = date2[0];
-                    var month = toInt(date2[1]);
-                    month = month - 1;
-                    var day = toInt(date2[2]);
-                    var hour2 = hour1.split(":");
-                    var hh = toInt(hour2[0]);
-                    var mm = toInt(hour2[1]);
-                    var ss = toInt([2]);
-                    var dd = new Date();
-                    dd.setUTCFullYear(year, month, day);
-                    dd.setUTCHours(hh, mm, ss, 0);
-                    return dd;
-                }
-                earthquakes[cavw][index]['timestamp'] = convertDate(time);
+                earthquakes[cavw][index]['timestamp'] = Wovodat.convertDate(time);
             }
         }
         else{
@@ -2011,6 +1994,12 @@ if ($dev) {
                 }	
             }
         }
+        var a = document.getElementById('showHideMarkers' + mapUsed);
+        $(a).unbind('click');
+        $(a).html("Hide earthquake");
+        $(a).click(function(){
+            hideMarkers({mapUsed:mapUsed,button:a}); 
+        });
     }
     /*
      * Plot the equake data
@@ -2077,8 +2066,6 @@ if ($dev) {
         // This is the height and width for the 
         // flot graph. Flot is for 2D javascript drawing
         var CONSTANTS = {
-            height :"130px",
-            width:"450px",
             fontSize: '9px',
             labelHeight: '70px',
             labelWidth: '45px',
@@ -2090,17 +2077,15 @@ if ($dev) {
         // Options for drawing lat-lon plot. Please refer to the documentation
         // of Flot to see the meaning of the each value
         var plotOptions = {
-            legend:{position:"nw"},
             series:{
                 points:{
-                    show:true,
+                    show: true,
                     lineWidth: 1,
                     symbol: drawMagnitude,
                     fill: false
                 }
             },
             grid:{
-                backgroundColor:{colors:["#f3ffed","#f3ffdc"]},
                 // this option is for changing the color of the border
                 borderColor: "#9C9C9C",
                 clickable:true,
@@ -2130,7 +2115,6 @@ if ($dev) {
         }
         // Options for drawing time view. 
         var timeOptions = {
-            legend:{position:"Time"},
             series:{
                 points:{
                     show:true,
@@ -2141,7 +2125,6 @@ if ($dev) {
             },
             colors:["#3a4cb2"],
             grid:{
-                backgroundColor:{colors:["#f3ffed","#f3ffdc"]},
                 // this option is for changing the color of the border
                 borderColor: "#9C9C9C",
                 clickable:true,
@@ -2245,11 +2228,8 @@ if ($dev) {
                 data:timeArray
             }];
         // draw the latitude map
-        var latitudePlotArea =$("#FlotDisplayLat"+mapUsed);
-        latitudePlotArea.css("height", CONSTANTS.height);
-        latitudePlotArea.css("width",CONSTANTS.width);
-        latitudePlotArea.css("font-size", CONSTANTS.fontSize);
-        latitudePlotArea.css("margin-top", CONSTANTS.marginTop);
+        $('#twoDEquakeFlotGraph' + mapUsed).show();
+        var latitudePlotArea = document.getElementById("FlotDisplayLat"+mapUsed);
         equakeGraphs[mapUsed].latGraph = $.plot(latitudePlotArea,latPlot,plotOptions);
         Wovodat.enableTooltip({type:'single',
             id:"FlotDisplayLat"+mapUsed,
@@ -2260,10 +2240,6 @@ if ($dev) {
         });
         // draw the longitude map
         var longitudePlotArea =$("#FlotDisplayLon"+mapUsed);
-        longitudePlotArea.css("height", CONSTANTS.height);
-        longitudePlotArea.css("width",CONSTANTS.width);
-        longitudePlotArea.css("font-size", CONSTANTS.fontSize);
-        longitudePlotArea.css("margin-top", CONSTANTS.marginTop);
         equakeGraphs[mapUsed].lonGraph = $.plot(longitudePlotArea,lonPlot,plotOptions);
         Wovodat.enableTooltip({type:'single',
             id:"FlotDisplayLon"+mapUsed,
@@ -2274,10 +2250,6 @@ if ($dev) {
         });
         // draw the time series map        
         var timePlotArea =$("#FlotDisplayTime"+mapUsed);
-        timePlotArea.css("height", CONSTANTS.height);
-        timePlotArea.css("width",CONSTANTS.width);
-        timePlotArea.css("font-size", CONSTANTS.fontSize);
-        timePlotArea.css("margin-top", CONSTANTS.marginTop);
         equakeGraphs[mapUsed].timeGraph = $.plot(timePlotArea,timePlot,timeOptions);
         Wovodat.enableTooltip({type:'single',id:"FlotDisplayTime"+mapUsed,
             firstValueFront:'Time',
@@ -2297,7 +2269,6 @@ if ($dev) {
             'vertical-align': 'middle',
             'padding-top': CONSTANTS.labelPaddingTop
         });
-        $('#2DEquakeFlotGraph' + mapUsed).show();
     }  
     /*
      * hide all the markers when user closes the Earthquakes panel section
@@ -2308,9 +2279,42 @@ if ($dev) {
         var mapUsed = o.mapUsed;
         if(volcanoInfo[mapUsed] == undefined) return;
         var cavw = volcanoInfo[mapUsed].cavw;
+        var currentEquakeSet = [];
         for (var i in earthquakes[cavw])
-            if (typeof earthquakes[cavw][i]['marker' + mapUsed]!="undefined")
-                earthquakes[cavw][i]['marker' + mapUsed].setMap(null);
+            if (typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
+                if(earthquakes[cavw][i]['marker' + mapUsed].getMap() != null){
+                    currentEquakeSet.push(earthquakes[cavw][i]['marker' + mapUsed]);
+                    earthquakes[cavw][i]['marker' + mapUsed].setMap(null);
+                }
+        }
+        var button = o.button;
+        $(button).unbind('click');
+        $(button).html("Show earthquake");
+        $(button).click(function(){
+            _showMarkers(this);
+        });
+        function _showMarkers(o){
+            $(o).html('Hide earthquake');
+            var l = currentEquakeSet.length;
+            for(var i = 0 ; i < l ; i++){
+                currentEquakeSet[i].setMap(map[mapUsed]);
+            }
+            $(o).unbind('click');
+            $(o).click(function(){
+                _hideMarkers(o);
+            });
+        }
+        function _hideMarkers(o){
+            $(o).html('Show earthquake');
+            var l = currentEquakeSet.length;
+            for(var i = 0 ; i < l ; i++){
+                currentEquakeSet[i].setMap(null);
+            }
+            $(o).unbind('click');
+            $(o).click(function(){
+                _showMarkers(o);
+            });
+        }
     }
     /*
      * Function to format the X-axis for Latitude and Longtitude axises
@@ -2365,7 +2369,7 @@ if ($dev) {
     function drawEquake(o){
         var source = o.source;
         var id=source.id;
-        $("#2DEquakeFlotGraph" + o.mapUsed).hide();
+        $("#twoDEquakeFlotGraph" + o.mapUsed).hide();
         $("#2DGMTEquakeGraph" + o.mapUsed).hide();
         $("#3DGMTEquakeGraph" + o.mapUsed).hide();
         if(id.indexOf('3D') >0)
@@ -2391,7 +2395,7 @@ if ($dev) {
         else{
             insertMarkersForEarthquakes("",cavw,o.mapUsed);
             plotEarthquakeData(cavw,"",o.mapUsed);
-            $('#2DEquakeFlotGraph' + o.mapUsed).show();	
+            $('#twoDEquakeFlotGraph' + o.mapUsed).show();	
         }
     }
     /*
@@ -2540,7 +2544,7 @@ if ($dev) {
     function clearEquakedrawingData(o){
         var mapUsed = o.mapUsed;
         var placeholder = $("#equakeGraphs" + mapUsed);
-        var tmp = $("#2DEquakeFlotGraph" + mapUsed,placeholder)
+        var tmp = $("#twoDEquakeFlotGraph" + mapUsed,placeholder)
         tmp.hide();
         $("#FlotDisplayLat" + mapUsed).html('');
         $("#FlotDisplayLon" + mapUsed).html('');
@@ -2626,17 +2630,17 @@ if ($dev) {
             }
             #overviewPanel1, #overviewPanel2{
                 padding-left: 15px;
-                padding-bottom: 10px;
                 width: 320px;
                 display:none;
             }
-            #overview1, #overview2{
+            .overviewGraph{
                 width:340px;
-                height:35px;
+                height:42px;
             }
             #TimeSeriesView1, #TimeSeriesView2{
                 margin-top: 5px;
-                display: none
+                display: none;
+                margin-left: 10px;
             }
             #TimeSeriesList1,#TimeSeriesList2{
                 padding-left: 15px;
@@ -2713,7 +2717,10 @@ if ($dev) {
                 margin-top:10px;
             }
             .Gvp{
-                height: 25px;
+                height: 20px;
+            }
+            .Gvp:hover{
+                cursor: pointer;
             }
             html, body{
                 margin: 0;
@@ -2733,14 +2740,8 @@ if ($dev) {
                 width: 200px;
                 padding-left: 100px;
             }
-            #2DEquakeFlotGraph1, #2DEquakeFlotGraph2{
-                display: none;
-            }
-            #2DGMTEquakeGraph1, #2DGMTEquakeGraph2{
-                display: none;
-            }
             .PrintButton{
-                margin-top: 10px;
+                margin-top: 20px;
                 padding: 2px;
                 width: 65px;
                 float: right;
@@ -2811,7 +2812,7 @@ if ($dev) {
                 text-align: center;
             }
             .eruptionList{
-                width: 150px;
+                width: 100px;
             }
         </style>
     </head>
@@ -2848,6 +2849,11 @@ if ($dev) {
                                     <td>
 
                                         <div id="map_legend1" class="map_legend" style="font-size:8px;display:inline">
+                                            <div style="float:right">
+                                                <button id="showHideMarkers1">
+                                                    Hide earthquake
+                                                </button>
+                                            </div>
                                             <div>
                                                 <img src="/img/pin_ds.png" alt=""/> Deformation
                                                 <img src="/img/pin_gs.png" alt=""/> Gas
@@ -2866,7 +2872,7 @@ if ($dev) {
                                         <div class="button white">
                                             <div class="CloseButton" id="HideVolcanoInformation1"></div>
                                             <div style="float:right;padding-right: 10px;">
-                                                <select id="VolcanoList">
+                                                <select id="VolcanoList" class="">
                                                     <option value="">Select...</option>
                                                 </select>
                                             </div>   
@@ -2892,7 +2898,7 @@ if ($dev) {
                                                         Go to GVP
                                                     </button>
                                                 </td>
-                                                <td style="text-align:right"><em><a href="#" id="dataOwner1" target="_blank"></a></em></td>
+                                                <td style="text-align:right"><em><a href="#" id="dataOwner1" class="dataOwner" target="_blank"></a></em></td>
                                             </tr>
                                             <tr style="height:5px">
                                                 <td style="text-align:right" ><span id="volcstatus1"></span></td>
@@ -2911,7 +2917,7 @@ if ($dev) {
                                                             <td colspan="2" style="height:20px;width:250px">
                                                                 <button id="HideStationButton1" style="float:right;display:none">Hide Stations</button><b>View stations:</b><br/><br/>
 
-                                                                <table id="StationList"></table>
+                                                                <table id="StationList" class="stationList"></table>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -2950,6 +2956,7 @@ if ($dev) {
                                                         <option value="300">300</option>
                                                         <option value="400">400</option>
                                                         <option value="500">500</option>
+                                                        <option value="30000">30000</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -2960,10 +2967,10 @@ if ($dev) {
                                                         <table>
                                                             <tr>
                                                                 <td>
-                                                        Start: <input type="text" id="SDate1" class="dateInput" size=10/> 
+                                                                    Start: <input type="text" id="SDate1" class="dateInput" size=10/> 
                                                                 </td>
                                                                 <td>
-                                                        End: <input type="text" id="EDate1" class="dateInput" size=10/>
+                                                                    End: <input type="text" id="EDate1" class="dateInput" size=10/>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -2980,10 +2987,10 @@ if ($dev) {
                                                         <table>
                                                             <tr>
                                                                 <td>
-                                                        Start: <input type="text" id="DepthLow1" class="numberInput" value="0" size=4/>
+                                                                    Start: <input type="text" id="DepthLow1" class="numberInput" value="0" size=4/>
                                                                 </td>
                                                                 <td>
-                                                        End: <input type="text" id="DepthHigh1" class="numberInput" value="40" size=4/>
+                                                                    End: <input type="text" id="DepthHigh1" class="numberInput" value="40" size=4/>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -2993,18 +3000,6 @@ if ($dev) {
                                                     </div>
                                                 </div>
 
-                                            </div>
-                                            <div class="row">
-                                                <div class="leftPanel">Azimuth:</div>
-                                                <div class="rightPanel">
-                                                    <input type="text" id="azim1" class="numberInput" value="10" size="10"/>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="leftPanel">Rotation Degree:</div>
-                                                <div class="rightPanel">
-                                                    <input type="text" id="degree1" class="numberInput" value="30" size="10"/>
-                                                </div>
                                             </div>
                                             <div class="row">
                                                 <div class="leftPanel">Type:</div>
@@ -3022,11 +3017,26 @@ if ($dev) {
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div class="threeDGMTFilter">
+                                                For drawing in 3D-GMT only:
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Azimuth:</div>
+                                                <div class="rightPanel">
+                                                    <input type="text" id="azim1" class="numberInput" value="10" size="10"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Rotation Degree:</div>
+                                                <div class="rightPanel">
+                                                    <input type="text" id="degree1" class="numberInput" value="30" size="10"/>
+                                                </div>
+                                            </div>
                                             <div class="FilterBtnHolder">
                                                 <button id="FilterBtn1" class="FilterBtn">Filter</button>
                                             </div>
                                         </form>
-                                        <div>
+                                        <div class="equakeButtonsRow">
                                             <label for="equakeDisplayType12D" class="equakeDisplayBox equakeDisplayButtonChecked equakeDisplayBox1">
                                                 <input type="radio" name="equakeDisplayType1" id="equakeDisplayType12D" value="2D" onclick="drawEquake({mapUsed:1,source:this})"/>
                                                 2D
@@ -3039,23 +3049,25 @@ if ($dev) {
                                             </label>
                                         </div>
                                         <!-- place holders for the Flot graphs and GMT images-->
+                                        
                                         <div id="equakeGraphs1">
-                                            <div id="2DEquakeFlotGraph1">
+                                            <div  id="twoDEquakeFlotGraph1" class="twoDEquakeFlotGraph">
+                                                <b class="pointer"></b>
                                                 <div class="plot-label">
                                                     <b>E-W</b>
                                                 </div>
-                                                <div id="FlotDisplayLat1">
+                                                <div id="FlotDisplayLat1" class="equakeGraphPlaceholder">
 
                                                 </div>
                                                 <div class="plot-label">
                                                     <b>N-S</b>
                                                 </div>
-                                                <div id="FlotDisplayLon1">
+                                                <div id="FlotDisplayLon1" class="equakeGraphPlaceholder">
                                                 </div>
                                                 <div class="plot-label">
                                                     <b>Time</b>
                                                 </div>
-                                                <div id="FlotDisplayTime1">
+                                                <div id="FlotDisplayTime1" class="equakeGraphPlaceholder">
                                                 </div>
                                                 <div class="PrintButton" onclick="javascript:Wovodat.Printer.print({type:Wovodat.Printer.Printing.Type.TWOD_EQUAKE,element:document.getElementById('equakeGraphs1'),mapUsed:1,equakeGraph:equakeGraphs[1],info:document.getElementById('VolcanoList').value})" >
                                                     <a title="Print this graphs" href="#" >
@@ -3064,7 +3076,8 @@ if ($dev) {
                                                     </a>
                                                 </div>
                                             </div>
-                                            <div id="2DGMTEquakeGraph1">
+                                            <div id="2DGMTEquakeGraph1" class="twoDGMTEquakeFlotGraph">
+                                                <b class="pointer"></b>
                                                 <div id="2DImage" class="TwoDImage">
                                                     <a href="" id="imageLink" target="_blank"><img height="707" width="500" src="" id="image"/></a>
                                                 </div>
@@ -3080,26 +3093,20 @@ if ($dev) {
                                                     <a id="gmtScriptFile" href="" target="_blank">GMT script file</a><br/> 
                                                 </div>
                                             </div>
-                                            <div id="3DGMTEquakeGraph1">
+                                            <div id="3DGMTEquakeGraph1" class="threeDGMTEquakeFlotGraph">
+                                                <b class="pointer"></b>
                                                 <div id="3DImage" class="ThreeDImage">
+                                                    <div id="navigationBar" class="threeDNavigationBar">
+
+                                                        <div id="previousButton"></div>
+                                                        <div id="showAnimation"></div>
+                                                        <div id="nextButton"></div>
+
+                                                    </div>
                                                     <div id="title"></div>
                                                     <a href="" id="imageLink" target="_blank"><img height="500" width="500" src="" id="image"/></a>
                                                 </div>
-                                                <div id="navigationBar" class="navigationBar">
-                                                    <table>
-                                                        <tr>
-                                                            <td>
-                                                                <button id="previousButton"></button>
-                                                            </td>
-                                                            <td>
-                                                                <button id="showAnimation">Animation</button>
-                                                            </td>
-                                                            <td>
-                                                                <button id="nextButton"></button>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
+
                                                 <div class="PrintButton" onclick="javascript:Wovodat.Printer.print({type:Wovodat.Printer.Printing.Type.THREED_GMT_EQUAKE,link:$('#image',document.getElementById('3DGMTEquakeGraph1'))[0].src,info:document.getElementById('VolcanoList').value})">
                                                     <a title="Print this graphs" href="#" >
                                                         <span class="app-icon light print-icon"></span>
@@ -3146,7 +3153,7 @@ if ($dev) {
                                             <br/>
                                             <div id="overviewPanel1">
                                                 <b>Overview (select a range to redraw the graph): </b>
-                                                <div id="overview1">
+                                                <div id="overview1" class="overviewGraph">
 
                                                 </div>
                                                 <br/>
@@ -3191,6 +3198,11 @@ if ($dev) {
                                     <td>
 
                                         <div id="map_legend2" class="map_legend" style="font-size:8px;display:inline">
+                                            <div style="float:right">
+                                                <button id="showHideMarkers2">
+                                                    Hide earthquake
+                                                </button>
+                                            </div>
                                             <div>
                                                 <img src="/img/pin_ds.png" alt=""/> Deformation
                                                 <img src="/img/pin_gs.png" alt=""/> Gas
@@ -3237,7 +3249,7 @@ if ($dev) {
                                                         Go to GVP
                                                     </button>
                                                 </td>
-                                                <td style="text-align:right" ><em><a href="#" id="dataOwner2" target="_blank"></a></em></td>
+                                                <td style="text-align:right" ><em><a href="#" id="dataOwner2" class="dataOwner" target="_blank"></a></em></td>
                                             </tr>
                                             <tr>
                                                 <td style="text-align:right;height:5px"><span id="volcstatus2"></span></td>
@@ -3258,7 +3270,7 @@ if ($dev) {
                                                             <td colspan="2" style="height:20px;width:250px">
                                                                 <button id="HideStationButton2" style="float:right;display:none">Hide Stations</button><b>View stations:</b><br/><br/>
 
-                                                                <table id="CompStationList"></table>
+                                                                <table id="CompStationList" class="stationList"></table>
                                                             </td>
 
                                                         </tr>
@@ -3269,6 +3281,7 @@ if ($dev) {
                                     </td>
                                 </tr>
                                 <!-- Earthquake Tab (this section is not including the body of the tab, just the tab only)-->
+
                                 <tr>
                                     <td>
                                         <div class="button white">
@@ -3285,96 +3298,102 @@ if ($dev) {
                                         </div>
                                     </td>
                                 </tr>
+
+
                                 <tr id="EquakePanel2">
                                     <td style="vertical-align:top">
-                                        <button class="EquakePanel2" id="FilterSwitch2">Show Filter</button>
+                                        <div class="FilterButton" id="FilterSwitch2"></div>
                                         <form id="FormFilter2" class="FormFilter" onSubmit="return false;" style="display:none">
                                             <div class="pointer"></div>
-                                            <table>
-                                                <tr>
-                                                    <td>
-                                                        <label for="Evn2">Number of events</label>
-                                                    </td>
-                                                    <td>
-                                                        <select id="Evn2">
-                                                            <option value="100">100</option>
-                                                            <option value="200">200</option>
-                                                            <option value="300">300</option>
-                                                            <option value="400">400</option>
-                                                            <option value="500">500</option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="SDate2">Start date:</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="SDate2" size=10/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="EDate2">End date:</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="EDate2" size=10/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan=3><div id="DateRange2"></div></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="DepthLow2">Depth Low:</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="DepthLow2" value="0" size=4/>
-                                                        <label for="DepthHigh2">High:</label>
-                                                        <input type="text" id="DepthHigh2" value="40" size=4/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="">Azimuth</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="azim2" value="10" size="10"/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="">Degree</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="degree2" value="30" size="10"/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="EqType2">Type</label>
-                                                    </td>
-                                                    <td>
-                                                        <select id="EqType2">
-                                                            <option value="">All</option>
-                                                            <option value="R">Regional</option>
-                                                            <option value="Q">Quary Blast</option>
-                                                            <option value="VT">Volcano Tectonic</option>
-                                                            <option value="H">Hybrid</option>
-                                                            <option value="LF">Low Frequency</option>
-                                                            <option value="VLP">Very Long Period</option>
-                                                            <option value="E">Explosion</option>
-                                                            <option value="T">Tremor</option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
+                                            <div class="row">
+                                                <div class="leftPanel">No of events:</div>
+                                                <div class="rightPanel">
+                                                    <select id="Evn2">
+                                                        <option value="100">100</option>
+                                                        <option value="200">200</option>
+                                                        <option value="300">300</option>
+                                                        <option value="400">400</option>
+                                                        <option value="500">500</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Period:</div>
+                                                <div class="rightPanel">
+                                                    <div class="subrow">
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    Start: <input type="text" id="SDate2" class="dateInput" size=10/> 
+                                                                </td>
+                                                                <td>
+                                                                    End: <input type="text" id="EDate2" class="dateInput" size=10/>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div>
+                                                        <div id="DateRange2"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Depth (km):</div>
+                                                <div class="rightPanel">
+                                                    <div class="subrow">
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    Start: <input type="text" id="DepthLow2" class="numberInput" value="0" size=4/>
+                                                                </td>
+                                                                <td>
+                                                                    End: <input type="text" id="DepthHigh2" class="numberInput" value="40" size=4/>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div>
+                                                        <div id="DepthRange2"></div>
+                                                    </div>
+                                                </div>
 
-                                                <tr>
-                                                    <td colspan="2"><button id="FilterBtn2" class="FilterBtn">Filter</button></td>
-                                                </tr>
-                                            </table>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Type:</div>
+                                                <div class="rightPanel">
+                                                    <select id="EqType2">
+                                                        <option value="">All earthquake type</option>
+                                                        <option value="R">Regional</option>
+                                                        <option value="Q">Quary Blast</option>
+                                                        <option value="VT">Volcano Tectonic</option>
+                                                        <option value="H">Hybrid</option>
+                                                        <option value="LF">Low Frequency</option>
+                                                        <option value="VLP">Very Long Period</option>
+                                                        <option value="E">Explosion</option>
+                                                        <option value="T">Tremor</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="threeDGMTFilter">
+                                                For drawing in 3D-GMT only:
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Azimuth:</div>
+                                                <div class="rightPanel">
+                                                    <input type="text" id="azim2" class="numberInput" value="10" size="10"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="leftPanel">Rotation Degree:</div>
+                                                <div class="rightPanel">
+                                                    <input type="text" id="degree2" class="numberInput" value="30" size="10"/>
+                                                </div>
+                                            </div>
+                                            <div class="FilterBtnHolder">
+                                                <button id="FilterBtn2" class="FilterBtn">Filter</button>
+                                            </div>
                                         </form>
-                                        <div>
+                                        <div class="equakeButtonsRow">
                                             <label for="equakeDisplayType22D" class="equakeDisplayBox equakeDisplayButtonChecked  equakeDisplayBox2">
                                                 <input type="radio" name="equakeDisplayType2" id="equakeDisplayType22D" value="2D" onclick="drawEquake({mapUsed:2,source:this})"/>
                                                 2D
@@ -3388,22 +3407,23 @@ if ($dev) {
                                         </div>
                                         <!-- place holders for the 2D Flot graph-->
                                         <div id="equakeGraphs2">
-                                            <div id="2DEquakeFlotGraph2">
+                                            <div id="twoDEquakeFlotGraph2" class="twoDEquakeFlotGraph">
+                                                <b class="pointer"></b>
                                                 <div class="plot-label">
                                                     <b>E-W</b>
                                                 </div>
-                                                <div id="FlotDisplayLat2">
+                                                <div id="FlotDisplayLat2" class="equakeGraphPlaceholder">
 
                                                 </div>
                                                 <div class="plot-label">
                                                     <b>N-S</b>
                                                 </div>
-                                                <div id="FlotDisplayLon2">
+                                                <div id="FlotDisplayLon2" class="equakeGraphPlaceholder">
                                                 </div>
                                                 <div class="plot-label">
                                                     <b>Time</b>
                                                 </div>
-                                                <div id="FlotDisplayTime2">
+                                                <div id="FlotDisplayTime2" class="equakeGraphPlaceholder">
                                                 </div>
                                                 <div class="PrintButton" onclick="javascript:Wovodat.Printer.print({type:Wovodat.Printer.Printing.Type.TWOD_EQUAKE,element:document.getElementById('equakeGraphs2'),mapUsed:2,equakeGraph:equakeGraphs[2],info:document.getElementById('CompVolcanoList').value})">
                                                     <a title="Print this graphs" href="#" >
@@ -3412,7 +3432,8 @@ if ($dev) {
                                                     </a>
                                                 </div>
                                             </div>
-                                            <div id="2DGMTEquakeGraph2">
+                                            <div id="2DGMTEquakeGraph2" class="twoDGMTEquakeFlotGraph">
+                                                <b class="pointer"></b>
                                                 <div id="2DImage" class="TwoDImage">
                                                     <a href="" id="imageLink" target="_blank"><img height="707" width="500" src="" id="image"/></a>
                                                 </div>
@@ -3428,25 +3449,18 @@ if ($dev) {
                                                     <a id="gmtScriptFile" href="" target="_blank">GMT script file</a><br/> 
                                                 </div>
                                             </div>
-                                            <div id="3DGMTEquakeGraph2">
+                                            <div id="3DGMTEquakeGraph2" class="threeDGMTEquakeFlotGraph">
+                                                <b class="pointer"></b>
                                                 <div id="3DImage" class="ThreeDImage">
+                                                    <div id="navigationBar" class="threeDNavigationBar">
+
+                                                        <div id="previousButton"></div>
+                                                        <div id="showAnimation"></div>
+                                                        <div id="nextButton"></div>
+
+                                                    </div>
                                                     <div id="title"></div>
                                                     <a href="" id="imageLink" target="_blank"><img height="500" width="500" src="" id="image"/></a>
-                                                </div>
-                                                <div id="navigationBar" class="navigationBar">
-                                                    <table>
-                                                        <tr>
-                                                            <td>
-                                                                <button id="previousButton"></button>
-                                                            </td>
-                                                            <td>
-                                                                <button id="showAnimation">Animation</button>
-                                                            </td>
-                                                            <td>
-                                                                <button id="nextButton"></button>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
                                                 </div>
                                                 <div class="PrintButton" onclick="javascript:Wovodat.Printer.print({type:Wovodat.Printer.Printing.Type.THREED_GMT_EQUAKE,link:$('#image',document.getElementById('3DGMTEquakeGraph2'))[0].src,info:document.getElementById('CompVolcanoList').value})">
                                                     <a title="Print this graphs" href="#" >
@@ -3493,7 +3507,7 @@ if ($dev) {
                                             <br/>
                                             <div id="overviewPanel2">
                                                 <b>Overview (select a range to redraw the graph): </b>
-                                                <div id="overview2">
+                                                <div id="overview2"  class="overviewGraph">
 
                                                 </div>
                                                 <br/>

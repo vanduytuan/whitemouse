@@ -10,7 +10,7 @@ function Tooltip(options) {
     this.marker_ = options.marker;
     this.content_ = options.content;
     this.map_ = options.marker.get('map');
-	this.cssClass_ = options.cssClass||null;
+    this.cssClass_ = options.cssClass||null;
 
     // We define a property to hold the content's
     // div. We'll actually create this div
@@ -20,15 +20,15 @@ function Tooltip(options) {
 
     //Explicitly call setMap on this overlay
     this.setMap(this.map_);
-	var me = this;
-	// Show tooltip on mouseover event.
-	google.maps.event.addListener(me.marker_, 'mouseover', function() {
-		me.show();
-	});
-	// Hide tooltip on mouseout event.
-	google.maps.event.addListener(me.marker_, 'mouseout', function() {
-		me.hide();
-	});
+    var me = this;
+    // Show tooltip on mouseover event.
+    google.maps.event.addListener(me.marker_, 'mouseover', function() {
+        me.show();
+    });
+    // Hide tooltip on mouseout event.
+    google.maps.event.addListener(me.marker_, 'mouseout', function() {
+        me.hide();
+    });
 }
 // Now we extend google.maps.OverlayView()
 Tooltip.prototype = new google.maps.OverlayView();
@@ -40,10 +40,10 @@ Tooltip.prototype.onAdd = function() {
     // Create the DIV and set some basic attributes.
     var div = document.createElement('DIV');
     div.style.position = "absolute";
-	// Hide tooltip
-	div.style.visibility = "hidden";
-	if(this.cssClass_)
-		div.className += " "+this.cssClass_;
+    // Hide tooltip
+    div.style.visibility = "hidden";
+    if(this.cssClass_)
+        div.className += " "+this.cssClass_;
 
     //Attach content to the DIV.
     div.innerHTML = this.content_;
@@ -54,9 +54,9 @@ Tooltip.prototype.onAdd = function() {
     // We add an overlay to a map via one of the map's panes.
     // We'll add this overlay to the floatPane pane.
     var panes = this.getPanes();
-  	panes.floatPane.appendChild(this.div_);
+    panes.floatPane.appendChild(this.div_);
 	
-  }
+}
 // We here implement draw
 Tooltip.prototype.draw = function() {
 
@@ -84,12 +84,12 @@ Tooltip.prototype.onRemove = function() {
 // Note that the visibility property must be a string enclosed in quotes
 Tooltip.prototype.hide = function() {
     if (this.div_) {
-      this.div_.style.visibility = "hidden";
+        this.div_.style.visibility = "hidden";
     }
 }
 
 Tooltip.prototype.show = function() {
     if (this.div_) {
-      this.div_.style.visibility = "visible";
+        this.div_.style.visibility = "visible";
     }
 }

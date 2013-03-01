@@ -6,7 +6,7 @@ This script is for connecting to the database with RESTRICTED permissions (SELEC
 
 **********************************/
 
-$link=mysql_connect("wovodat.org", "wovodat_view", "+00World") or die(mysql_error());
+$link=mysql_connect("www.wovodat.org", "wovodat_view", "+00World") or die(mysql_error());
 mysql_query("SET CHARACTER SET utf8",$link);
 mysql_query("SET NAMES utf8",$link);
 mysql_select_db("wovodat") or die(mysql_error());
