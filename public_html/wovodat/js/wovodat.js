@@ -488,6 +488,7 @@ Wovodat.fixBigData = function(data){
     timeSeriesData.push(data[0][1]);
     timeSeriesData.push(data[0][2]);
     for(i = 3 ; i < l ; i++){
+        
         currentValue = data[0][i][1];
         newDif = Math.abs(currentValue - previousValue);
         // significantly different from the previous value

@@ -1081,13 +1081,13 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                     case 'GPS':
                         switch ($component) {
                             case 'Lat':
-                                $result = mysql_query("select b.dd_gps_time, b.dd_gps_lat$cc from ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() order by b.dd_gps_time desc");
+                                $result = mysql_query("select b.dd_gps_time, b.dd_gps_lat$cc from ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() group by b.dd_gps_time order by b.dd_gps_time desc");
                                 break;
                             case 'Lon':
-                                $result = mysql_query("select b.dd_gps_time, b.dd_gps_lon$cc from ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() order by b.dd_gps_time desc");
+                                $result = mysql_query("select b.dd_gps_time, b.dd_gps_lon$cc from ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() group by b.dd_gps_time order by b.dd_gps_time desc");
                                 break;
                             case 'Elev':
-                                $result = mysql_query("select b.dd_gps_time, b.dd_gps_elev$cc from ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() order by b.dd_gps_time desc");
+                                $result = mysql_query("select b.dd_gps_time, b.dd_gps_elev$cc from ds a, dd_gps b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gps_pubdate <= now() group by b.dd_gps_time order by b.dd_gps_time desc");
                                 break;
                         }
                         break;
@@ -1489,35 +1489,6 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         $lon = $vd_latlon['vd_inf_slon'];
         $lat = $vd_latlon['vd_inf_slat'];
 
-
-        /*
-          $quakeQuery = "select sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag,
-          sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1
-          and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2)
-          + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30
-          and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now()
-          group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc";
-
-         */
-        /*
-          # SQL query: get the data (approximate selection from map width)
-          $sql_statement = "(select b.sn_code, c.sd_evn_elat, c.sd_evn_elon, c.sd_evn_edep, c.sd_evn_pmag,
-          c.sd_evn_time, c.sd_evn_eqtype, d.vd_inf_slat, d.vd_inf_slon FROM sn b, sd_evn c, vd_inf d WHERE
-          b.sn_id = c.sn_id AND b.vd_id=d.vd_id AND d.vd_id = $vd_id $dates $depth $quaketype ORDER BY
-          sd_evn_time DESC $limit) UNION (select b.sn_code, c.sd_evn_elat, c.sd_evn_elon, c.sd_evn_edep,
-          c.sd_evn_pmag, c.sd_evn_time, c.sd_evn_eqtype, d.vd_inf_slat, d.vd_inf_slon FROM jj_volnet a,
-          sn b, sd_evn c, vd_inf d WHERE a.vd_id = $vd_id AND a.jj_net_id = b.sn_id AND b.sn_id = c.sn_id
-          AND d.vd_id = $vd_id AND a.jj_net_flag = 'S' $dates $depth $quaketype AND
-          (sqrt(power(d.vd_inf_slat - c.sd_evn_elat, 2) + power(d.vd_inf_slon - c.sd_evn_elon, 2))*111)<=1.5*$wkm
-          ORDER BY c.sd_evn_time DESC $limit)";
-
-          $sql_statement = "select sd_evn_code, sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time,
-          sd_evn_eqtype FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1
-          and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2)
-          + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30
-          and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() $dates $depth $quaketype
-          group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc $limit";
-         */
         $sql_statement = $this->getEarthquakeQuery($qty, $lat, $lon, $date_start, $date_end, $dr_start, $dr_end, $eqtype);
         $query = mysql_query($sql_statement);
 
