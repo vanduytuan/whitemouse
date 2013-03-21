@@ -1628,7 +1628,7 @@ if ($dev) {
                         $("#TimeSeriesHeader1").click();
                     }else{
                         var a = document.getElementById('CompVolcanoList');
-                        a.value = "Akita-Yake-yama&0803-26=";
+                        a.value = "Miyake-jima&0804-04=";
                         $(a).change();
                         $("#DisplayEquake2").click();
                         $("#TimeSeriesHeader2").click();
@@ -1767,7 +1767,7 @@ if ($dev) {
             //$("#FilterSwitch2").click();
         });
         
-        // what is this?
+        // this function is trigger when the filter button is clicked.
         function registerFilter(o){
             var mapUsed = o.mapUsed;
             if (volcanoInfo[mapUsed]){
@@ -2050,8 +2050,8 @@ if ($dev) {
                 earthquakes[cavw][index]['available'] = true;
                 earthquakes[cavw][index]['mag']=mag;
                 earthquakes[cavw][index]['depth']=depth;
-                earthquakes[cavw][index]['latDistance'] = calculateD(lat,lon,vlat,vlon,0);
-                earthquakes[cavw][index]['lonDistance'] = calculateD(lat,lon,vlat,vlon,1);
+                earthquakes[cavw][index]['latDistance'] = Wovodat.calculateD(lat,lon,vlat,vlon,0);
+                earthquakes[cavw][index]['lonDistance'] = Wovodat.calculateD(lat,lon,vlat,vlon,1);
                 earthquakes[cavw][index]['timestamp'] = Wovodat.convertDate(time);
             }
         }
@@ -2094,9 +2094,7 @@ if ($dev) {
         
         function initializeFilter(data,mapUsed){
             var i, item, startTime, endTime, timestamp;
-            var count = 0;
             for(i in data){
-                count++;
                 item = data[i];
                 timestamp = item['timestamp'];
                 if(startTime == undefined) startTime = timestamp;
@@ -2403,44 +2401,7 @@ if ($dev) {
     function kmFormatter(v, axis){
         return v.toFixed(axis.tickDecimals) + " km";
     }
-    /*
-     * Compute the distant of the two point on the earth surface based on their
-     * latitude and longitude vales. 
-     * lat,lon is the position of the first point
-     * vlat,vlon is the postion of the second point
-     * option: calculate the distance following the latitude and longitude side
-     */
-    function calculateD(lat,lon,vlat,vlon,option){
-        var R = 6371; //earth radius in kilometer
-        // 
-        if (typeof lat=="undefined" || typeof lon=="undefined" || typeof vlat=="undefined" || typeof vlon=="undefined"){
-            return 0;
-        }
-        var dLat, dLon, diff, tlat1, tlat2;
-        switch (option){
-            case 0:
-                dLat = 0;
-                dLon = toRad(lon-vlon);
-                tlat1 = toRad(vlat);
-                tlat2 = toRad(vlat);
-                diff = lon - vlon;
-                break;
-            case 1:
-                dLon = 0;
-                dLat = toRad(lat-vlat);
-                diff = lat - vlat;
-                tlat1 = toRad(vlat);
-                tlat2 = toRad(lat);
-                break;
-        }
-        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(tlat1) * Math.cos(tlat2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        var d = R * c;
-        if ((diff<0&&diff>-180)||diff>90)
-            d = -d;
-        return d;
-    }
+    
     
     /*
      * Draw the equake graphs under the equake panels

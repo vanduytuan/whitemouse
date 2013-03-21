@@ -258,17 +258,41 @@ Wovodat.getStationData = function(args){
         data: "get=StationData&type=" + type.toLowerCase() + "&table=" + table 
         +"&code="+code + "&component=" + component + "&ref=" + referenceData,
         dataType: "json",
-        success: function(html){
+        success: function(o){
+            preprocessData(o);
             if(handler != undefined)
                 handler({
-                    data: html,
+                    data: o,
                     id: type + "&" + table + "&" + code + "&" + component,
                     tableId:tableId
                 });
-        },
-        error: function(html){
         }
     });
+    function preprocessData(o){
+        if(o == undefined) 
+            return;
+        if(o.length == 0)
+            return;
+        var data = o[0];
+        if(data == undefined)
+            return;
+        var length = data.length;
+        if(length == 0)
+            return;
+        var minObject = data[length -1];
+        switch(type){
+            case "GPS":
+                // transfer the latitude and longitude into distance projected
+                // in the x or y direction
+                switch(component){
+                    case "Lat":
+                        break;
+                    case "Long":
+                        break;
+                }
+        }
+        
+    }
 };
 
 
@@ -701,7 +725,7 @@ Wovodat.processDetailedData = function(o){
     var data = o.data;
     if(data == null || data == undefined || data.length == 0 || data[0].length == 0 || data[0][0].length == 0){
         console.log("Wovodat.processDetailedData: data is emptied. Function returned without any further processing.");
-    }else{
+        return;
     }
     var ref = o.referenceTime;
     var temp;
@@ -844,11 +868,11 @@ Wovodat.get3DMap = function(o){
 	
     var visual_type = '3D';
 	
-	var vname = isEmpty(o.vname);   //Nang added
-	var vlat = isEmpty(o.vlat);	    //Nang added
-	var vlon = isEmpty(o.vlon);		//Nang added
-	var eqtype = isEmpty(o.eqtype); //Nang added
-	var wkm = isEmpty(o.wkm);       //Nang added
+    var vname = isEmpty(o.vname);   //Nang added
+    var vlat = isEmpty(o.vlat);	    //Nang added
+    var vlon = isEmpty(o.vlon);		//Nang added
+    var eqtype = isEmpty(o.eqtype); //Nang added
+    var wkm = isEmpty(o.wkm);       //Nang added
 	
     var qty = isEmpty(o.qty);
     if (!qty) qty = 100; 
@@ -870,21 +894,21 @@ Wovodat.get3DMap = function(o){
     $.ajax({
         method: "get", 
         url: "/php/switch.php",
-       data: "get=3D" 
-			+ "&cavw="+cavw 
-            + "&init_azim=" + init_azim 
-            + "&degree=" + degree 
-            + "&vname=" + vname 
-            + "&vlat=" + vlat 
-            + "&vlon=" + vlon 			
-            + "&qty=" + qty
-            + "&date_start=" + date_start 
-            + "&date_end=" + date_end 
-            + "&dr_start=" + dr_start 
-            + "&dr_end=" + dr_end 
-            + "&visual_type=" + visual_type
-            + "&eqtype=" + eqtype
-			+ "&wkm=" + wkm,			
+        data: "get=3D" 
+        + "&cavw="+cavw 
+        + "&init_azim=" + init_azim 
+        + "&degree=" + degree 
+        + "&vname=" + vname 
+        + "&vlat=" + vlat 
+        + "&vlon=" + vlon 			
+        + "&qty=" + qty
+        + "&date_start=" + date_start 
+        + "&date_end=" + date_end 
+        + "&dr_start=" + dr_start 
+        + "&dr_end=" + dr_end 
+        + "&visual_type=" + visual_type
+        + "&eqtype=" + eqtype
+        + "&wkm=" + wkm,			
         dataType:'json',
         success: function(html){
             handler(html);
@@ -896,33 +920,36 @@ Wovodat.get3DMap = function(o){
 
 Wovodat.getOwnerList = function(ownerList,handler){
     $.ajax({
-       method:"post",
-       data:{'ownerList':ownerList,'get':'OwnerList'},
-       url:"/php/switch.php",
-       dataType:'json',
-       success:function(obj){
-           handler(obj);
-       }
+        method:"post",
+        data:{
+            'ownerList':ownerList,
+            'get':'OwnerList'
+        },
+        url:"/php/switch.php",
+        dataType:'json',
+        success:function(obj){
+            handler(obj);
+        }
     });
 };
 
 Wovodat.get2DGMTMap = function(o){
-// these two var don't need for 2D GMT
-//   var init_azim = isEmpty(o.init_azim);
-//   if (!init_azim) init_azim = '10'; 
-//   var degree = isEmpty(o.degree);
-//   if (!degree) degree = 30; 
-//    var map_width = isEmpty(o.map_width);
+    // these two var don't need for 2D GMT
+    //   var init_azim = isEmpty(o.init_azim);
+    //   if (!init_azim) init_azim = '10'; 
+    //   var degree = isEmpty(o.degree);
+    //   if (!degree) degree = 30; 
+    //    var map_width = isEmpty(o.map_width);
 
-	var cavw = isEmpty(o.cavw);
+    var cavw = isEmpty(o.cavw);
     var visual_type = '2D';
-	var vname = isEmpty(o.vname);
-	var vlat = isEmpty(o.vlat);	
-	var vlon = isEmpty(o.vlon);		
-	var eqtype = isEmpty(o.eqtype);
+    var vname = isEmpty(o.vname);
+    var vlat = isEmpty(o.vlat);	
+    var vlon = isEmpty(o.vlon);		
+    var eqtype = isEmpty(o.eqtype);
 
-	var wkm = isEmpty(o.wkm);
-	var qty = isEmpty(o.qty);
+    var wkm = isEmpty(o.wkm);
+    var qty = isEmpty(o.qty);
     if (!qty) qty = 100; 
 
     var date_start = isEmpty(o.date_start);
@@ -944,18 +971,18 @@ Wovodat.get2DGMTMap = function(o){
         method: "get", 
         url: "/php/switch.php",
         data: "get=2D" 
-            + "&cavw="+cavw 
-            + "&vname=" + vname 
-            + "&vlat=" + vlat 
-            + "&vlon=" + vlon 
-			+ "&qty=" + qty
-            + "&date_start=" + date_start 
-            + "&date_end=" + date_end 
-            + "&dr_start=" + dr_start 
-            + "&dr_end=" + dr_end 
-            + "&visual_type=" + visual_type
-            + "&eqtype=" + eqtype
-			+ "&wkm=" + wkm,
+        + "&cavw="+cavw 
+        + "&vname=" + vname 
+        + "&vlat=" + vlat 
+        + "&vlon=" + vlon 
+        + "&qty=" + qty
+        + "&date_start=" + date_start 
+        + "&date_end=" + date_end 
+        + "&dr_start=" + dr_start 
+        + "&dr_end=" + dr_end 
+        + "&visual_type=" + visual_type
+        + "&eqtype=" + eqtype
+        + "&wkm=" + wkm,
         dataType:'json',		
         success: function(html){
             handler(html);
@@ -1145,12 +1172,12 @@ Wovodat.showNotification = function(obj){
     div.innerHTML = message;
     width = width - $(div).width() / 2;
     var style = "position: fixed;" +
-        "border: 1px solid #CECECE;" +
-        "padding: 5px;" +
-        "opacity: 0.9;" +
-        "bottom: 10px;" +
-        "background-color: #F3F3F3;"+
-        "margin-left: " + width + "px;";
+    "border: 1px solid #CECECE;" +
+    "padding: 5px;" +
+    "opacity: 0.9;" +
+    "bottom: 10px;" +
+    "background-color: #F3F3F3;"+
+    "margin-left: " + width + "px;";
     div.setAttribute("style",style);
     window.setTimeout(function(){
         div.parentNode.removeChild(div);
@@ -1203,4 +1230,44 @@ Wovodat.convertDate = function(time){
     dd.setUTCFullYear(year, month, day);
     dd.setUTCHours(hh, mm, ss, 0);
     return dd;
+}
+/*
+     * Compute the distant of the two point on the earth surface based on their
+     * latitude and longitude vales. 
+     * lat,lon is the position of the first point
+     * vlat,vlon is the postion of the second point
+     * option: calculate the distance following the latitude and longitude side
+     * 0: latitude
+     * 1: longitude
+     */
+Wovodat.calculateD = function(lat,lon,vlat,vlon,option){
+    var R = 6371; //earth radius in kilometer
+    // 
+    if (typeof lat=="undefined" || typeof lon=="undefined" || typeof vlat=="undefined" || typeof vlon=="undefined"){
+        return 0;
+    }
+    var dLat, dLon, diff, tlat1, tlat2;
+    switch (option){
+        case 0:
+            dLat = 0;
+            dLon = toRad(lon-vlon);
+            tlat1 = toRad(vlat);
+            tlat2 = toRad(vlat);
+            diff = lon - vlon;
+            break;
+        case 1:
+            dLon = 0;
+            dLat = toRad(lat-vlat);
+            diff = lat - vlat;
+            tlat1 = toRad(vlat);
+            tlat2 = toRad(lat);
+            break;
+    }
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(tlat1) * Math.cos(tlat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+    if ((diff<0&&diff>-180)||diff>90)
+        d = -d;
+    return d;
 }
