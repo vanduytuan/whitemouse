@@ -139,6 +139,7 @@ $cache = time();
                 Wovodat.showProcessingIcon($("#loading"));
                 // when the volcano option is changed
                 $("#VolcanoList").change(function(){
+                    hideEarthquakeMarkerButton(1);
                     var volcano = $("#VolcanoList").val();
                     volcano = volcano.split("&");
                     var cavw = volcano[1];
@@ -252,7 +253,7 @@ $cache = time();
                     return false;
                 });
                 $("#CompVolcanoList").change(function(){
-                    
+                    hideEarthquakeMarkerButton(2);
                     var volcano = $("#CompVolcanoList").val();
                     volcano = volcano.split("&");
                     var cavw = volcano[1];
@@ -362,6 +363,24 @@ $cache = time();
                     $("#map_legend2").hide();
                 });
             });
+            function getCavw(mapUsed){
+                if(mapUsed == undefined || (mapUsed !=1 && mapUsed != 2))
+                    return ;
+                var dropdownList;
+                if(mapUsed == 1){
+                    dropdownList = document.getElementById('VolcanoList');
+                }else{
+                    dropdownList = document.getElementById('CompVolcanoList');
+                }
+                var value = dropdownList.value;
+                if(value == undefined)
+                    return;
+                var list = value.split("&");
+                if(list.length != 2)
+                    return;
+                var cavw = list[1];
+                return cavw;
+            }
             function insertMarkersForNeighbors(cavw, list, panelUsed){
                 //remove all neighMarkers
                 for (var i in neighMarkers[panelUsed])
@@ -1689,14 +1708,15 @@ if ($dev) {
             $('#EquakePanel1').show();
             $("#twoDEquakeFlotGraph1").hide();
             $("#2DGMTEquakeGraph1").hide();
-            $("#showHideMarkers1").show();
+            showHideEquakeButton(1);
         });
         $("#DisplayEquake2").click(function(){
             $("#EquakePanel2").show();
             $("#twoDEquakeFlotGraph2").hide();
             $("#2DGMTEquakeGraph2").hide();
-            $("#showHideMarkers2").show();
+            showHideEquakeButton(2);
         }); 
+        
         /*
          * Hide the entire earthquake panel when the x button is click
          */
@@ -1819,6 +1839,46 @@ if ($dev) {
     });
     function hideEquakePanel(o){
         $("#EquakePanel" + o.mapUsed).hide();
+    }
+    function hideEarthquakeMarkerButton(mapUsed){
+        // parameter checking
+        if(mapUsed == undefined || (mapUsed != 1 && mapUsed != 2))
+            return;
+        var button = $("#showHideMarkers" + mapUsed);
+        // if the button does not exist, return
+        if(button == undefined)
+            return;
+        button.css('display','none');
+        
+    }
+    // show the button to hide/show earthquake markers in the graph
+    // the function only show the button when we have any marker
+    function showHideEquakeButton(mapUsed){
+        var cavw = getCavw(mapUsed);
+        if(cavw == undefined)
+            return;
+        // parameter checking
+        if(mapUsed == undefined || (mapUsed != 1 && mapUsed != 2))
+            return;
+        var button = $("#showHideMarkers" + mapUsed);
+        // if the button does not exist, return
+        if(button == undefined)
+            return;
+        // if the button is already shown, return
+        if(button.css('display') == 'block')
+            return;
+        // go through all the earthquakes available for the current vocano
+        for (var i in earthquakes[cavw])
+            if (typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
+                // if there is earthquakes that are shown for on the map, show the 
+                // button and return
+                if(earthquakes[cavw][i]['marker' + mapUsed].getMap() != null){
+                    button.css('display','block');
+                    return;
+                }
+        }
+            
+        button.css('display','none');
     }
     /*
      * This function is used for the filtering of the equake events based on the
@@ -2285,6 +2345,7 @@ if ($dev) {
             'vertical-align': 'middle',
             'padding-top': CONSTANTS.labelPaddingTop
         });
+        showHideEquakeButton(mapUsed);
     }  
     /*
      * hide all the markers when user closes the Earthquakes panel section
@@ -2875,7 +2936,7 @@ if ($dev) {
 
                                         <div id="map_legend1" class="map_legend" style="font-size:8px;display:inline">
                                             <div style="float:right">
-                                                <button id="showHideMarkers1">
+                                                <button id="showHideMarkers1" class="showHideMarkerButton">
                                                     Hide earthquake
                                                 </button>
                                             </div>
@@ -3237,7 +3298,7 @@ if ($dev) {
 
                                         <div id="map_legend2" class="map_legend" style="font-size:8px;display:inline">
                                             <div style="float:right">
-                                                <button id="showHideMarkers2">
+                                                <button id="showHideMarkers2" class="showHideMarkerButton">
                                                     Hide earthquake
                                                 </button>
                                             </div>
