@@ -2665,22 +2665,10 @@ if ($dev) {
                 background-color:white;
                 border: 1px solid #b0a9a9;
             }
-            #overviewPanel1, #overviewPanel2{
-                padding-left: 15px;
-                width: 320px;
-                display:none;
-            }
-            .overviewGraph{
-                width:340px;
-                height:42px;
-            }
             #TimeSeriesView1, #TimeSeriesView2{
                 margin-top: 5px;
                 display: none;
                 margin-left: 10px;
-            }
-            #TimeSeriesList1,#TimeSeriesList2{
-                padding-left: 15px;
             }
             .button {
                 width:460px;
@@ -3196,12 +3184,12 @@ if ($dev) {
                                             <div id="OptionList1">
                                                 <b>Available time series data (max. 3):</b> 
                                                 <div id="OptionList1-1">
-                                                    <table id="TimeSeriesList1" style="">
+                                                    <table id="TimeSeriesList1" class="timeSeriesList">
                                                     </table>
                                                 </div>
                                             </div>
                                             <br/>
-                                            <div id="overviewPanel1">
+                                            <div id="overviewPanel1" class="overviewPanel">
                                                 <b>Overview (select a range to redraw the graph): </b>
                                                 <div id="overview1" class="overviewGraph">
 
@@ -3563,13 +3551,13 @@ if ($dev) {
                                             <div id="OptionList2">
                                                 <b>Available time series data (max. 3):</b>
                                                 <div id="OptionList2-1">
-                                                    <table id="TimeSeriesList2" style="">
+                                                    <table id="TimeSeriesList2" class="timeSeriesList">
 
                                                     </table>
                                                 </div>
                                             </div>
                                             <br/>
-                                            <div id="overviewPanel2">
+                                            <div id="overviewPanel2" class="overviewPanel">
                                                 <b>Overview (select a range to redraw the graph): </b>
                                                 <div id="overview2"  class="overviewGraph">
 

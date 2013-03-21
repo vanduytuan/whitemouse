@@ -683,9 +683,9 @@ a.active.trigger {
     margin-top: 35px;
 }
 .threeDNavigationBar{
-    
+
     position: absolute;
-    
+
 }
 #previousButton{
     display: inline-block;
@@ -705,7 +705,7 @@ a.active.trigger {
     width: 25px;
     height: 25px;
     background-image: url('/img/repeat.png');
-    
+
 }
 #nextButton{
     display: inline-block;
@@ -716,7 +716,7 @@ a.active.trigger {
     background-repeat: no-repeat;
     border: 1px solid #C0BFBF;
     border-radius: 5px;
-    
+
 }
 .dataOwner:hover{
     text-decoration: underline;
@@ -733,4 +733,19 @@ a.active.trigger {
 }
 .viewStationPanel{
     height: 18px;
+}
+.timeSeriesList{
+    width: 100%;
+    padding-left: 15px;
+}
+
+.overviewPanel{
+    width: 100%;
+    padding-left: 15px;
+    display:none;
+}
+
+.overviewGraph{
+    width:85%;
+    height:42px;
 }
