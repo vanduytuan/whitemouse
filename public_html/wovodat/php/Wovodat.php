@@ -1339,7 +1339,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
 		if($wkm == "")
 			$wkm = 60;
 		
-		$quakeQuery .= " AND SQRT(POW(($latitude - sd_evn_elat)*110, 2) + POW(($longitude - sd_evn_elon) * 111.32 * COS($latitude/57.32), 2))<  " . $wkm * 0.5;
+		$quakeQuery .= " AND SQRT(POW(($latitude - sd_evn_elat)*110, 2) + POW(($longitude - sd_evn_elon) * 111.32 * COS($latitude/57.32), 2))<  " . ($wkm / 2.0);
 		
 		$quakeQuery .= " AND sd_evn_pubdate <= now() ";
 		

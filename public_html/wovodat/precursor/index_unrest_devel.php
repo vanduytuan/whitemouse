@@ -1628,7 +1628,7 @@ if ($dev) {
                         $("#TimeSeriesHeader1").click();
                     }else{
                         var a = document.getElementById('CompVolcanoList');
-                        a.value = "Miyake-jima&0804-04=";
+                        a.value = "Akita-Yake-yama&0803-26=";
                         $(a).change();
                         $("#DisplayEquake2").click();
                         $("#TimeSeriesHeader2").click();
@@ -1781,8 +1781,6 @@ if ($dev) {
                     if(!earthquakes[cavw]){
                         return;
                     }
-                    // filter all the data based on the filter table
-                    filterData(cavw,mapUsed);
                     drawEquake({mapUsed:mapUsed,source:document.getElementById('equakeDisplayType' + mapUsed + '2D')});
                     
                 }else if(document.getElementById('3DGMTEquakeGraph' + mapUsed).style.display == 'block'){
@@ -2093,9 +2091,12 @@ if ($dev) {
         if(!mapUsed)
             return;
         
+        
         function initializeFilter(data,mapUsed){
             var i, item, startTime, endTime, timestamp;
+            var count = 0;
             for(i in data){
+                count++;
                 item = data[i];
                 timestamp = item['timestamp'];
                 if(startTime == undefined) startTime = timestamp;
@@ -2139,6 +2140,7 @@ if ($dev) {
         }
         
         initializeFilter(earthquakes[cavw],mapUsed);
+        filterData(cavw,mapUsed);
         // This is the height and width for the 
         // flot graph. Flot is for 2D javascript drawing
         var CONSTANTS = {
