@@ -833,19 +833,29 @@ Wovodat.toggleEarthquakePanel = function(o){
 }
 
 Wovodat.get3DMap = function(o){
+	
     var cavw = isEmpty(o.cavw);
+	
     var init_azim = isEmpty(o.init_azim);
     if (!init_azim) init_azim = '10'; 
+	
     var degree = isEmpty(o.degree);
     if (!degree) degree = 30; 
-    var map_width = isEmpty(o.map_width);
+	
     var visual_type = '3D';
+	
+	var vname = isEmpty(o.vname);   //Nang added
+	var vlat = isEmpty(o.vlat);	    //Nang added
+	var vlon = isEmpty(o.vlon);		//Nang added
+	var eqtype = isEmpty(o.eqtype); //Nang added
+	var wkm = isEmpty(o.wkm);       //Nang added
+	
     var qty = isEmpty(o.qty);
     if (!qty) qty = 100; 
     var date_start = isEmpty(o.date_start);
-    if (!date_start) date_start = '1/1/1990'; 
+    if (!date_start) date_start = '1/1/1900';        
     var date_end = isEmpty(o.date_end);
-    if (!date_end) date_end = '1/1/2012'; 
+    if (!date_end) date_end = '1/1/2012';           
     
     var dr_start = isEmpty(o.dr_start);
     if(!dr_start) dr_start = 0;
@@ -860,18 +870,21 @@ Wovodat.get3DMap = function(o){
     $.ajax({
         method: "get", 
         url: "/php/switch.php",
-        data: "get=3D" 
-        + "&cavw="+cavw 
-        + "&init_azim=" + init_azim 
-        + "&degree=" + degree 
-        + "&map_width=" + map_width 
-        + "&qty=" + qty
-        + "&date_start=" + date_start 
-        + "&date_end=" + date_end 
-        + "&dr_start=" + dr_start 
-        + "&dr_end=" + dr_end 
-        + "&visual_type=" + visual_type
-        + "&eqtype=" + eqtype,
+       data: "get=3D" 
+			+ "&cavw="+cavw 
+            + "&init_azim=" + init_azim 
+            + "&degree=" + degree 
+            + "&vname=" + vname 
+            + "&vlat=" + vlat 
+            + "&vlon=" + vlon 			
+            + "&qty=" + qty
+            + "&date_start=" + date_start 
+            + "&date_end=" + date_end 
+            + "&dr_start=" + dr_start 
+            + "&dr_end=" + dr_end 
+            + "&visual_type=" + visual_type
+            + "&eqtype=" + eqtype
+			+ "&wkm=" + wkm,			
         dataType:'json',
         success: function(html){
             handler(html);
@@ -894,25 +907,34 @@ Wovodat.getOwnerList = function(ownerList,handler){
 };
 
 Wovodat.get2DGMTMap = function(o){
-    var cavw = isEmpty(o.cavw);
-    var init_azim = isEmpty(o.init_azim);
-    if (!init_azim) init_azim = '10'; 
-    var degree = isEmpty(o.degree);
-    if (!degree) degree = 30; 
-    var map_width = isEmpty(o.map_width);
+// these two var don't need for 2D GMT
+//   var init_azim = isEmpty(o.init_azim);
+//   if (!init_azim) init_azim = '10'; 
+//   var degree = isEmpty(o.degree);
+//   if (!degree) degree = 30; 
+//    var map_width = isEmpty(o.map_width);
+
+	var cavw = isEmpty(o.cavw);
     var visual_type = '2D';
-    var qty = isEmpty(o.qty);
+	var vname = isEmpty(o.vname);
+	var vlat = isEmpty(o.vlat);	
+	var vlon = isEmpty(o.vlon);		
+	var eqtype = isEmpty(o.eqtype);
+
+	var wkm = isEmpty(o.wkm);
+	var qty = isEmpty(o.qty);
     if (!qty) qty = 100; 
+
     var date_start = isEmpty(o.date_start);
-    if (!date_start) date_start = '1/1/1990'; 
+    if (!date_start) date_start  = '1/1/1990'; 
     var date_end = isEmpty(o.date_end);
     if (!date_end) date_end = '1/1/2012'; 
-    
+
     var dr_start = isEmpty(o.dr_start);
     if(!dr_start) dr_start = 0;
     var dr_end = isEmpty(o.dr_end);
     if(!dr_end) dr_end = 500;
-    var eqtype = isEmpty(o.eqtype);
+
     var handler = o.handler;
     function isEmpty(e){
         if(e == undefined) return "";
@@ -922,18 +944,19 @@ Wovodat.get2DGMTMap = function(o){
         method: "get", 
         url: "/php/switch.php",
         data: "get=2D" 
-        + "&cavw="+cavw 
-        + "&init_azim=" + init_azim 
-        + "&degree=" + degree 
-        + "&map_width=" + map_width 
-        + "&qty=" + qty
-        + "&date_start=" + date_start 
-        + "&date_end=" + date_end 
-        + "&dr_start=" + dr_start 
-        + "&dr_end=" + dr_end 
-        + "&visual_type=" + visual_type
-        + "&eqtype=" + eqtype,
-        dataType:'json',
+            + "&cavw="+cavw 
+            + "&vname=" + vname 
+            + "&vlat=" + vlat 
+            + "&vlon=" + vlon 
+			+ "&qty=" + qty
+            + "&date_start=" + date_start 
+            + "&date_end=" + date_end 
+            + "&dr_start=" + dr_start 
+            + "&dr_end=" + dr_end 
+            + "&visual_type=" + visual_type
+            + "&eqtype=" + eqtype
+			+ "&wkm=" + wkm,
+        dataType:'json',		
         success: function(html){
             handler(html);
         },
