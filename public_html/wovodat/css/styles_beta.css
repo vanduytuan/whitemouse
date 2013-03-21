@@ -731,3 +731,6 @@ a.active.trigger {
     margin-top: 15px;
     position: relative;
 }
+.viewStationPanel{
+    height: 18px;
+}

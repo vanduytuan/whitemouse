@@ -1520,12 +1520,12 @@ $cache = time();
                 var lon = args.lon;
                 var elev = args.elev;
                 var cavw = volcano[1];
- 				var volName=volcano[0];  //Nang added 
+                var volName=volcano[0];  //Nang added 
                 var cavw = volcano[1];
-//Nang added volName				
+                //Nang added volName				
                 volcanoInfo[mapUsed] = {lat:args.lat,lon:args.lon,elev:args.elev,cavw:cavw,volName:volName}; 				
 				
-            //    volcanoInfo[mapUsed] = {lat:args.lat,lon:args.lon,elev:args.elev,cavw:cavw};
+                //    volcanoInfo[mapUsed] = {lat:args.lat,lon:args.lon,elev:args.elev,cavw:cavw};
                 // location of singapore
                 if(!lat || !lon){
                     lat = 1.29;
@@ -1594,14 +1594,13 @@ $cache = time();
                         if (list[i].indexOf("Unnamed")==-1)
                             volcanos.options[volcanos.options.length] = new Option(list[i].replace('&','_'),list[i]);
                     }                   
-				//	randomSelectVolcano(selectId);
-              //  }
-           // }
+                    //	randomSelectVolcano(selectId);
+                    //  }
+                    // }
                  
 <?php
-
 if ($dev) {
-?>
+    ?>
                     if(ids[j] == 'VolcanoList'){
                         var a = document.getElementById('VolcanoList');
                         a.value = "Akutan&1101-32-";
@@ -1615,11 +1614,11 @@ if ($dev) {
                         $("#DisplayEquake2").click();
                         $("#TimeSeriesHeader2").click();
                     }       
-<?php
+    <?php
 } else {
-?>     
+    ?>     
                     randomSelectVolcano(selectId);
-<?php
+    <?php
 }
 ?>
         }
@@ -1858,7 +1857,7 @@ if ($dev) {
         
         type = type.options[type.selectedIndex].value;
         var count = 0;
-		var vlat = earthquakes[cavw]['vlat'], vlon = earthquakes[cavw]['vlon'];
+        var vlat = earthquakes[cavw]['vlat'], vlon = earthquakes[cavw]['vlon'];
         // some error here, what if i is 'vlat' or 'vlon'
         for (var i in earthquakes[cavw]){
             if (count > nEvent){
@@ -1870,13 +1869,13 @@ if ($dev) {
                 var eDepth = parseFloat(earthquakes[cavw][i]['depth']);
                 var eTime = Wovodat.convertDate(earthquakes[cavw][i]['time']);
 				
-				var elat = earthquakes[cavw][i]['lat'], elon = earthquakes[cavw][i]['lon'];
+                var elat = earthquakes[cavw][i]['lat'], elon = earthquakes[cavw][i]['lon'];
 				
-				if(Math.sqrt(Math.pow((vlat - elat)*110, 2) + Math.pow((vlon - elon) * 111.32 * Math.cos(vlat/57.32), 2)) >   wkm){
-					earthquakes[cavw][i]['available'] = false;	
-					console.log(Math.sqrt(Math.pow((vlat - elat)*110, 2) + Math.pow((vlon - elon) * 111.32 * Math.cos(vlat/57.32), 2)));			
-					continue;
-				}
+                if(Math.sqrt(Math.pow((vlat - elat)*110, 2) + Math.pow((vlon - elon) * 111.32 * Math.cos(vlat/57.32), 2)) >   wkm){
+                    earthquakes[cavw][i]['available'] = false;	
+                    console.log(Math.sqrt(Math.pow((vlat - elat)*110, 2) + Math.pow((vlon - elon) * 111.32 * Math.cos(vlat/57.32), 2)));			
+                    continue;
+                }
                 eTime = eTime.getTime();
                 var chosen = true;
                 earthquakes[cavw][i]['available'] = false;
@@ -2424,31 +2423,31 @@ if ($dev) {
         var mapUsed = o.mapUsed;
 		
         var cavw = volcanoInfo[mapUsed].cavw;
-		var volName = volcanoInfo[mapUsed].volName;                  //Nang added   
-		var vlat = volcanoInfo[mapUsed].lat;                         //Nang added
-		var vlon = volcanoInfo[mapUsed].lon;                         //Nang added				
+        var volName = volcanoInfo[mapUsed].volName;                  //Nang added   
+        var vlat = volcanoInfo[mapUsed].lat;                         //Nang added
+        var vlon = volcanoInfo[mapUsed].lon;                         //Nang added				
 
         var id = o.source.id;
         var placeholder = document.getElementById('2DGMTEquakeGraph' + mapUsed);   
  
-		if(gmt2DData[cavw] == undefined){
+        if(gmt2DData[cavw] == undefined){
             Wovodat.get2DGMTMap({
-				cavw: cavw,
+                cavw: cavw,
                 qty: document.getElementById('Evn' + mapUsed).value,
                 date_start: document.getElementById('SDate' + mapUsed).value,
                 date_end: document.getElementById('EDate' + mapUsed).value,
                 dr_start: document.getElementById('DepthLow' + mapUsed).value,
                 dr_end: document.getElementById('DepthHigh' + mapUsed).value,
                 eqtype: document.getElementById('EqType' + mapUsed).value,
-				wkm: document.getElementById('wkm' + mapUsed).value,   // Nang added
-				vname:volName,                         // Nang added
-				vlat:vlat,                             //Nang added
-				vlon:vlon,                             //Nang added					
-//Only 3D GMT needs these two degree & init_azim.				
-            //  degree: document.getElementById('degree' + mapUsed).value, 
-            //  init_azim: document.getElementById('azim' + mapUsed).value,			
+                wkm: document.getElementById('wkm' + mapUsed).value,   // Nang added
+                vname:volName,                         // Nang added
+                vlat:vlat,                             //Nang added
+                vlon:vlon,                             //Nang added					
+                //Only 3D GMT needs these two degree & init_azim.				
+                //  degree: document.getElementById('degree' + mapUsed).value, 
+                //  init_azim: document.getElementById('azim' + mapUsed).value,			
 
-				handler: function(ar){
+                handler: function(ar){
                     gmt2DData[cavw] = ar; 
                     show2DGMT(ar);
                 }
@@ -2488,9 +2487,9 @@ if ($dev) {
         var mapUsed = o.mapUsed;
         var cavw = volcanoInfo[mapUsed].cavw;
 		
-		var volName = volcanoInfo[mapUsed].volName;         //Nang added 
-		var vlat = volcanoInfo[mapUsed].lat;                //Nang added
-		var vlon = volcanoInfo[mapUsed].lon;                //Nang added				
+        var volName = volcanoInfo[mapUsed].volName;         //Nang added 
+        var vlat = volcanoInfo[mapUsed].lat;                //Nang added
+        var vlon = volcanoInfo[mapUsed].lon;                //Nang added				
 		
         if(gmt3DData[cavw] == undefined){
             Wovodat.get3DMap({
@@ -2501,10 +2500,10 @@ if ($dev) {
                 dr_start: document.getElementById('DepthLow' + mapUsed).value,
                 dr_end: document.getElementById('DepthHigh' + mapUsed).value,
                 eqtype: document.getElementById('EqType' + mapUsed).value,
-				wkm: document.getElementById('wkm' + mapUsed).value,   // Nang added	
-				vname:volName,                // Nang added
-				vlat:vlat,                    //Nang added
-				vlon:vlon,                    //Nang added									
+                wkm: document.getElementById('wkm' + mapUsed).value,   // Nang added	
+                vname:volName,                // Nang added
+                vlat:vlat,                    //Nang added
+                vlon:vlon,                    //Nang added									
                 degree: document.getElementById('degree' + mapUsed).value,
                 init_azim: document.getElementById('azim' + mapUsed).value,
                 handler: function(ar){
@@ -2953,9 +2952,10 @@ if ($dev) {
                                                                 </select>
                                                             </td>
                                                             <td colspan="2" style="height:20px;width:250px">
-                                                                
-                                                                <button id="HideStationButton1" style="float:right;display:none">Hide Stations</button><b>View stations:</b>
-
+                                                                <div class="viewStationPanel">
+                                                                    <button id="HideStationButton1" style="float:right;display:none">Hide Stations</button>
+                                                                    <b>View stations:</b>
+                                                                </div>
                                                                 <table id="StationList" class="stationList"></table>
                                                             </td>
                                                         </tr>
@@ -3058,12 +3058,12 @@ if ($dev) {
                                             <div class="row">
                                                 <div class="leftPanel">Map Width (km):</div>
                                                 <div class="rightPanel">
-													<select id="wkm1">
+                                                    <select id="wkm1">
                                                         <option value="20">20</option>
                                                         <option value="30">30</option>
                                                         <option value="40">40</option>
                                                         <option value="50">50</option>
-														<option value="60">60</option>
+                                                        <option value="60">60</option>
                                                     </select>
                                                 </div>
                                             </div>											
@@ -3099,7 +3099,7 @@ if ($dev) {
                                             </label>
                                         </div>
                                         <!-- place holders for the Flot graphs and GMT images-->
-                                        
+
                                         <div id="equakeGraphs1">
                                             <div  id="twoDEquakeFlotGraph1" class="twoDEquakeFlotGraph">
                                                 <b class="pointer"></b>
@@ -3318,8 +3318,10 @@ if ($dev) {
                                                                 </select>
                                                             </td>
                                                             <td colspan="2" style="height:20px;width:250px">
-                                                                <button id="HideStationButton2" style="float:right;display:none">Hide Stations</button><b>View stations:</b>
-
+                                                                <div class="viewStationPanel">
+                                                                    <button id="HideStationButton2" style="float:right;display:none">Hide Stations</button>
+                                                                    <b>View stations:</b>
+                                                                </div>
                                                                 <table id="CompStationList" class="stationList"></table>
                                                             </td>
 
@@ -3427,14 +3429,14 @@ if ($dev) {
                                             <div class="row">
                                                 <div class="leftPanel">Map Width (km):</div>
                                                 <div class="rightPanel">
-													<select id="wkm2">
+                                                    <select id="wkm2">
                                                         <option value="20">20</option>
                                                         <option value="30">30</option>
                                                         <option value="40">40</option>
                                                         <option value="50">50</option>
-														<option value="60">60</option>
+                                                        <option value="60">60</option>
                                                     </select>                                               
-												</div>
+                                                </div>
                                             </div>												
                                             <div class="threeDGMTFilter">
                                                 For drawing in 3D-GMT only:
