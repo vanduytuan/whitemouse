@@ -1,4 +1,3 @@
-
   function changedDataType()
   {
 	$.ajax({
@@ -7,7 +6,7 @@
 	  beforeSend: function(){$("#filLoading").show("fast");},
 	  complete: function(){$("#filLoading").hide("fast");},
 	  success: function(html){		
-	  $("#selectStationDiv").html(html);
+	  $("#selectStationDiv").html(html);  // nang
 	  }
 	});
   }
