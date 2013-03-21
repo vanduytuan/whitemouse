@@ -722,7 +722,7 @@ a.active.trigger {
     text-decoration: underline;
 }
 .stationList{
-    margin-top: -10px;
+    width: 100%;
 }
 .equakeGraphPlaceholder{
     width: 450px;

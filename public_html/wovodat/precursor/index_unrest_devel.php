@@ -1854,8 +1854,8 @@ if ($dev) {
         var dhigh = parseFloat($("#DepthHigh"+panelUsed).val());
         var dlow = parseFloat($("#DepthLow"+panelUsed).val());
         var type = document.getElementById("EqType"+panelUsed);
-        var wkm = parseFloat(document.getElementById("wkm"+panelUsed).value) /2;		
-		console.log(wkm);
+        var wkm = parseFloat(document.getElementById("wkm"+panelUsed).value) / 2.0 ;		
+        
         type = type.options[type.selectedIndex].value;
         var count = 0;
 		var vlat = earthquakes[cavw]['vlat'], vlon = earthquakes[cavw]['vlon'];
@@ -2953,7 +2953,8 @@ if ($dev) {
                                                                 </select>
                                                             </td>
                                                             <td colspan="2" style="height:20px;width:250px">
-                                                                <button id="HideStationButton1" style="float:right;display:none">Hide Stations</button><b>View stations:</b><br/><br/>
+                                                                
+                                                                <button id="HideStationButton1" style="float:right;display:none">Hide Stations</button><b>View stations:</b>
 
                                                                 <table id="StationList" class="stationList"></table>
                                                             </td>
@@ -3317,7 +3318,7 @@ if ($dev) {
                                                                 </select>
                                                             </td>
                                                             <td colspan="2" style="height:20px;width:250px">
-                                                                <button id="HideStationButton2" style="float:right;display:none">Hide Stations</button><b>View stations:</b><br/><br/>
+                                                                <button id="HideStationButton2" style="float:right;display:none">Hide Stations</button><b>View stations:</b>
 
                                                                 <table id="CompStationList" class="stationList"></table>
                                                             </td>
