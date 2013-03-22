@@ -1928,21 +1928,26 @@ if ($dev) {
                 var eTime = Wovodat.convertDate(earthquakes[cavw][i]['time']);
 				
                 var elat = earthquakes[cavw][i]['lat'], elon = earthquakes[cavw][i]['lon'];
-				
-                if(Math.sqrt(Math.pow((vlat - elat)*110, 2) + Math.pow((vlon - elon) * 111.32 * Math.cos(vlat/57.32), 2)) >   wkm){
+		var distanceFromVolcano = Wovodat.calculateD(vlat,vlon,elat,elon,2);
+                
+                if(distanceFromVolcano > wkm){
                     earthquakes[cavw][i]['available'] = false;	
-                    console.log(Math.sqrt(Math.pow((vlat - elat)*110, 2) + Math.pow((vlon - elon) * 111.32 * Math.cos(vlat/57.32), 2)));			
                     continue;
                 }
                 eTime = eTime.getTime();
-                var chosen = true;
                 earthquakes[cavw][i]['available'] = false;
-                if ((eType != type && type != "") || eDepth > dhigh || eDepth < dlow || eTime > eDate || eTime < sDate)
-                    chosen = false;
-                if (chosen){
-                    count++;
-                    earthquakes[cavw][i]['available'] = true;
-                }
+                if(eType != type && type != "")
+                    continue;
+                if(eDepth < dlow)
+                    continue;
+                if(eDepth > dhigh)
+                    continue;
+                if(eTime > eDate + Wovodat.ONE_DAY)
+                    continue;
+                if (eTime < sDate - Wovodat.ONE_DAY)
+                    continue;
+                count++;
+                earthquakes[cavw][i]['available'] = true;
             }
         }
     }
@@ -1957,6 +1962,7 @@ if ($dev) {
         // the function will initialize the earthquake variable when 
         // there is no equake data stored at the client side for a
         // specific volcano. 
+        
         if (!earthquakes[cavw]){
             earthquakes[cavw]={};
             // the latitude and longitude of the volcano that this earthquake surround
@@ -2053,6 +2059,8 @@ if ($dev) {
                 earthquakes[cavw][index]['latDistance'] = Wovodat.calculateD(lat,lon,vlat,vlon,0);
                 earthquakes[cavw][index]['lonDistance'] = Wovodat.calculateD(lat,lon,vlat,vlon,1);
                 earthquakes[cavw][index]['timestamp'] = Wovodat.convertDate(time);
+                filterData(cavw,mapUsed);
+                insertMarkersForEarthquakes(null,cavw,mapUsed);
             }
         }
         else{
@@ -2062,9 +2070,8 @@ if ($dev) {
                 if (typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
                     if (earthquakes[cavw][i]['available'])
                         earthquakes[cavw][i]['marker' + mapUsed].setMap(map[mapUsed]);
-                    else{
+                    else
                         earthquakes[cavw][i]['marker' + mapUsed].setMap(null);
-                    }	
                 }	
             }
         }

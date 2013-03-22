@@ -1288,7 +1288,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                                 $vlon = floatval($array[2]);
                                 $lat = $data[1];
                                 $lon = $data[5];
-                                $data[1] = $this->distanceD($lat, $lon, $vlat, $vlon, 0) * 10000;
+                                $data[1] = $this->distanceD($lat, $lon, $vlat, $vlon, 1) * 10000;
                                 break;
                             case "Lon":
                                 $array = $additionalData;
@@ -1296,7 +1296,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                                 $vlon = floatval($array[2]);
                                 $lat = $data[5];
                                 $lon = $data[1];
-                                $data[1] = $this->distanceD($lat, $lon, $vlat, $vlon, 1) * 10000;
+                                $data[1] = $this->distanceD($lat, $lon, $vlat, $vlon, 0) * 10000;
                                 break;
                         }
                 }

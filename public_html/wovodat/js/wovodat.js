@@ -484,9 +484,10 @@ Wovodat.highlightNoDataRange = function(data){
         // either 5 times larger than the previous difference or larger than one month
         if(distance > ONE_DAY && (distance > 5 * interval || distance > ONE_MONTH)){
             newData.push([data[index - 1][0] - distance / 2,null]);
+        }else{
+            interval = distance;
         }
         newData.push(data[index]);
-        interval = distance;
     }
     return [newData];
 };
@@ -1262,6 +1263,10 @@ Wovodat.calculateD = function(lat,lon,vlat,vlon,option){
             tlat1 = toRad(vlat);
             tlat2 = toRad(lat);
             break;
+        case 2:
+            var xDistance = Wovodat.calculateD(lat,lon,vlat,vlon,0);
+            var yDistance = Wovodat.calculateD(lat,lon,vlat,vlon,1);
+            return Math.sqrt(xDistance * xDistance + yDistance * yDistance);
     }
     var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
     Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(tlat1) * Math.cos(tlat2);
