@@ -140,6 +140,7 @@ $cache = time();
                 // when the volcano option is changed
                 $("#VolcanoList").change(function(){
                     hideEarthquakeMarkerButton(1);
+                    uncheckAllEquakeButton(1);
                     var volcano = $("#VolcanoList").val();
                     volcano = volcano.split("&");
                     var cavw = volcano[1];
@@ -254,6 +255,7 @@ $cache = time();
                 });
                 $("#CompVolcanoList").change(function(){
                     hideEarthquakeMarkerButton(2);
+                    uncheckAllEquakeButton(2);
                     var volcano = $("#CompVolcanoList").val();
                     volcano = volcano.split("&");
                     var cavw = volcano[1];
@@ -1727,6 +1729,7 @@ if ($dev) {
                 $(a).click();
             }
             $('#showHideMarkers1').hide();
+            uncheckAllEquakeButton(1);
             return false;
         });
         $("#HideEquake2").click(function(){
@@ -1736,6 +1739,7 @@ if ($dev) {
                 $(a).click();
             }
             $('#showHideMarkers2').hide();
+            uncheckAllEquakeButton(2);
             return false;
         });
                 
@@ -1918,6 +1922,8 @@ if ($dev) {
         var vlat = earthquakes[cavw]['vlat'], vlon = earthquakes[cavw]['vlon'];
         // some error here, what if i is 'vlat' or 'vlon'
         for (var i in earthquakes[cavw]){
+            if(i == 'vlat' || i == 'vlong')
+                continue;
             if (count > nEvent){
                 earthquakes[cavw][i]['available'] = false;
                 continue;
@@ -1928,9 +1934,9 @@ if ($dev) {
                 var eTime = Wovodat.convertDate(earthquakes[cavw][i]['time']);
 				
                 var elat = earthquakes[cavw][i]['lat'], elon = earthquakes[cavw][i]['lon'];
-		var distanceFromVolcano = Wovodat.calculateD(vlat,vlon,elat,elon,2);
+                var distanceFromVolcano = Wovodat.calculateD(vlat,vlon,elat,elon,2);
                 
-                if(distanceFromVolcano > wkm){
+                if(distanceFromVolcano > wkm + 0.1){
                     earthquakes[cavw][i]['available'] = false;	
                     continue;
                 }
@@ -2020,7 +2026,6 @@ if ($dev) {
                     // set marker
                     var marker = new google.maps.Marker({
                         position: new google.maps.LatLng(lat,lon),
-                        map: map[mapUsed],
                         icon:icon
                     });
 
@@ -2059,9 +2064,9 @@ if ($dev) {
                 earthquakes[cavw][index]['latDistance'] = Wovodat.calculateD(lat,lon,vlat,vlon,0);
                 earthquakes[cavw][index]['lonDistance'] = Wovodat.calculateD(lat,lon,vlat,vlon,1);
                 earthquakes[cavw][index]['timestamp'] = Wovodat.convertDate(time);
-                filterData(cavw,mapUsed);
-                insertMarkersForEarthquakes(null,cavw,mapUsed);
             }
+            filterData(cavw,mapUsed);
+            insertMarkersForEarthquakes(null,cavw,mapUsed);
         }
         else{
             // if we already had the cached data, just display it in the specific 
@@ -2444,6 +2449,29 @@ if ($dev) {
             plotEarthquakeData(cavw,"",o.mapUsed);
             $('#twoDEquakeFlotGraph' + o.mapUsed).show();	
         }
+    }
+    function uncheckAllEquakeButton(mapUsed){
+        function removeClassName(element){
+            if(element == null)
+                return;
+            var parent = element.parentNode;
+            if(parent == null)
+                return;
+            parent.className = parent.className.replace('equakeDisplayButtonChecked','');
+        }
+        var element;
+        var ids = ["2D","2DGMT","3D"];
+        var length = ids.length;
+        var i = 0;
+        for(i = 0 ; i < length; i++){
+            ids[i] = "equakeDisplayType" + mapUsed + ids[i];
+        }
+        for(i = 0 ; i < length; i++){
+            element = document.getElementById(ids[i]);
+            if(element == null) continue;
+            removeClassName(element);
+        }
+        
     }
     /*
      * Draw the earthquakes around the volcano displayed in the
@@ -3106,7 +3134,7 @@ if ($dev) {
                                             </div>
                                         </form>
                                         <div class="equakeButtonsRow">
-                                            <label for="equakeDisplayType12D" class="equakeDisplayBox equakeDisplayButtonChecked equakeDisplayBox1">
+                                            <label for="equakeDisplayType12D" class="equakeDisplayBox equakeDisplayBox1">
                                                 <input type="radio" name="equakeDisplayType1" id="equakeDisplayType12D" value="2D" onclick="drawEquake({mapUsed:1,source:this})"/>
                                                 2D
                                             </label>
@@ -3477,7 +3505,7 @@ if ($dev) {
                                             </div>
                                         </form>
                                         <div class="equakeButtonsRow">
-                                            <label for="equakeDisplayType22D" class="equakeDisplayBox equakeDisplayButtonChecked  equakeDisplayBox2">
+                                            <label for="equakeDisplayType22D" class="equakeDisplayBox equakeDisplayBox2">
                                                 <input type="radio" name="equakeDisplayType2" id="equakeDisplayType22D" value="2D" onclick="drawEquake({mapUsed:2,source:this})"/>
                                                 2D
                                             </label>
