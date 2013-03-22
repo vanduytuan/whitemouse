@@ -721,6 +721,9 @@ a.active.trigger {
 .dataOwner:hover{
     text-decoration: underline;
 }
+.dataOwner:visited{
+    color:blue;
+}
 .stationList{
     width: 100%;
 }

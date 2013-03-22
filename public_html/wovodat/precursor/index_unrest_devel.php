@@ -1785,8 +1785,8 @@ if ($dev) {
                     if(!earthquakes[cavw]){
                         return;
                     }
+                    filterData(cavw,mapUsed);
                     drawEquake({mapUsed:mapUsed,source:document.getElementById('equakeDisplayType' + mapUsed + '2D')});
-                    
                 }else if(document.getElementById('3DGMTEquakeGraph' + mapUsed).style.display == 'block'){
                     gmt3DData[cavw] = undefined;
                     drawEquake({mapUsed:mapUsed,
