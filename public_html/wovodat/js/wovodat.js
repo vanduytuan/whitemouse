@@ -303,7 +303,6 @@ Wovodat.getCcUrl = function(panelUsed, cavw){
         data:"get=getCcUrl&cavw=" + cavw,
         success:function(html){
             if(html.indexOf('Can\'t') >= 0) {
-                console.log('There is error in the Wovodat.getCcUrl function');
                 return;
             }
             var owner = $("#dataOwner"+panelUsed);
@@ -712,7 +711,6 @@ Wovodat.getDetailedStationData = function(o){
             }
         },
         error: function(html){
-            console.log('Wovodat.getDetailedStationData: No detailed data for: ' + type + '.');
         }
     });
 }
@@ -725,7 +723,6 @@ Wovodat.processDetailedData = function(o){
     
     var data = o.data;
     if(data == null || data == undefined || data.length == 0 || data[0].length == 0 || data[0][0].length == 0){
-        console.log("Wovodat.processDetailedData: data is emptied. Function returned without any further processing.");
         return;
     }
     var ref = o.referenceTime;

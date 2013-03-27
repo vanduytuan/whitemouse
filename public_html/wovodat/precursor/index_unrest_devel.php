@@ -1030,7 +1030,6 @@ $cache = time();
             // draw overview graph
             function drawOverviewGraph(tableId){
                 if(!tableId) {
-                    console.log("Error in method [drawOverviewGraph]: need to specify the map used.");
                     return; 
                 }
                 var placeholder= document.getElementById('overview' + tableId);
