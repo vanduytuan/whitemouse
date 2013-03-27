@@ -21,6 +21,7 @@ Wovodat.ONE_DAY = 86400000;
  * Create the trim function for the every string object.
  */
 Wovodat.trim = function(text){
+    text = text.replace(/[\x00-\x1F\x7F]/g,"");
     return text.replace(/^\s+|\s+$/g,"");
 };
 
@@ -296,20 +297,21 @@ Wovodat.getStationData = function(args){
 };
 
 
-Wovodat.getCcUrl = function(panelUsed, cavw){
+Wovodat.getCcUrl = function(panelUsed, cavw,handler){
     $.ajax({
         method:"get",
         url: "/php/switch.php",
         data:"get=getCcUrl&cavw=" + cavw,
-        success:function(html){
-            if(html.indexOf('Can\'t') >= 0) {
-                return;
-            }
+        dataType: 'json',
+        success:function(object){
+            object.mapUsed = panelUsed;
+            handler(object);
+            /*
             var owner = $("#dataOwner"+panelUsed);
             var vstatus = $("#volcstatus"+panelUsed);
-            var list = html.split(";");
-            var status = list[1];
-            var ccUrl = list[0];
+            var o = {};
+            var status = object['status'];
+            var ccUrl = object['owner1'];
             if (ccUrl!=""){
                 owner.attr("href",ccUrl);
                 owner.html(""+format(ccUrl)+"");
@@ -317,6 +319,7 @@ Wovodat.getCcUrl = function(panelUsed, cavw){
             if (status!=""){
                 vstatus.html(status);
             }
+            */
         },
         error:function(html){
         }

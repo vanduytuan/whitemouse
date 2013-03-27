@@ -162,21 +162,37 @@ class Wovodat {
 
     public function getCCUrl($cavw) {
         $query1 = mysql_query("select cc_id from vd where vd_cavw='" . $cavw . "'");
+        $object = "";
+        $result1 = mysql_fetch_array($query1);
+        if ($result1 !== false) {
+            $cc_id = $result1[0];
+            $query1_2 = mysql_query("select cc_url from cc where cc_id='" . $cc_id . "'");
+            $result1_2 = mysql_fetch_array($query1_2);
+            
+            if ($result1_2 !== false)
+                $object['owner1'] = $result1_2[0];
+            else
+                $object['owner1'] = "";
+        }
+        
+        $query1 = mysql_query("select cc_id2 from vd where vd_cavw='" . $cavw . "'");
         $result1 = mysql_fetch_array($query1);
         if ($result1 !== false) {
             $cc_id = $result1[0];
             $query1_2 = mysql_query("select cc_url from cc where cc_id='" . $cc_id . "'");
             $result1_2 = mysql_fetch_array($query1_2);
             if ($result1_2 !== false)
-                echo $result1_2[0] . ";";
+                $object['owner2'] = $result1_2[0];
             else
-                echo ";";
+                $object['owner2'] = "";
         }
+        
         $query2 = mysql_query("select vd_inf_status, vd_inf_type from vd_inf where vd_inf_cavw='" . $cavw . "'");
         $result2 = mysql_fetch_array($query2);
         if ($result2 !== false) {
-            echo $result2[0] . "-" . $result2[1];
+            $object['status'] = $result2[0] . "-" . $result2[1];
         }
+        echo json_encode($object);
     }
 
     public function getTimeSeriesForVolcano($cavw) {
