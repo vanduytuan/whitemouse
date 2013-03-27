@@ -2132,11 +2132,9 @@ if ($dev) {
         else{
             // if we already had the cached data, just display it in the specific 
             // map
-            console.log('considering showing marker');
             for (var i in earthquakes[cavw]){
                 if (typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
                     if (earthquakes[cavw][i]['available']){
-                        console.log('show marker');
                         earthquakes[cavw][i]['marker' + mapUsed].setMap(map[mapUsed]);
                     }
                     else

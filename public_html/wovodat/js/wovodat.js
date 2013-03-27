@@ -1013,13 +1013,23 @@ Wovodat.Printer = {
             w.document.write(element.innerHTML);
         }
         function print2DEquake(obj){
-            
+            function setStyleForGraphHolder(panel){
+                panel.style.cssText = "width: 450px;height: 130px;font-size: 9px;margin-top: 15px;position: relative;";
+            }
             var w = window.open();
-            var element = document.createElement('link');
-            element.setAttribute("rel", "stylesheet");
-            element.setAttribute("type", "text/css");
-            element.setAttribute("href", "http://" + window.location.host + "/css/styles_beta.css");
-            w.document.getElementsByTagName("head")[0].appendChild(element);
+            var element;
+            var style = w.document.createElement('style');
+            var css = ".equakeGraphPlaceholder{width: 450px;height: 130px;font-size: 9px;margin-top: 15px;position: relative;}";
+            var head = w.document.getElementsByTagName('head')[0]
+            
+            style.type = 'text/css';
+            if (style.styleSheet){
+              style.styleSheet.cssText = css;
+            } else {
+              style.appendChild(w.document.createTextNode(css));
+            }
+
+            head.appendChild(style);
             
             var t;
             t = window.document.createElement('div');
@@ -1034,13 +1044,13 @@ Wovodat.Printer = {
             var lonDiv1 = $('#FlotDisplayLon' + side,element);
             var timeDiv1 = $('#FlotDisplayTime' + side,element);
             element = element.cloneNode(true);
-            element.style.height = "420px";
-            element.style.width = "510px";
+            element.style.width = "506px";
             w.document.body.appendChild(element);
             
             var latDiv = w.document.getElementById('FlotDisplayLat' + side);
             latDiv.style.height =  latDiv1[0].style.height;
             latDiv.style.width =   latDiv1[0].style.width;
+            
             
             var lonDiv = w.document.getElementById('FlotDisplayLon' + side);
             lonDiv.style.height =  lonDiv1[0].style.height;
@@ -1049,7 +1059,9 @@ Wovodat.Printer = {
             var timeDiv = w.document.getElementById('FlotDisplayTime' + side);
             timeDiv.style.height =  timeDiv1[0].style.height;
             timeDiv.style.width =   timeDiv1[0].style.width;
-            
+            setStyleForGraphHolder(latDiv);
+            setStyleForGraphHolder(lonDiv);
+            setStyleForGraphHolder(timeDiv);
             
             var equakeGraph = obj.equakeGraph;
             $.plot(latDiv,equakeGraph.latGraph.getData(),equakeGraph.latGraph.getOptions());
