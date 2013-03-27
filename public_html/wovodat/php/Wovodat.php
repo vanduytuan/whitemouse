@@ -190,7 +190,7 @@ class Wovodat {
         $query2 = mysql_query("select vd_inf_status, vd_inf_type from vd_inf where vd_inf_cavw='" . $cavw . "'");
         $result2 = mysql_fetch_array($query2);
         if ($result2 !== false) {
-            $object['status'] = $result2[0] . "-" . $result2[1];
+            $object['status'] = $result2[0] . " - " . $result2[1];
         }
         echo json_encode($object);
     }
