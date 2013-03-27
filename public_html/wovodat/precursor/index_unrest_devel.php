@@ -2316,7 +2316,8 @@ if ($dev) {
                 data:timeArray
             }];
         // draw the latitude map
-        $('#twoDEquakeFlotGraph' + mapUsed).show();
+        if(getSelectedEquakesButton(mapUsed) == 1)
+            $('#twoDEquakeFlotGraph' + mapUsed).show();
         var latitudePlotArea = document.getElementById("FlotDisplayLat"+mapUsed);
         equakeGraphs[mapUsed].latGraph = $.plot(latitudePlotArea,latPlot,plotOptions);
         Wovodat.enableTooltip({type:'single',
@@ -2474,6 +2475,33 @@ if ($dev) {
         
     }
     /*
+     * Get the current selected button in the list of button for earth quakes
+     * 1: 2D
+     * 2: 2DGMT
+     * 3: 3DGMT
+     * 4: No button is selected
+     */
+    function getSelectedEquakesButton(mapUsed){
+        var tempElement = document.getElementById('EquakePanel' + mapUsed);
+        if(tempElement == undefined) return;
+        tempElement = $(".equakeButtonsRow",tempElement);
+        if(tempElement == undefined) return;
+        tempElement = tempElement[0];
+        if(tempElement == undefined) return;
+        tempElement = $("label",tempElement);
+        if(tempElement == undefined) return;
+        var tempElements = tempElement;
+        var i = 0, length = tempElements.length;
+        var className;
+        for(i = 0 ; i < length; i++){
+            tempElement = tempElements[i];
+            className = tempElement.className;
+            if(className.match(/equakeDisplayButtonChecked/))
+                break;
+        }
+        return i + 1;
+    }
+    /*
      * Draw the earthquakes around the volcano displayed in the
      * map in two dimensions. This function is using GMT to draw the map in case
      * the user don't have access to googel map
@@ -2521,7 +2549,8 @@ if ($dev) {
             $("#image",placeholder).attr('src',directory + "/" + ar['imageSrc']);
             $("#gifImage",placeholder).attr('href',directory + "/" + ar['imageSrc']);
             $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
-            placeholder.style.display = 'block';
+            if(getSelectedEquakesButton(mapUsed) == 2)
+                placeholder.style.display = 'block';
         }
         if (!earthquakes[cavw]){
             Wovodat.loadEarthquakes({
@@ -2621,7 +2650,8 @@ if ($dev) {
                     
             $("#gifImage",placeholder).attr('href',ar['animationImage']);
             $("#gmtScriptFile",placeholder).attr('href',ar['gmtScriptFile']);
-            placeholder.show();
+            if(getSelectedEquakesButton(mapUsed) == 3)
+                placeholder.show();
         }
         if (!earthquakes[cavw]){
             Wovodat.loadEarthquakes({

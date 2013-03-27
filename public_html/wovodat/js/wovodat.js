@@ -1015,6 +1015,12 @@ Wovodat.Printer = {
         function print2DEquake(obj){
             
             var w = window.open();
+            var element = document.createElement('link');
+            element.setAttribute("rel", "stylesheet");
+            element.setAttribute("type", "text/css");
+            element.setAttribute("href", "http://" + window.location.host + "/css/styles_beta.css");
+            w.document.getElementsByTagName("head")[0].appendChild(element);
+            
             var t;
             t = window.document.createElement('div');
             t.style.margin = '0px 0px 0px 20px';
@@ -1023,7 +1029,7 @@ Wovodat.Printer = {
             w.document.body.appendChild(t);    
             
             var side = obj.mapUsed;
-            var element = obj.element;
+            element = obj.element;
             var latDiv1 = $('#FlotDisplayLat' + side,element);
             var lonDiv1 = $('#FlotDisplayLon' + side,element);
             var timeDiv1 = $('#FlotDisplayTime' + side,element);
