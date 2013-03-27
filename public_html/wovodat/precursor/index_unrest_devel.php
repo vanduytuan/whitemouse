@@ -390,7 +390,6 @@ $cache = time();
                 if (list[list.length]=="")
                     list.length--;
                 for (var index in list){
-                    // alert(list[index]);
                     var info_split = list[index].split(";");
                     var neighCavw = info_split[0];
                     var name = info_split[1];
@@ -446,7 +445,6 @@ $cache = time();
                 if(value == "") return;
                 value = value.split(' ');
                 if(value.length <= 1) {
-                    alert('No available data for this eruption');
                     return;
                 }
                 // convert the time to javascript data object
@@ -463,7 +461,6 @@ $cache = time();
                 }
                 // get the duration of the displayed graph
                 if(range == '0' ) {
-                    alert('Please select at least one type of time series.')
                     return;
                 }
                 // the eruption will be displayed at the center of the time series.
@@ -591,7 +588,6 @@ $cache = time();
                             count++;
                     }
                     if(count >= 3){
-                        alert('Please choose at most 3 time series to draw');
                         obj.checked = false;
                         return;
                     }
@@ -1622,13 +1618,13 @@ if ($dev) {
     ?>
                     if(ids[j] == 'VolcanoList'){
                         var a = document.getElementById('VolcanoList');
-                        a.value = "Akutan&1101-32-";
+                        a.value = "St. Helens&1201-05-";
                         $(a).change();
                         $("#DisplayEquake1").click();
                         $("#TimeSeriesHeader1").click();
                     }else{
                         var a = document.getElementById('CompVolcanoList');
-                        a.value = "Miyake-jima&0804-04=";
+                        a.value = "Colima&1401-04=";
                         $(a).change();
                         $("#DisplayEquake2").click();
                         $("#TimeSeriesHeader2").click();

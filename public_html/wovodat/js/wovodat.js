@@ -411,7 +411,6 @@ Wovodat.showProcessingIcon = function(icon){
     // show the loading icon when ajax is executing
     icon.ajaxSend(function(){
         busy_counter+=1;
-        // alert("increase:"+busy_counter);
         if (busy_counter>=1)
             $(this).show();
     });
@@ -419,7 +418,6 @@ Wovodat.showProcessingIcon = function(icon){
     icon.ajaxComplete(function(){
         if (busy_counter>0){
             busy_counter-=1;
-            // alert("decrease:"+busy_counter);
             if (busy_counter==0)
                 $(this).hide();
         }

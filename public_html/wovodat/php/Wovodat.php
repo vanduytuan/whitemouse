@@ -168,13 +168,13 @@ class Wovodat {
             $cc_id = $result1[0];
             $query1_2 = mysql_query("select cc_url from cc where cc_id='" . $cc_id . "'");
             $result1_2 = mysql_fetch_array($query1_2);
-            
+
             if ($result1_2 !== false)
                 $object['owner1'] = $result1_2[0];
             else
                 $object['owner1'] = "";
         }
-        
+
         $query1 = mysql_query("select cc_id2 from vd where vd_cavw='" . $cavw . "'");
         $result1 = mysql_fetch_array($query1);
         if ($result1 !== false) {
@@ -186,7 +186,7 @@ class Wovodat {
             else
                 $object['owner2'] = "";
         }
-        
+
         $query2 = mysql_query("select vd_inf_status, vd_inf_type from vd_inf where vd_inf_cavw='" . $cavw . "'");
         $result2 = mysql_fetch_array($query2);
         if ($result2 !== false) {
@@ -195,6 +195,12 @@ class Wovodat {
         echo json_encode($object);
     }
 
+    /*
+     * get the list of available data for a particular
+     * this function is not getting the specific data such as deformation or gps
+     * it just get the list 
+     */
+
     public function getTimeSeriesForVolcano($cavw) {
 
         function getStationsWithDataList($cavw) {
@@ -202,10 +208,12 @@ class Wovodat {
             $volcanoId = mysql_query("select vd_id from vd where vd_cavw = '$cavw'");
             $volcanoId = mysql_fetch_array($volcanoId);
             $volcanoId = $volcanoId[0];
+
             $temp = Array();
             $list = Array();
-            $value = "";
 
+            $value = "";
+            // get the seismic station that locates near the current volcano
             $seismicStations = mysql_query("(select c.ss_code FROM sn a, ss c  where a.sn_pubdate <= now() and c.ss_pubdate <= now() and a.vd_id = '$volcanoId'  and a.sn_id = c.sn_id ) UNION (select c.ss_code FROM jj_volnet a, ss c , vd_inf d  WHERE a.vd_id = '$volcanoId' and a.vd_id=d.vd_id  and a.jj_net_flag = 'S' and a.jj_net_id = c.sn_id and (sqrt(power(d.vd_inf_slat - c.ss_lat, 2) + power(d.vd_inf_slon - c.ss_lon, 2))*100)<20 and c.ss_pubdate <= now())") or die(mysql_error());
 
             while ($temp = mysql_fetch_array($seismicStations)) {
@@ -323,6 +331,12 @@ class Wovodat {
                 }
 // gd_plu
                 $value = mysql_query("select gd_plu_id from gs , gd_plu where gs.gs_code = '$temp' and gs.gs_id = gd_plu.gs_id and gs.gs_pubdate <= now() and gd_plu.gd_plu_pubdate <= now()  limit 0 , 1");
+                if ($value && mysql_num_rows($value)) {
+                    array_push($list, "gas");
+                    break;
+                }
+// gd_plu in the air
+                $value = mysql_query("select gd_plu_time from gd_plu a, cs c where a.vd_id = '$volcanoId' and c.cs_id = a.cs_id and a.gd_plu_pubdate <= now() limit 0 ,1");
                 if ($value && mysql_num_rows($value)) {
                     array_push($list, "gas");
                     break;
@@ -709,6 +723,12 @@ class Wovodat {
                 echo "gas;";
                 break;
             }
+// gd_plu in the air
+            $value = mysql_query("select gd_plu_time from gd_plu a, cs c where a.vd_id = '$volcanoId' and c.cs_id = a.cs_id and a.gd_plu_pubdate <= now() limit 0 ,1");
+            if ($value && mysql_num_rows($value)) {
+                echo "gas;";
+                break;
+            }
 // gd_sol
             $value = mysql_query("select gd_sol_id from gs , gd_sol where gs.gs_code = '$temp' and gs.gs_id = gd_sol.gs_id and gs.gs_pubdate <= now() and gd_sol.gd_sol_pubdate <= now()   limit 0 , 1");
             if ($value && mysql_num_rows($value)) {
@@ -907,11 +927,17 @@ class Wovodat {
                     if ($value && mysql_num_rows($value)) {
                         echo "Gas&Plume&$code&$temp[1]&$temp[2];";
                     }
+
 // gd_sol
                     $value = mysql_query("select gd_sol_id from gs , gd_sol where gs.gs_code = '$code' and gs.gs_id = gd_sol.gs_id  limit 0 , 1");
                     if ($value && mysql_num_rows($value)) {
                         echo "Gas&SoilEfflux&$code&$temp[1]&$temp[2];";
                     }
+                }
+// gd_plu using satelite or airplane data
+                $value = mysql_query("select distinct cs.cs_code from cs, gd_plu where cs.cs_id = gd_plu.cs_id and gd_plu.vd_id = '$volcanoId'");
+                while($temp = mysql_fetch_array($value)){
+                    echo "Gas&Plume&$temp[0];";
                 }
                 break;
             case 'hydrologic':
@@ -1148,21 +1174,22 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                     case 'SampledGas':
                         $attribute = 'gd_concentration';
                         $databaseTable = 'gd';
-                        //$result = mysql_query("select b.gd_time, b.gd_concentration $cc from gs a, gd b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_pubdate <= now() order by b.gd_time desc");
+                        $result = mysql_query("select b.gd_time, b.gd_concentration $cc from gs a, gd b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_pubdate <= now() order by b.gd_time desc");
                         break;
                     case 'Plume':
                         $attribute = 'gd_plu_emit';
                         $databaseTable = 'gd_plu';
-                        //$result = mysql_query("select b.gd_plu_time, b.gd_plu_emit $cc  from gs a, gd_plu b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_plu_pubdate <= now() order by b.gd_plu_time desc");
+                        $result = mysql_query("select distinct b.gd_plu_time, b.gd_plu_emit $cc  from gs a, gd_plu b, cs c where (a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now()) or (b.cs_id = c.cs_id and c.cs_code = '$code') and b.gd_plu_pubdate <= now() order by b.gd_plu_time desc");
+                        
                         break;
                     case 'SoilEfflux':
                         $attribute = 'gd_sol_tfulx';
                         $databaseTable = 'gd_sol';
-                        //$result = mysql_query("select b.gd_sol_time, b.gd_sol_tfulx $cc from gs a, gd_sol b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_sol_pubdate <= now() order by b.gd_sol_time desc");
+                        $result = mysql_query("select b.gd_sol_time, b.gd_sol_tfulx $cc from gs a, gd_sol b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_sol_pubdate <= now() order by b.gd_sol_time desc");
+                        
                         break;
                 }
-                $result = mysql_query("select b." . $databaseTable . "_time, b.$attribute $cc from gs a, $databaseTable b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b." . $databaseTable . "_pubdate <= now() order by b." . $databaseTable . "_time desc");
-
+                
                 break;
             case 'hydrologic':
                 switch ($component) {
@@ -1515,7 +1542,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         $htmroot = dirname(__FILE__) . "/..";
 
         // This path is important for GMT to work, please change this path into where you put it in the main server
-        putenv("PATH=.:/bin:/usr/bin:/usr/lib/gmt:/usr/lib/gmt/share:/usr/lib/gmt/lib:/usr/lib/gmt/include");
+        putenv("PATH=/bin:/usr/bin:/usr/lib/gmt/bin:/usr/lib/gmt/share:/usr/lib/gmt/lib:/usr/lib/gmt/include");
         putenv("GMTHOME=/usr/lib/gmt");
 
         # defines the public_html root directory (absolute path on the Apache server)
