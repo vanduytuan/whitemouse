@@ -651,7 +651,11 @@ $cache = time();
                 
                 // delete the data thar are too big compare to its neighbor
                 data = Wovodat.fixBigData(data);
-                
+                var length = data[0].length;
+                if(length == 0)
+                    return ;
+                if(data[0][0] == undefined)
+                    return;
                 // set up the reference time
                 if(referenceTime == null){
                     referenceTime = data[0][0][0];
@@ -694,7 +698,6 @@ $cache = time();
                 var sixMonths = 6*30*24*60*60*1000; // in milliseconds
                 var minXValue,xRangeMin;
                 var i;
-                var length = data[0].length;
                 maxXValue = data[0][0][0];
                 
                 minValue = data[0][0][1];
@@ -1624,7 +1627,7 @@ if ($dev) {
                         $("#TimeSeriesHeader1").click();
                     }else{
                         var a = document.getElementById('CompVolcanoList');
-                        a.value = "Colima&1401-04=";
+                        a.value = "Parker&0701-011";
                         $(a).change();
                         $("#DisplayEquake2").click();
                         $("#TimeSeriesHeader2").click();
@@ -1661,8 +1664,8 @@ if ($dev) {
             return a;
         }
         function fixUrl(url){
-            if(url.substring(0,7) != "http://");
-            url = "http://" + url;
+            if(url.substring(0,7) != "http://")
+                url = "http://" + url;
             return url;
         }
         function format(url){
