@@ -1543,7 +1543,7 @@ $_SESSION['quakeQuery']=$quakeQuery;
     }	
 	
     public function get2DGMT($o) {
-
+        $equakeFlag = "";
         // clear output folder for old generated gmt files
         $this->clearOutputFolder();
 

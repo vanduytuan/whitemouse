@@ -1640,29 +1640,28 @@ $cache = time();
 <?php
 if ($dev) {
     ?>
-            if(ids[j] == 'VolcanoList'){
-                var a = document.getElementById('VolcanoList');
-                a.value = "St. Helens&1201-05-";
-                $(a).change();
-                $("#DisplayEquake1").click();
-                $("#TimeSeriesHeader1").click();
-            }else{
-                var a = document.getElementById('CompVolcanoList');
-                a.value = "Parker&0701-011";
-                $(a).change();
-                $("#DisplayEquake2").click();
-                $("#TimeSeriesHeader2").click();
-            }       
+                    if(ids[j] == 'VolcanoList'){
+                        var a = document.getElementById('VolcanoList');
+                        a.value = "St. Helens&1201-05-";
+                        $(a).change();
+                        $("#DisplayEquake1").click();
+                        $("#TimeSeriesHeader1").click();
+                    }else{
+                        var a = document.getElementById('CompVolcanoList');
+                        a.value = "Parker&0701-011";
+                        $(a).change();
+                        $("#DisplayEquake2").click();
+                        $("#TimeSeriesHeader2").click();
+                    }       
     <?php
 } else {
     ?>     
-            randomSelectVolcano(selectId);
+                    randomSelectVolcano(selectId);
     <?php
 }
-
 ?>
-                            }
-                        }
+        }
+    }
     /*
      * Volcano information module
      */                           
@@ -2171,6 +2170,51 @@ if ($dev) {
         $(a).click(function(){
             hideMarkers({mapUsed:mapUsed,button:a}); 
         });
+        initializeFilter(earthquakes[cavw],mapUsed);
+    }
+    function initializeFilter(data,mapUsed){
+        var i, item, startTime, endTime, timestamp;
+        for(i in data){
+            item = data[i];
+            timestamp = item['timestamp'];
+            if(startTime == undefined) startTime = timestamp;
+            else{
+                if(startTime > timestamp) startTime = timestamp;
+            }
+            if(endTime == undefined) endTime = timestamp;
+            else{
+                if(endTime < timestamp) endTime = timestamp;
+            }
+        }
+        if(startTime == undefined || endTime == undefined)
+            return;
+        // no need to reset
+        if($("#SDate" + mapUsed ).datepicker( "option", "yearRange" ) == (startTime.getUTCFullYear() + ":" + endTime.getUTCFullYear()))
+            return;
+        var maxValue = Math.floor(endTime.getTime()-startTime.getTime())/86400000;
+            
+            
+        var startTimeString = startTime.getUTCMonth() + 1 + "/" + startTime.getUTCDate() + "/" + startTime.getUTCFullYear();
+        $("#SDate" + mapUsed).val(startTimeString);
+        var endTimeString = endTime.getUTCMonth() + 1 + "/" + endTime.getUTCDate() + "/" + endTime.getUTCFullYear();
+        $("#EDate" + mapUsed).val(endTimeString);
+            
+        $("#SDate" + mapUsed).datepicker("option", "yearRange", startTime.getUTCFullYear() + ":" + endTime.getUTCFullYear());
+        $("#EDate" + mapUsed).datepicker("option", "yearRange", startTime.getUTCFullYear() + ":" + endTime.getUTCFullYear());
+            
+        $("#DateRange" + mapUsed).slider({
+            range: true,
+            max: maxValue,
+            values : [0, maxValue],
+            slide: function(event,ui){
+                var date = new Date(startTime.getTime());
+                date.setDate(date.getDate() + ui.values[0]);
+                $("#SDate" + mapUsed).val($.datepicker.formatDate('mm/dd/yy',date));
+                date = new Date(startTime.getTime());
+                date.setDate(date.getDate() + ui.values[1]);
+                $("#EDate" + mapUsed).val($.datepicker.formatDate('mm/dd/yy',date));
+            }
+        });
     }
     /*
      * Plot the equake data
@@ -2189,52 +2233,6 @@ if ($dev) {
             return;
         
         
-        function initializeFilter(data,mapUsed){
-            var i, item, startTime, endTime, timestamp;
-            for(i in data){
-                item = data[i];
-                timestamp = item['timestamp'];
-                if(startTime == undefined) startTime = timestamp;
-                else{
-                    if(startTime > timestamp) startTime = timestamp;
-                }
-                if(endTime == undefined) endTime = timestamp;
-                else{
-                    if(endTime < timestamp) endTime = timestamp;
-                }
-            }
-            if(startTime == undefined || endTime == undefined)
-                return;
-            // no need to reset
-            if($("#SDate" + mapUsed ).datepicker( "option", "yearRange" ) == (startTime.getUTCFullYear() + ":" + endTime.getUTCFullYear()))
-                return;
-            var maxValue = Math.floor(endTime.getTime()-startTime.getTime())/86400000;
-            
-            
-            var startTimeString = startTime.getUTCMonth() + 1 + "/" + startTime.getUTCDate() + "/" + startTime.getUTCFullYear();
-            $("#SDate" + mapUsed).val(startTimeString);
-            var endTimeString = endTime.getUTCMonth() + 1 + "/" + endTime.getUTCDate() + "/" + endTime.getUTCFullYear();
-            $("#EDate" + mapUsed).val(endTimeString);
-            
-            $("#SDate" + mapUsed).datepicker("option", "yearRange", startTime.getUTCFullYear() + ":" + endTime.getUTCFullYear());
-            $("#EDate" + mapUsed).datepicker("option", "yearRange", startTime.getUTCFullYear() + ":" + endTime.getUTCFullYear());
-            
-            $("#DateRange" + mapUsed).slider({
-                range: true,
-                max: maxValue,
-                values : [0, maxValue],
-                slide: function(event,ui){
-                    var date = new Date(startTime.getTime());
-                    date.setDate(date.getDate() + ui.values[0]);
-                    $("#SDate" + mapUsed).val($.datepicker.formatDate('mm/dd/yy',date));
-                    date = new Date(startTime.getTime());
-                    date.setDate(date.getDate() + ui.values[1]);
-                    $("#EDate" + mapUsed).val($.datepicker.formatDate('mm/dd/yy',date));
-                }
-            });
-        }
-        
-        initializeFilter(earthquakes[cavw],mapUsed);
         filterData(cavw,mapUsed);
         // This is the height and width for the 
         // flot graph. Flot is for 2D javascript drawing
