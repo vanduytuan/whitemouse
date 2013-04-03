@@ -20,6 +20,7 @@ $cache = time();
         <meta http-equiv="cache-control" content="no-cache, must-revalidate">
         <meta name="description" content="The World Organization of Volcano Observatories (WOVO): Database of Volcanic Unrest (WOVOdat)">
         <meta name="keywords" content="Volcano, Vulcano, Volcanoes">
+        <link href="/gif2/WOVOfavicon.ico" type="image/x-icon" rel="SHORTCUT ICON">		
         <link href="/css/styles_beta.css" rel="stylesheet"> 
         <link href="/css/tooltip.css" rel="stylesheet">
         <link type="text/css" href="/js/jqueryui/css/custom-theme/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
@@ -588,6 +589,7 @@ $cache = time();
                             count++;
                     }
                     if(count >= 3){
+                        alert('Please choose at most 3 time series to draw');
                         obj.checked = false;
                         return;
                     }
@@ -651,11 +653,7 @@ $cache = time();
                 
                 // delete the data thar are too big compare to its neighbor
                 data = Wovodat.fixBigData(data);
-                var length = data[0].length;
-                if(length == 0)
-                    return ;
-                if(data[0][0] == undefined)
-                    return;
+                
                 // set up the reference time
                 if(referenceTime == null){
                     referenceTime = data[0][0][0];
@@ -698,6 +696,7 @@ $cache = time();
                 var sixMonths = 6*30*24*60*60*1000; // in milliseconds
                 var minXValue,xRangeMin;
                 var i;
+                var length = data[0].length;
                 maxXValue = data[0][0][0];
                 
                 minValue = data[0][0][1];
@@ -1027,6 +1026,7 @@ $cache = time();
             
             // draw overview graph
             function drawOverviewGraph(tableId){
+                setPrintButtonVisibility(tableId,true);
                 if(!tableId) {
                     return; 
                 }
@@ -1233,8 +1233,30 @@ $cache = time();
                 }
                 if(hideOverview){
                     $("#overviewPanel" + tableId).css('display','none');
+                    setPrintButtonVisibility(tableId,false);
                 }else{
                     drawOverviewGraph(tableId);
+                }
+            }
+            
+            function setPrintButtonVisibility(mapUsed, isShowed){
+                var tempPanel = $("#TimeSeriesView" + mapUsed);
+                if(tempPanel == undefined)
+                    return;
+                tempPanel = tempPanel[0];
+                if(tempPanel == undefined)
+                    return;
+                var button = $("#printButton",tempPanel);
+                if(button == undefined) return;
+                button = button[0];
+                if(isShowed){
+                    $(button).show();
+                    console.log('show');
+                    console.log(button);
+                }else{
+                    $(button).hide();
+                    console.log('hide');
+                    
                 }
             }
             function deleteTimeSeriesList(type){
@@ -1612,35 +1634,35 @@ $cache = time();
                         if (list[i].indexOf("Unnamed")==-1)
                             volcanos.options[volcanos.options.length] = new Option(list[i].replace('&','_'),list[i]);
                     }                   
-                    //	randomSelectVolcano(selectId);
-                    //  }
-                    // }
-                 
+                    randomSelectVolcano(selectId);
+                
+            
 <?php
 if ($dev) {
     ?>
-                    if(ids[j] == 'VolcanoList'){
-                        var a = document.getElementById('VolcanoList');
-                        a.value = "St. Helens&1201-05-";
-                        $(a).change();
-                        $("#DisplayEquake1").click();
-                        $("#TimeSeriesHeader1").click();
-                    }else{
-                        var a = document.getElementById('CompVolcanoList');
-                        a.value = "Parker&0701-011";
-                        $(a).change();
-                        $("#DisplayEquake2").click();
-                        $("#TimeSeriesHeader2").click();
-                    }       
+            if(ids[j] == 'VolcanoList'){
+                var a = document.getElementById('VolcanoList');
+                a.value = "St. Helens&1201-05-";
+                $(a).change();
+                $("#DisplayEquake1").click();
+                $("#TimeSeriesHeader1").click();
+            }else{
+                var a = document.getElementById('CompVolcanoList');
+                a.value = "Parker&0701-011";
+                $(a).change();
+                $("#DisplayEquake2").click();
+                $("#TimeSeriesHeader2").click();
+            }       
     <?php
 } else {
     ?>     
-                    randomSelectVolcano(selectId);
+            randomSelectVolcano(selectId);
     <?php
 }
+
 ?>
-        }
-    }
+                            }
+                        }
     /*
      * Volcano information module
      */                           
@@ -1669,6 +1691,8 @@ if ($dev) {
             return url;
         }
         function format(url){
+            if(url == undefined || url == "null")
+                return "&nbsp;";
             var text = url;
             var i = text.indexOf('//');
             if(i == -1)
@@ -2819,6 +2843,9 @@ if ($dev) {
                 display: none;
                 margin-left: 10px;
             }
+            .timeSeriesView .PrintButton{
+                display: none;
+            }
             .button {
                 width:460px;
                 display: inline-block;
@@ -3331,7 +3358,7 @@ if ($dev) {
 
                                 <tr>
                                     <td style="vertical-align:top">
-                                        <div id="TimeSeriesView1">
+                                        <div id="TimeSeriesView1" class="timeSeriesView">
                                             <div id="OptionList1">
                                                 <b>Available time series data (max. 3):</b> 
                                                 <div id="OptionList1-1">
@@ -3351,7 +3378,7 @@ if ($dev) {
                                                 <table id="GraphList1">
                                                 </table>
                                             </div>
-                                            <div class="PrintButton" onclick="javascript:Wovodat.Printer.print({type:Wovodat.Printer.Printing.Type.TIME_SERIES,graphsTable: document.getElementById('GraphList1'),graphsPlot:graphs,info:document.getElementById('VolcanoList').value})">
+                                            <div class="PrintButton" id="printButton" onclick="javascript:Wovodat.Printer.print({type:Wovodat.Printer.Printing.Type.TIME_SERIES,graphsTable: document.getElementById('GraphList1'),graphsPlot:graphs,info:document.getElementById('VolcanoList').value})">
                                                 <a title="Print this graphs" href="#" >
                                                     <span class="app-icon light print-icon"></span>
                                                     <span class="app-button-text">Print</span>
@@ -3700,7 +3727,7 @@ if ($dev) {
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div id="TimeSeriesView2">
+                                        <div id="TimeSeriesView2" class="timeSeriesView">
                                             <div id="OptionList2">
                                                 <b>Available time series data (max. 3):</b>
                                                 <div id="OptionList2-1">
@@ -3721,7 +3748,7 @@ if ($dev) {
                                                 <table id="GraphList2">
                                                 </table>
                                             </div>
-                                            <div class="PrintButton" onclick="javascript:Wovodat.Printer.print({type:Wovodat.Printer.Printing.Type.TIME_SERIES,graphsTable: document.getElementById('GraphList2'),graphsPlot:graphs,info:document.getElementById('CompVolcanoList').value})">
+                                            <div class="PrintButton" id="printButton" onclick="javascript:Wovodat.Printer.print({type:Wovodat.Printer.Printing.Type.TIME_SERIES,graphsTable: document.getElementById('GraphList2'),graphsPlot:graphs,info:document.getElementById('CompVolcanoList').value})">
                                                 <a title="Print this graphs" href="#" >
                                                     <span class="app-icon light print-icon"></span>
                                                     <span class="app-button-text">Print</span>

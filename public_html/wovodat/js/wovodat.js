@@ -863,7 +863,7 @@ Wovodat.get3DMap = function(o){
     if (!init_azim) init_azim = '10'; 
 	
     var degree = isEmpty(o.degree);
-    if (!degree) degree = 30; 
+    if (!degree) degree = 175; 
 	
     var visual_type = '3D';
 	
@@ -874,7 +874,7 @@ Wovodat.get3DMap = function(o){
     var wkm = isEmpty(o.wkm);       //Nang added
 	
     var qty = isEmpty(o.qty);
-    if (!qty) qty = 100; 
+    if (!qty) qty = 500; 
     var date_start = isEmpty(o.date_start);
     if (!date_start) date_start = '1/1/1900';        
     var date_end = isEmpty(o.date_end);
@@ -883,7 +883,7 @@ Wovodat.get3DMap = function(o){
     var dr_start = isEmpty(o.dr_start);
     if(!dr_start) dr_start = 0;
     var dr_end = isEmpty(o.dr_end);
-    if(!dr_end) dr_end = 500;
+    if(!dr_end) dr_end = 40;
     var eqtype = isEmpty(o.eqtype);
     var handler = o.handler;
     function isEmpty(e){
@@ -933,7 +933,7 @@ Wovodat.getOwnerList = function(ownerList,handler){
 };
 
 Wovodat.get2DGMTMap = function(o){
-    // these two var don't need for 2D GMT
+    //   these two var don't need for 2D GMT
     //   var init_azim = isEmpty(o.init_azim);
     //   if (!init_azim) init_azim = '10'; 
     //   var degree = isEmpty(o.degree);
@@ -949,7 +949,7 @@ Wovodat.get2DGMTMap = function(o){
 
     var wkm = isEmpty(o.wkm);
     var qty = isEmpty(o.qty);
-    if (!qty) qty = 100; 
+    if (!qty) qty = 500; 
 
     var date_start = isEmpty(o.date_start);
     if (!date_start) date_start  = '1/1/1990'; 
@@ -959,7 +959,7 @@ Wovodat.get2DGMTMap = function(o){
     var dr_start = isEmpty(o.dr_start);
     if(!dr_start) dr_start = 0;
     var dr_end = isEmpty(o.dr_end);
-    if(!dr_end) dr_end = 500;
+    if(!dr_end) dr_end = 40;
 
     var handler = o.handler;
     function isEmpty(e){
