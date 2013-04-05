@@ -802,3 +802,6 @@ a.active.trigger {
     width: 513px;
     display: inline-block;
 }
+.switchViewButton:hover{
+    cursor: pointer;
+}
