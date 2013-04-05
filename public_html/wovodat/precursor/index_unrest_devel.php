@@ -2244,42 +2244,8 @@ if ($dev) {
             labelPaddingTop: '60px',
             marginTop: '15px'
         };
-                
-        // Options for drawing lat-lon plot. Please refer to the documentation
-        // of Flot to see the meaning of the each value
-        var plotOptions = {
-            series:{
-                points:{
-                    show: true,
-                    lineWidth: 1,
-                    symbol: drawMagnitude,
-                    fill: false
-                }
-            },
-            grid:{
-                // this option is for changing the color of the border
-                borderColor: "#9C9C9C",
-                clickable:true,
-                hoverable:true,
-                autoHighlight:true
-            },
-            yaxis:{
-                tickFormatter : kmFormatter,
-                tickDecimals: 0,
-                min: -20,
-                labelWidth: 25
-            },
-            xaxis:{
-                position:"top",
-                tickDecimals:0,
-                max: 10,
-                min: -10,
-                tickFormatter : kmFormatter
-            },
-            zoom:{ interactive: true},
-            pan: {interactive: true},
-            shadowSize: 0
-        };
+          
+        
         function drawMagnitude(ctx, x, y, radius, shadow, realRadius, color){
             ctx.strokeStyle = color;
             ctx.arc(x,y,realRadius,0,shadow ? Math.PI : Math.PI * 2);
@@ -2398,11 +2364,62 @@ if ($dev) {
         timePlot = [{
                 data:timeArray
             }];
+        function minYAxis(data){
+            var length = data.length;
+            var i = 0;
+            var min = data[0][1];
+            for(i = 0 ; i < length; i++){
+                if(data[i][1] > min)
+                    min = data[i][1];
+            }
+            if(min > -20)
+                return -20;
+            else
+                return null;
+        }
+        var minY = minYAxis(latArray);
+        // Options for drawing lat-lon plot. Please refer to the documentation
+        // of Flot to see the meaning of the each value
+        var plotOptions = {
+            series:{
+                points:{
+                    show: true,
+                    lineWidth: 1,
+                    symbol: drawMagnitude,
+                    fill: false
+                }
+            },
+            grid:{
+                // this option is for changing the color of the border
+                borderColor: "#9C9C9C",
+                clickable:true,
+                hoverable:true,
+                autoHighlight:true
+            },
+            yaxis:{
+                tickFormatter : kmFormatter,
+                tickDecimals: 0,
+                min: minY,
+                labelWidth: 25
+            },
+            xaxis:{
+                position:"top",
+                tickDecimals:0,
+                max: 10,
+                min: -10,
+                tickFormatter : kmFormatter
+            },
+            zoom:{ interactive: true},
+            pan: {interactive: true},
+            shadowSize: 0
+        };
         // draw the latitude map
         if(getSelectedEquakesButton(mapUsed) == 1)
             $('#twoDEquakeFlotGraph' + mapUsed).show();
         var latitudePlotArea = document.getElementById("FlotDisplayLat"+mapUsed);
+        
         equakeGraphs[mapUsed].latGraph = $.plot(latitudePlotArea,latPlot,plotOptions);
+        
         Wovodat.enableTooltip({type:'single',
             id:"FlotDisplayLat"+mapUsed,
             firstValueFront:'Distance from volcano',
