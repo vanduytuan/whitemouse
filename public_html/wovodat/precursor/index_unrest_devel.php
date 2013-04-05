@@ -132,7 +132,11 @@ $cache = time();
                 bar.className = "button white extendedButton";
                 panel = document.getElementById('fixSwitch');
                 panel.className = "fixSwitch";
+                $("#Map").css('height','300px');
                 google.maps.event.trigger(map[1], "resize");
+                $("#switchView").html("Comparision View");
+                $("#TimeSeriesView1").show();
+                $("#EquakePanel1").show();
             }
             function showComparisionView(){
                 var panel = document.getElementById('volcanoPanel2');
@@ -142,7 +146,9 @@ $cache = time();
                 bar.className = "button white";
                 panel = document.getElementById('fixSwitch');
                 panel.className = "";
+                $("#Map").css('height','210px');
                 google.maps.event.trigger(map[1], "resize");
+                $("#switchView").html("Single View");
             }
             $(document).ready(function(){
                 setupSwitchButton();
