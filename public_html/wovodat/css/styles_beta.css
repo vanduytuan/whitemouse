@@ -103,6 +103,32 @@ td#regisLoginSubmitButton{text-align:right; vertical-align:top; height:40px;}
 #regisLoginError{text-align:center; color:red; font-size:10pt; border-left-width:1px; border-left-color:#505050; border-left-style:solid;}
 #forgotPW{text-align:center; font-size:10pt; border-left-width:1px; border-left-color:#505050; border-left-style:solid;}
 
+.button {
+    width:460px;
+    display: inline-block;
+    outline: none;
+    text-align: left;
+    text-decoration: none;
+    padding: .2em 2em .2em;
+    -webkit-border-radius: .4em; 
+    -moz-border-radius: .4em;
+    border-radius: .4em;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    margin-top: 8px;
+    height: 16px;
+}
+.button a:visited,.button a:link{
+    color: rgb(58,89,184);
+}
+.button a:hover{
+    text-decoration: underline;
+}
+
+.extendedButton{
+    width: 980px;
+}
 .green{color:green;}
 
 .red {color:red;}
@@ -756,4 +782,23 @@ a.active.trigger {
 
 .showHideMarkerButton{
     display: none;
+}
+.volcanoPanel{
+    width:513px;
+    vertical-align: top;
+    display: block;
+}
+.VolcanoPanel{
+    padding-left: 2em;
+}
+.separator{
+    width: 2px;
+}
+.fixSwitch{
+    width: 513px;
+    float: left;
+}
+.flowElement{
+    width: 513px;
+    display: inline-block;
 }
