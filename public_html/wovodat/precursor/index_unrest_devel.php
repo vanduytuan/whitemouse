@@ -165,12 +165,13 @@ $cache = time();
                             $("#EDate1").val($.datepicker.formatDate('mm/dd/yy',date));
                         }
                     });
+                    // range of max and min depth
                     $("#DepthLow1").val(0);
                     $("#DepthHigh1").val(40);
+                    
                     $("#SDate1").change(function(){adjustSlider("1");});
                     $("#EDate1").change(function(){adjustSlider("1");});
                     var today = new Date();
-                    
                     $("#FormFilter1").hide();
                     $("#FilterSwitch1").html("Show Filter");
                     $("#FlotDisplayLat1").html("");
@@ -588,6 +589,7 @@ $cache = time();
                         if(s == tableId)
                             count++;
                     }
+                    // at most 3 time series at a time
                     if(count >= 3){
                         alert('Please choose at most 3 time series to draw');
                         obj.checked = false;
@@ -649,11 +651,12 @@ $cache = time();
                 var label = document.getElementById(id + 'Tr' + tableId).getElementsByTagName('td')[1].innerHTML;
                 
                 // delete the link between data that are too long from each other
-                var data = Wovodat.highlightNoDataRange(args.data);
-                
+                var data = args.data;
                 // delete the data thar are too big compare to its neighbor
-                data = Wovodat.fixBigData(data);
+                if(label.indexOf("Leveling") == -1)
+                    data = Wovodat.highlightNoDataRange(data);
                 
+                data = Wovodat.fixBigData(data);
                 // set up the reference time
                 if(referenceTime == null){
                     referenceTime = data[0][0][0];
@@ -1102,8 +1105,8 @@ $cache = time();
                                 max: maxY,
                                 min: minY,
                                 color: 'rgb(123,1,100)',
-                                labelWidth: 25,
-                                labelHeigth: 40,
+                                labelWidth: 25,// in pixel
+                                labelHeigth: 40,// in pixel
                                 tickDecimals:1
                             },
                             zoom:{
@@ -1146,6 +1149,7 @@ $cache = time();
             // get the map used: 1 or 2
             function side(a){
                 var m = a.length;
+                // thing get complicated with tilt data
                 if(a.indexOf('Tilt') > 0) m = m - 1;
                 var k = a.substring(m-1,m);
                 if(k == '1' || k == '2'){
@@ -1251,12 +1255,8 @@ $cache = time();
                 button = button[0];
                 if(isShowed){
                     $(button).show();
-                    console.log('show');
-                    console.log(button);
                 }else{
                     $(button).hide();
-                    console.log('hide');
-                    
                 }
             }
             function deleteTimeSeriesList(type){
@@ -1313,6 +1313,7 @@ $cache = time();
             }
         
             function toRad(number){
+                // from degree to radian, mathematic function
                 return number * Math.PI /180;
             }
             function openInfoWindow(){
@@ -1518,7 +1519,7 @@ $cache = time();
                     lat = info[0];
                     lon = info[1];
                     
-                    // lat and long of singapore
+                    // lat and long of Singapore as default location
                     if(!lat || !lon){
                         lat = 1.29;
                         lon = 103.85;
@@ -2364,6 +2365,12 @@ if ($dev) {
         timePlot = [{
                 data:timeArray
             }];
+        /*
+         * handle the maximum depth for earthquakes event
+         * if there are earthquakes within the range of [0,-20] km then the limit
+         * for the earthquake graph is 20 because it is the default value in 2DGMT
+         * if not, draw all the available earthquakes
+         */
         function minYAxis(data){
             var length = data.length;
             var i = 0;
@@ -2372,6 +2379,8 @@ if ($dev) {
                 if(data[i][1] > min)
                     min = data[i][1];
             }
+            // 20 is the default value in 2D GMT, therefore it set it here as
+            // well
             if(min > -20)
                 return -20;
             else
@@ -3135,7 +3144,7 @@ if ($dev) {
                                                             <td colspan="2" style="height:20px;width:250px">
                                                                 <div class="viewStationPanel">
                                                                     <button id="HideStationButton1" style="float:right;display:none">Hide Stations</button>
-                                                                    <b>View stations:</b>
+                                                                    <b title="Click to show on Map">Data stations:</b>
                                                                 </div>
                                                                 <table id="StationList" class="stationList"></table>
                                                             </td>
@@ -3503,7 +3512,7 @@ if ($dev) {
                                                             <td colspan="2" style="height:20px;width:250px">
                                                                 <div class="viewStationPanel">
                                                                     <button id="HideStationButton2" style="float:right;display:none">Hide Stations</button>
-                                                                    <b>View stations:</b>
+                                                                    <b title="Click to show on Map">Data stations:</b>
                                                                 </div>
                                                                 <table id="CompStationList" class="stationList"></table>
                                                             </td>

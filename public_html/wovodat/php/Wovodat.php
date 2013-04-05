@@ -202,7 +202,7 @@ class Wovodat {
      */
 
     public function getTimeSeriesForVolcano($cavw) {
-
+        
         function getStationsWithDataList($cavw) {
 
             $volcanoId = mysql_query("select vd_id from vd where vd_cavw = '$cavw'");
@@ -279,7 +279,8 @@ class Wovodat {
                     break;
                 }
 // dd_lev
-                $query = "select b.ds_id_ref from ds a, dd_lev b where a.ds_code = 'PRNW_BM1' and (a.ds_id = b.ds_id_ref or a.ds_id = b.ds_id1 or a.ds_id = b.ds_id2) and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() limit 0 , 1";
+                $query = "select b.ds_id_ref from ds a, dd_lev b where a.ds_code = '$temp' and (a.ds_id = b.ds_id1) and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() limit 0 , 1";
+                
                 $value = mysql_query($query);
                 if ($value && mysql_num_rows($value)) {
                     array_push($list, "deformation");
@@ -466,9 +467,8 @@ class Wovodat {
                 break;
             }
 // dd_lev
-            $value = mysql_query("select b.ds_id from ds a, dd_lev b where a.ds_code = '$temp' and (a.ds_id = b.ds_id1 or a.ds_id = b.ds_id2) and ds_pubdate <= now() and dd_lev_pubdate <= now()  limit 0 , 1");
+            $value = mysql_query("select b.ds_id from ds a, dd_lev b where a.ds_code = '$temp' and (a.ds_id = b.ds_id1) and ds_pubdate <= now() and dd_lev_pubdate <= now()  limit 0 , 1");
             if ($value && mysql_num_rows($value)) {
-                echo "deformation;";
                 break;
             }
 // dd_sar: no station? , how to display the data
@@ -668,7 +668,7 @@ class Wovodat {
                 break;
             }
 // dd_lev
-            $value = mysql_query("select b.ds_id from ds a, dd_lev b where a.ds_code = '$temp' and (a.ds_id = b.ds_id1 or a.ds_id = b.ds_id2) and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() limit 0 , 1");
+            $value = mysql_query("select b.ds_id from ds a, dd_lev b where a.ds_code = '$temp' and (a.ds_id = b.ds_id1) and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() limit 0 , 1");
             if ($value && mysql_num_rows($value)) {
                 echo "deformation;";
                 break;
@@ -874,7 +874,8 @@ class Wovodat {
                         echo "Deformation&GPSVector&$code&$temp[1]&$temp[2]&Z;";
                     }
 // dd_lev
-                    $value = mysql_query("select b.ds_id_ref from ds a, dd_lev b where a.ds_code = '$code' and (a.ds_id = b.ds_id_ref ) limit 0 , 1");
+                    $query = "select b.ds_id_ref from ds a, dd_lev b where a.ds_code = '$code' and (a.ds_id = b.ds_id1) limit 0 , 1";
+                    $value = mysql_query($query);
                     if ($value && mysql_num_rows($value)) {
                         echo "Deformation&Leveling&$code&$temp[1]&$temp[2];";
                     }
@@ -1146,7 +1147,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                             $result = mysql_query("select b.dd_gpv_stime, b.dd_gpv_vert$cc from ds a, dd_gpv b where a.ds_code = '$code' and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_gpv_pubdate <= now() order by b.dd_gpv_stime desc");
                         break;
                     case 'Leveling':
-                        $query = "select b.dd_lev_time, b.dd_lev_delev$cc from ds a, dd_lev b where a.ds_code = '$code' and a.ds_id = b.ds_id_ref and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() order by b.dd_lev_time desc";
+                        $query = "select b.dd_lev_time, b.dd_lev_delev$cc from ds a, dd_lev b where a.ds_code = '$code' and a.ds_id = b.ds_id1 and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() order by b.dd_lev_time desc";
                         $result = mysql_query($query);
                         break;
                 }
