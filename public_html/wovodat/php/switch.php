@@ -41,11 +41,6 @@ if (isset($_GET['get']) || isset($_POST['get'])) {
             $wovodat = new Wovodat();
             $wovodat->getLatLon($_GET['cavw']);
             break;
-        case 'StationsWithDataList':
-            include_once 'Wovodat.php';
-            $wovodat = new Wovodat();
-            $wovodat->getStationsWithDataList($_GET['cavw']);
-            break;
         case "AllStationsList":
             include_once "Wovodat.php";
             $wovodat = new Wovodat();

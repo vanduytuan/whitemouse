@@ -179,29 +179,6 @@ Wovodat.getLatLon = function(args, volcId, mapId, mapUsed){
     });
 };
 
-/*
- * Get list of available stations for a specific volcano (time-series view)
- * 
- */
-Wovodat.getStationsWithDataList = function (args){
-    var cavw = args.cavw;
-    var handler = args.handler;
-    var tableId = args.tableId;
-    $.ajax({
-        method: "get", 
-        url: "/php/switch.php",
-        data: "get=StationsWithDataList&cavw="+cavw,
-        success: function(html){
-            if(html.indexOf('Can\'t') >= 0) return;
-            html = html.split(";");
-            if(html[html.length - 1] == "")
-                html.length--;
-            handler({
-                list:html
-            },tableId);
-        }
-    });
-};
 
 /*
  *Get list of all available time series for one specific volcano

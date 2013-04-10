@@ -1665,8 +1665,8 @@ $cache = time();
                     var vd_name = "";
                     var vd_cavw = "";
                     for(;i < list.length;i++){
-                        vd_name = list[i]['vd_name'];
-                        vd_cavw = list[i]['vd_cavw'];
+                        vd_name = list[i]['1'];
+                        vd_cavw = list[i]['2'];
                         if(vd_name.indexOf('Unnamed') != -1)
                             continue;
                         volcanos.options[volcanos.options.length] = new Option(vd_name + '_' + vd_cavw,vd_name + '&' + vd_cavw);
