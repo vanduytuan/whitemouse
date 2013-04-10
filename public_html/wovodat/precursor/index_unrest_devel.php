@@ -2408,7 +2408,11 @@ if ($dev) {
          * if not, draw all the available earthquakes
          */
         function minYAxis(data){
+            if(data == undefined)
+                return null;
             var length = data.length;
+            if(length == 0)
+                return null;
             var i = 0;
             var min = data[0][1];
             for(i = 0 ; i < length; i++){
