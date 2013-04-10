@@ -2138,6 +2138,7 @@ if ($dev) {
                     color ='../img/blankCircles/pin_be.png'; // BLUE
                 else 
                     color = '../img/blankCircles/pin_dbe.png'; // Dark Blue
+                
                 if(i < parseInt(document.getElementById('Evn' + mapUsed).value)){
                     				
                     // set icon
@@ -2146,12 +2147,14 @@ if ($dev) {
                     // set marker
                     var marker = new google.maps.Marker({
                         position: new google.maps.LatLng(lat,lon),
-                        icon:icon
+                        icon:icon,
+                        map: map[1]
                     });
 
                     var marker2 = new google.maps.Marker({
                         position: new google.maps.LatLng(lat,lon),
-                        icon:icon
+                        icon:icon,
+                        map: map[2]
                     });
                     
                     // the content for the popup window when the mouse hovers
@@ -2165,14 +2168,21 @@ if ($dev) {
                     
                     var infoWindow = new google.maps.InfoWindow({content:contentText});
                     
+                    // to show tooltip for the current earthquakes
                     new Tooltip({marker:marker,content:contentText,cssClass:"earthquakeTooltip"});
+                    new Tooltip({marker:marker2,content:contentText,cssClass:"earthquakeTooltip"});
+                    
+                    // the trick so that the tooltip will display
+                    marker.setMap(null);
+                    marker2.setMap(null);
+                    
                 }	
                 // infoWindow.open(map[mapUsed],marker);
                 // store the quake data in the earthquakes[cavw] object
                 
                 earthquakes[cavw][index]=[];
-                earthquakes[cavw][index]['marker' + mapUsed]= marker;
-                earthquakes[cavw][index]['marker' + (3 - mapUsed)]= marker2;
+                earthquakes[cavw][index]['marker' + 1]= marker;
+                earthquakes[cavw][index]['marker' + 2]= marker2;
                 earthquakes[cavw][index]['infoWindow']= infoWindow;
                 earthquakes[cavw][index]['eqtype'] = type;
                 earthquakes[cavw][index]['lat']=lat;
@@ -2194,6 +2204,7 @@ if ($dev) {
             for (var i in earthquakes[cavw]){
                 if (typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
                     if (earthquakes[cavw][i]['available']){
+                        console.log(earthquakes[cavw][i]['marker' + mapUsed]);
                         earthquakes[cavw][i]['marker' + mapUsed].setMap(map[mapUsed]);
                     }
                     else

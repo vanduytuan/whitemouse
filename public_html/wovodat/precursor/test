@@ -1,0 +1,6 @@
+SELECT  sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id 
+FROM sd_evn JOIN (SELECT ROUND(RAND() * (SELECT MAX(sd_evn_id) FROM sd_evn where  sd_evn_time <= now() )) AS id) 
+AS r2 WHERE ABS(54.1339988708496 - sd_evn_elat) < 1 AND ABS(-165.985992431641 - sd_evn_elon) < 6  
+AND SQRT(POW((54.1339988708496 - sd_evn_elat)*110, 2) + POW((-165.985992431641 - sd_evn_elon) * 111.32 * 
+COS(54.1339988708496/57.32), 2))<  30 AND sd_evn_pubdate <= now()  AND sd_evn_edep < 40 and sd_evn_edep > -3
+ORDER BY `sd_evn`.`sd_evn_time` DESC

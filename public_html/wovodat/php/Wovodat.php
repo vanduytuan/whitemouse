@@ -7,17 +7,17 @@ class Wovodat {
     /*
      * Constructor
      */
-
     public function __construct() {
         $this->connectWovodatServer();
         $this->gmt_output_folder = dirname(__FILE__) . "/../output/";
     }
 
+    // connect to the server for wovodat data
     public function connectWovodatServer() {
         include "php/include/db_connect_view.php";
         return $link;
     }
-
+    // remove the file at $dir
     private function recursivermdir($dir) {
         foreach (glob($dir . '/*') as $file) {
             if (is_dir($file))
@@ -29,6 +29,7 @@ class Wovodat {
         rmdir($dir);
     }
 
+    // delete file in the output folder for gmt module
     public function deleteOutputFolder($folderName) {
         if (substr($folderName, 0, 7) != 'wovodat')
             return;
@@ -43,6 +44,7 @@ class Wovodat {
         }
     }
 
+    // clear output folder for gmt files
     public function clearOutputFolder() {
         $outputDir = opendir($this->gmt_output_folder);
         if ($outputDir) {
@@ -104,7 +106,7 @@ class Wovodat {
             $object = "";
             $object[1] = $row[0];
             $object[2] = $row[1];
-            array_push($results,$object);
+            array_push($results, $object);
             $row = mysql_fetch_array($result);
             if ($row == false)
                 break;
@@ -115,7 +117,6 @@ class Wovodat {
     /*
      * Return the list of all eruption of one specifci volcano
      */
-
     public function getEruptionList($cavw) {
         mysql_query("set character_set_results='utf8'");
         $result = mysql_query("select ed.ed_code , ed.ed_stime, ed.ed_stime_bc from vd, ed where vd.vd_cavw = '$cavw' and vd.vd_id = ed.vd_id order by ed.ed_stime desc");
@@ -162,6 +163,7 @@ class Wovodat {
      * Get cc_url of a volcano
      * of a specific cavw
      */
+
     public function getCCUrl($cavw) {
         $query1 = mysql_query("select cc_id from vd where vd_cavw='" . $cavw . "'");
         $object = "";
@@ -176,7 +178,7 @@ class Wovodat {
             else
                 $object['owner1'] = "";
         }
-        
+
         // second cc_id
         $query1 = mysql_query("select cc_id2 from vd where vd_cavw='" . $cavw . "'");
         $result1 = mysql_fetch_array($query1);
@@ -205,7 +207,7 @@ class Wovodat {
      */
 
     public function getTimeSeriesForVolcano($cavw) {
-        
+
         function getStationsWithDataList($cavw) {
 
             $volcanoId = mysql_query("select vd_id from vd where vd_cavw = '$cavw'");
@@ -216,7 +218,7 @@ class Wovodat {
             $list = Array();
 
             $value = "";
-            
+
             // get the seismic stations that locate near the current volcano
             $seismicStations = mysql_query("(select c.ss_code FROM sn a, ss c  where a.sn_pubdate <= now() and c.ss_pubdate <= now() and a.vd_id = '$volcanoId'  and a.sn_id = c.sn_id ) UNION (select c.ss_code FROM jj_volnet a, ss c , vd_inf d  WHERE a.vd_id = '$volcanoId' and a.vd_id=d.vd_id  and a.jj_net_flag = 'S' and a.jj_net_id = c.sn_id and (sqrt(power(d.vd_inf_slat - c.ss_lat, 2) + power(d.vd_inf_slon - c.ss_lon, 2))*100)<20 and c.ss_pubdate <= now())") or die(mysql_error());
 
@@ -285,7 +287,7 @@ class Wovodat {
                 }
 // dd_lev
                 $query = "select b.ds_id_ref from ds a, dd_lev b where a.ds_code = '$temp' and (a.ds_id = b.ds_id1) and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() limit 0 , 1";
-                
+
                 $value = mysql_query($query);
                 if ($value && mysql_num_rows($value)) {
                     array_push($list, "deformation");
@@ -392,7 +394,7 @@ class Wovodat {
         $list = getStationsWithDataList($cavw);
         if (count($list) == 0)
             return;
-        
+
         // get the list of stations based on the station type
         foreach ($list as $k => $type) {
             $this->getStations($cavw, $type);
@@ -776,7 +778,7 @@ class Wovodat {
                 }
 // gd_plu using satelite or airplane data
                 $value = mysql_query("select distinct cs.cs_code from cs, gd_plu where cs.cs_id = gd_plu.cs_id and gd_plu.vd_id = '$volcanoId'");
-                while($temp = mysql_fetch_array($value)){
+                while ($temp = mysql_fetch_array($value)) {
                     echo "Gas&Plume&$temp[0];";
                 }
                 break;
@@ -1021,16 +1023,16 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
                         $attribute = 'gd_plu_emit';
                         $databaseTable = 'gd_plu';
                         $result = mysql_query("select distinct b.gd_plu_time, b.gd_plu_emit $cc  from gs a, gd_plu b, cs c where (a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now()) or (b.cs_id = c.cs_id and c.cs_code = '$code') and b.gd_plu_pubdate <= now() order by b.gd_plu_time desc");
-                        
+
                         break;
                     case 'SoilEfflux':
                         $attribute = 'gd_sol_tfulx';
                         $databaseTable = 'gd_sol';
                         $result = mysql_query("select b.gd_sol_time, b.gd_sol_tfulx $cc from gs a, gd_sol b where a.gs_code ='$code' and b.gs_id = a.gs_id and a.gs_pubdate <= now() and b.gd_sol_pubdate <= now() order by b.gd_sol_time desc");
-                        
+
                         break;
                 }
-                
+
                 break;
             case 'hydrologic':
                 switch ($component) {
@@ -1299,38 +1301,38 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         ini_set('memory_limit', '100M');
     }
 
-     private function getEarthquakeQuery($quantity, $latitude, $longitude, $startDate, $endDate, $startDepth, $endDepth, $eqtype, $wkm) {
-        /*Old sql
+    private function getEarthquakeQuery($quantity, $latitude, $longitude, $startDate, $endDate, $startDepth, $endDepth, $eqtype, $wkm) {
+        /* Old sql
           $sql_statement = "select sd_evn_code, sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time,
           sd_evn_eqtype FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1
           and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2)
           + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30
           and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() $dates $depth $quaketype
           group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc $limit";
-		  New sql
-		  $sql_statement = "SELECT sd_evn_code, sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn JOIN (SELECT ROUND(RAND() * (SELECT MAX(sd_evn_id) FROM sd_evn)) AS id) AS r2 WHERE ABS(34.0789985656738 - sd_evn_elat) < 1 AND ABS(139.529006958008 - sd_evn_elon) < 6 AND SQRT(POW((34.0789985656738 - sd_evn_elat)*110, 2) + POW((139.529006958008 - sd_evn_elon) * 111.32 * COS(34.0789985656738/57.32), 2))< 10 AND sd_evn_pubdate <= now() and sd_evn_time BETWEEN '1900/01/01' AND '2013/4/2' and sd_evn_edep BETWEEN 0 AND 40 order by r2.id limit 500";		  
+          New sql
+          $sql_statement = "SELECT sd_evn_code, sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn JOIN (SELECT ROUND(RAND() * (SELECT MAX(sd_evn_id) FROM sd_evn)) AS id) AS r2 WHERE ABS(34.0789985656738 - sd_evn_elat) < 1 AND ABS(139.529006958008 - sd_evn_elon) < 6 AND SQRT(POW((34.0789985656738 - sd_evn_elat)*110, 2) + POW((139.529006958008 - sd_evn_elon) * 111.32 * COS(34.0789985656738/57.32), 2))< 10 AND sd_evn_pubdate <= now() and sd_evn_time BETWEEN '1900/01/01' AND '2013/4/2' and sd_evn_edep BETWEEN 0 AND 40 order by r2.id limit 500";
          */
 
 
-         $quakeQuery = "SELECT ";
+        $quakeQuery = "SELECT ";
         if ($quantity)
             $quakeQuery .= "sd_evn_code, ";
-		
-		$quakeQuery .= " sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn JOIN (SELECT ROUND(RAND() * (SELECT MAX(sd_evn_id) FROM sd_evn)) AS id) AS r2";
+
+        $quakeQuery .= " sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn JOIN (SELECT ROUND(RAND() * (SELECT MAX(sd_evn_id) FROM sd_evn where  sd_evn_time <= now())) AS id) AS r2";
 
 
         $quakeQuery .= " WHERE ABS($latitude - sd_evn_elat) < 1 AND ABS($longitude - sd_evn_elon) < 6 ";
 
-		if($wkm == "")
-			$wkm = 60;
-		
-		$quakeQuery .= " AND SQRT(POW(($latitude - sd_evn_elat)*110, 2) + POW(($longitude - sd_evn_elon) * 111.32 * COS($latitude/57.32), 2))<  " . $wkm/2;
+        if ($wkm == "")
+            $wkm = 60;
 
-		
-		$quakeQuery .= " AND sd_evn_pubdate <= now() ";
-		
-        
-		if ($startDate && $endDate) {
+        $quakeQuery .= " AND SQRT(POW(($latitude - sd_evn_elat)*110, 2) + POW(($longitude - sd_evn_elon) * 111.32 * COS($latitude/57.32), 2))<  " . $wkm / 2;
+
+
+        $quakeQuery .= " AND sd_evn_pubdate <= now() ";
+
+
+        if ($startDate && $endDate) {
             $startDate = preg_split('/\//', $startDate);
             $endDate = preg_split('/\//', $endDate);
             $dates = " and sd_evn_time BETWEEN '$startDate[2]/$startDate[0]/$startDate[1]' AND '$endDate[2]/$endDate[0]/$endDate[1]' ";
@@ -1340,9 +1342,9 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         if (is_numeric($startDepth) && is_numeric($endDepth)) {
             $depth = " and sd_evn_edep BETWEEN $startDepth AND $endDepth ";
             $quakeQuery .= $depth;
-        }else{
-		     $quakeQuery .= " AND sd_evn_edep < 40 and sd_evn_edep > -3 ";
-		}
+        } else {
+            $quakeQuery .= " AND sd_evn_edep < 40 and sd_evn_edep > -3 ";
+        }
 
         if ($eqtype) {
             $quaketype = " and sd_evn_eqtype = $eqtype ";
@@ -1350,28 +1352,21 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         }
 
         //$quakeQuery .= " group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc ";
-		$quakeQuery .= " order by r2.id ";  
-	
+        $quakeQuery .= " order by r2.id ";
 
-		if ($quantity) {
+
+        if ($quantity) {
             $limit = " limit $quantity ";
             $quakeQuery .= $limit;
         }
 
-session_start();
-$_SESSION['quakeQuery']=$quakeQuery;
-		
+        session_start();
+        $_SESSION['quakeQuery'] = $quakeQuery;
         return $quakeQuery;
-
     }
 
-	public function getEarthquakes($qty, $cavw, $lat, $lon, $elev) {
-        /* Query all values and store them into cache...
-          $quakeQuery = "select sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag,sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn WHERE ABS($lat - sd_evn_elat) < 1 and ABS($lon - sd_evn_elon) < 6 and sqrt(pow(($lat - sd_evn_elat)*110, 2)
-          + pow(($lon - sd_evn_elon)*111.32*cos($lat/57.32), 2))< 30 and sd_evn_edep < 40 and sd_evn_edep > -3 and sd_evn_pubdate <= now() group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc LIMIT $qty";
-         */
+    public function getEarthquakes($qty, $cavw, $lat, $lon, $elev) {
 
-		 
         $quakeQuery = $this->getEarthquakeQuery("", $lat, $lon, "", "", "", "", "", "");
         $getQuakes = mysql_query($quakeQuery) or die(mysql_error());
         $count = 0;
@@ -1379,8 +1374,8 @@ $_SESSION['quakeQuery']=$quakeQuery;
             echo $row['sd_evn_elat'] . "," . $row['sd_evn_elon'] . "," . $row['sd_evn_edep'] . "," . $row['sd_evn_pmag'] . "," . $row['sd_evn_time'] . "," . $row['sd_evn_eqtype'] . "," . $row['sn_id'] . ";";
             $count++;
         }
-    }	
-	
+    }
+
     public function get2DGMT($o) {
         $equakeFlag = "";
         // clear output folder for old generated gmt files
@@ -1388,7 +1383,7 @@ $_SESSION['quakeQuery']=$quakeQuery;
 
         $result = array();
         $htmroot = dirname(__FILE__) . "/..";
-  
+
         // This path is important for GMT to work, please change this path into where you put it in the main server
         putenv("PATH=/bin:/usr/bin:/usr/lib/gmt/bin:/usr/lib/gmt/share:/usr/lib/gmt/lib:/usr/lib/gmt/include");
         putenv("GMTHOME=/usr/lib/gmt");
@@ -1409,14 +1404,14 @@ $_SESSION['quakeQuery']=$quakeQuery;
 
         # timestamp text      
         $stamp = "by WOVOdat/EOS";
-        
+
         # number of earthquake events
- 		$wkm = $o['wkm'];             // Map width.
-		$vname=$o['vname'];
-		$vlat=$o['vlat'];       
-		$vlon=$o['vlon'];
+        $wkm = $o['wkm'];             // Map width.
+        $vname = $o['vname'];
+        $vlat = $o['vlat'];
+        $vlon = $o['vlon'];
         $cavw = $o['cavw'];
-        $result['cavw'] = $cavw;		
+        $result['cavw'] = $cavw;
 
         $qty = $o['qty'];              // Number on events
         $date_start = $o['date_start'];
@@ -1433,34 +1428,33 @@ $_SESSION['quakeQuery']=$quakeQuery;
 
         $fh = fopen("$tmpdir/$tmp.txt", 'w') or die("can't open file for writing txt file <br/>");
         while ($row = mysql_fetch_assoc($query)) {
-			
-			$data[]=$row['sd_evn_time'];
-			
-			fwrite($fh, join(',', $row) . "\n");
-			$nb++;
+
+            $data[] = $row['sd_evn_time'];
+
+            fwrite($fh, join(',', $row) . "\n");
+            $nb++;
         }
-		
-		
-		$equakeFirstValue = substr($data[0],0,4);
 
-		for($i=0;$i<sizeof($data);$i++){
 
-			$equakeYear = substr($data[$i],0,4);   //Get only year from this format 2010-11-02 23:50:17
-			
-			if($equakeFirstValue != $equakeYear){   
-				$equakeFlag = "notEqual";         // not equal means more than one year..
-				break;
-			}
-			
-		}			
-	
+        $equakeFirstValue = substr($data[0], 0, 4);
+
+        for ($i = 0; $i < sizeof($data); $i++) {
+
+            $equakeYear = substr($data[$i], 0, 4);   //Get only year from this format 2010-11-02 23:50:17
+
+            if ($equakeFirstValue != $equakeYear) {
+                $equakeFlag = "notEqual";         // not equal means more than one year..
+                break;
+            }
+        }
+
         $result['numberOfEvents'] = $nb;
         $result['dataFile'] = "$htmout/$tmp.txt";
         $result['gmtScriptFile'] = "$htmout/$tmp.gmt";
-        fclose($fh);        
+        fclose($fh);
 
 
-         $J = 74 * 20 / $wkm; # Jm scale (normalized with map width)
+        $J = 74 * 20 / $wkm; # Jm scale (normalized with map width)
         $ldep = 20; # max depth for profiles (km)
 
         $title = $vname . "($nb events)";
@@ -1488,20 +1482,20 @@ $_SESSION['quakeQuery']=$quakeQuery;
         fwrite($fh, "gmtset INPUT_CLOCK_FORMAT=hh:mm:ss INPUT_DATE_FORMAT=yyyy-mm-dd TIME_FORMAT_PRIMARY abbreviated PLOT_DATE_FORMAT o\n");
         fwrite($fh, "gmtset OUTPUT_DATE_FORMAT=yyyy-mm-dd\n");
         fwrite($fh, "gmtset CHAR_ENCODING ISOLatin1+\n");
-		
-		
-		// makes colormap
+
+
+        // makes colormap
         fwrite($fh, "makecpt -Cno_green -I -T0/$ldep/1 > $tmp.cpt\n");
 
         // plan view
-		//Nang.. To adjust $wkm number showing on the top on graph =>  changed from  "-Ba9mf5mg5m" to "-Ba5mf5mg5m"
+        //Nang.. To adjust $wkm number showing on the top on graph =>  changed from  "-Ba9mf5mg5m" to "-Ba5mf5mg5m"
         fwrite($fh, "psbasemap -Jm$Jlat $Rll -Ba9mf5mg5m:.\"$title\":WesN -X2.3c -Y14c -P -K > $tmp.ps\n");
 
-		
+
         fwrite($fh, "pscoast -J -R -Df -W1p -S150/170/255 -N1/1.5p,black -N2/1p,50/50/50 -Tf178/-35/1i/2 -O -K >> $tmp.ps\n");
         fwrite($fh, "pscoast -J -R -Df -C0/169/223 -Lf$vlon/$slat/$vlat/10k+u -O -K >> $tmp.ps\n");
         fwrite($fh, "awk -F , '{print \$3,\$2,\$4}' $tmp.txt | psxy -J -R -Sc0.075i -C$tmp.cpt -G255 -W0.25p -O -K >> $tmp.ps\n");
-		
+
         // N-S projection
         fwrite($fh, "printf $box | psxy -R-5/$ldep/$lat1/$lat2 -Jx0.17c/$Jlon -Ba5f5g0/a5f5g0::wesN -W1 -P -O -X14c -Y0 -K >> $tmp.ps\n");
         fwrite($fh, "awk -F , '{if (\$3>=$lon1 && \$3<=$lon2) {print \$4,\$2,\$4}}' $tmp.txt | psxy -R -J  -Sc0.075i -C$tmp.cpt -W0.25p -O -K >> $tmp.ps\n");
@@ -1515,18 +1509,15 @@ $_SESSION['quakeQuery']=$quakeQuery;
         fwrite($fh, "cat $tmp.txt | sed s/\\ /T/g | awk -F , {'print \$6,-\$4,\$4'} > $tmp.xyz\n");
         fwrite($fh, "R=`minmax -fT -I5 $tmp.xyz`\n");
         fwrite($fh, "echo 'testing'\n");
-		
-		//Nang..Used below two lines to adjust not to show massive year at the end of graph.
-		fwrite($fh,"gmtset PLOT_DATE_FORMAT o TIME_FORMAT_PRIMARY Character ANNOT_FONT_SIZE_PRIMARY +9p\n"); 
 
-		if($equakeFlag == "notEqual" ){    //more than a year
-			fwrite($fh, "psbasemap \$R -JX17c/4c -Bs2y/WESn  -Bp/a10f10g0 -P -Y-5c -U\"$stamp\" -O -K >> $tmp.ps\n");	
-			
-		}else{  // within one year
+        //Nang..Used below two lines to adjust not to show massive year at the end of graph.
+        fwrite($fh, "gmtset PLOT_DATE_FORMAT o TIME_FORMAT_PRIMARY Character ANNOT_FONT_SIZE_PRIMARY +9p\n");
 
-		fwrite($fh, "psbasemap \$R -JX17c/4c  -Bpa1d/a10f10g0 -Bsa1O/WESn -P  -Y-5c -U\"$stamp\" -O -K >> $tmp.ps\n");
-
-		}
+        if ($equakeFlag == "notEqual") {    //more than a year
+            fwrite($fh, "psbasemap \$R -JX17c/4c -Bs2y/WESn  -Bp/a10f10g0 -P -Y-5c -U\"$stamp\" -O -K >> $tmp.ps\n");
+        } else {  // within one year
+            fwrite($fh, "psbasemap \$R -JX17c/4c  -Bpa1d/a10f10g0 -Bsa1O/WESn -P  -Y-5c -U\"$stamp\" -O -K >> $tmp.ps\n");
+        }
 
         fwrite($fh, "psxy $tmp.xyz -R -J -Sc0.075i -C$tmp.cpt  -W0.25p -V -O >> $tmp.ps\n");
         // makes PNG from PS file
@@ -1535,7 +1526,7 @@ $_SESSION['quakeQuery']=$quakeQuery;
 
         // execute the script;
         exec("cd $tmpdir ;  bash $tmp.gmt");
-		
+
         $result['title'] = $title;
         $result['imageFile'] = $imageFile;
         $result['imageSrc'] = $imageSrc;
@@ -1581,15 +1572,15 @@ $_SESSION['quakeQuery']=$quakeQuery;
         $htmout = "/$outdir/$wovodir.$name";
         $result['directory'] = $htmout;
         mkdir($tmpdir);
-		
+
         # timestamp text      
-        $stamp = "by WOVOdat/EOS";		
-		
-     # get parameters
- 		$wkm = $o['wkm'];            			 // Map width 
-		$vname=$o['vname'];
-		$vlat=$o['vlat'];       
-		$vlon=$o['vlon'];
+        $stamp = "by WOVOdat/EOS";
+
+        # get parameters
+        $wkm = $o['wkm'];                // Map width 
+        $vname = $o['vname'];
+        $vlat = $o['vlat'];
+        $vlon = $o['vlon'];
         $cavw = $o['cavw'];
         $initial_value = $o['init_azim'];        // azimuth
         $updatedAzim = $o['degree'];             // rotation degree	
@@ -1599,25 +1590,25 @@ $_SESSION['quakeQuery']=$quakeQuery;
         $date_end = $o['date_end'];
         $dr_start = $o['dr_start'];
         $dr_end = $o['dr_end'];
-        $eqtype = $o['eqtype'];	
+        $eqtype = $o['eqtype'];
 
-    # SQL query: get the data (approximate selection from map width)
-/*  Old sql statement
-	$sql_statement = "(select b.sn_code, c.sd_evn_elat, c.sd_evn_elon, c.sd_evn_edep, c.sd_evn_pmag, 
-    c.sd_evn_time, c.sd_evn_eqtype, d.vd_inf_slat, d.vd_inf_slon FROM sn b, sd_evn c, vd_inf d WHERE 
-    b.sn_id = c.sn_id AND b.vd_id=d.vd_id AND d.vd_id = $vd_id $dates $depth $quaketype ORDER BY 
-    sd_evn_time DESC $limit) UNION (select b.sn_code, c.sd_evn_elat, c.sd_evn_elon, c.sd_evn_edep, 
-    c.sd_evn_pmag, c.sd_evn_time, c.sd_evn_eqtype, d.vd_inf_slat, d.vd_inf_slon FROM jj_volnet a, 
-    sn b, sd_evn c, vd_inf d WHERE a.vd_id = $vd_id AND a.jj_net_id = b.sn_id AND b.sn_id = c.sn_id 
-    AND d.vd_id = $vd_id AND a.jj_net_flag = 'S' $dates $depth $quaketype AND 
-    (sqrt(power(d.vd_inf_slat - c.sd_evn_elat, 2) + power(d.vd_inf_slon - c.sd_evn_elon, 2))*111)<=1.5*$wkm 
-    ORDER BY c.sd_evn_time DESC $limit)";
-*/
+        # SQL query: get the data (approximate selection from map width)
+        /*  Old sql statement
+          $sql_statement = "(select b.sn_code, c.sd_evn_elat, c.sd_evn_elon, c.sd_evn_edep, c.sd_evn_pmag,
+          c.sd_evn_time, c.sd_evn_eqtype, d.vd_inf_slat, d.vd_inf_slon FROM sn b, sd_evn c, vd_inf d WHERE
+          b.sn_id = c.sn_id AND b.vd_id=d.vd_id AND d.vd_id = $vd_id $dates $depth $quaketype ORDER BY
+          sd_evn_time DESC $limit) UNION (select b.sn_code, c.sd_evn_elat, c.sd_evn_elon, c.sd_evn_edep,
+          c.sd_evn_pmag, c.sd_evn_time, c.sd_evn_eqtype, d.vd_inf_slat, d.vd_inf_slon FROM jj_volnet a,
+          sn b, sd_evn c, vd_inf d WHERE a.vd_id = $vd_id AND a.jj_net_id = b.sn_id AND b.sn_id = c.sn_id
+          AND d.vd_id = $vd_id AND a.jj_net_flag = 'S' $dates $depth $quaketype AND
+          (sqrt(power(d.vd_inf_slat - c.sd_evn_elat, 2) + power(d.vd_inf_slon - c.sd_evn_elon, 2))*111)<=1.5*$wkm
+          ORDER BY c.sd_evn_time DESC $limit)";
+         */
         $sql_statement = $this->getEarthquakeQuery($qty, $vlat, $vlon, $date_start, $date_end, $dr_start, $dr_end, $eqtype, $wkm);
 
         $query = mysql_query($sql_statement);
 
-       # writes the data into a single file
+        # writes the data into a single file
         $nb = 0;
 
 
@@ -1653,136 +1644,135 @@ $_SESSION['quakeQuery']=$quakeQuery;
         $imageFile = $tmp . ".ps";
         $imageSrc = $tmp . ".png";
 
-		$minDep = 0; // min depth (km)
-		$maxDep = 50; // max depth (km)
-		$zMin = (-1 * $maxDep);
-		$zMax = (-1 * $minDep);
-		$dx = ($lon2 - ($lon1));
-		$dy = ($lat2 - ($lat1));
-		$dz = ($maxDep - $minDep);
-		$anno_x = $dx / 5; // Set 4 tickmarks for longitude 
-		$anno_y = $dy / 5;  // Set 6 tickmarks for latitude
-		$Rll_3D = "-R$lon1/$lon2/$lat1/$lat2/$zMin/$zMax";
+        $minDep = 0; // min depth (km)
+        $maxDep = 50; // max depth (km)
+        $zMin = (-1 * $maxDep);
+        $zMax = (-1 * $minDep);
+        $dx = ($lon2 - ($lon1));
+        $dy = ($lat2 - ($lat1));
+        $dz = ($maxDep - $minDep);
+        $anno_x = $dx / 5; // Set 4 tickmarks for longitude 
+        $anno_y = $dy / 5;  // Set 6 tickmarks for latitude
+        $Rll_3D = "-R$lon1/$lon2/$lat1/$lat2/$zMin/$zMax";
 
 
-		// The numbers, 0.06, 0.12, 0.18,..., are the drawing size
-		// of the symbol. They are obtained by magnitude * 0.04.
-		// e.g: magnitude is 2, symbol_size = 2*0.06 = 0.08
-		$legend = array(
-			"0" => "H 10 1  Magnitude",
-			"1" => "D 0 1p",
-			"2" => "N 5",
-			"3" => "V 0 1p",
-			"4" => "S 0.6c c 0.16c - 0.3p 1c M 1",
-			"5" => "S 0.6c c 0.32c - 0.3p 1c M 2",
-			"6" => "S 0.6c c 0.48c - 0.3p 1c M 3",
-			"7" => "S 0.6c c 0.64c - 0.3p 1c M 4",
-			"8" => "S 0.6c c 0.8c - 0.35p 1c M > 4",
-			"11" => "V 0 1p ",
-		);
+        // The numbers, 0.06, 0.12, 0.18,..., are the drawing size
+        // of the symbol. They are obtained by magnitude * 0.04.
+        // e.g: magnitude is 2, symbol_size = 2*0.06 = 0.08
+        $legend = array(
+            "0" => "H 10 1  Magnitude",
+            "1" => "D 0 1p",
+            "2" => "N 5",
+            "3" => "V 0 1p",
+            "4" => "S 0.6c c 0.16c - 0.3p 1c M 1",
+            "5" => "S 0.6c c 0.32c - 0.3p 1c M 2",
+            "6" => "S 0.6c c 0.48c - 0.3p 1c M 3",
+            "7" => "S 0.6c c 0.64c - 0.3p 1c M 4",
+            "8" => "S 0.6c c 0.8c - 0.35p 1c M > 4",
+            "11" => "V 0 1p ",
+        );
 
-		$newLegend = implode("\n", $legend);
-		$fh = fopen("$tmpdir/gmt.legend", "w");
-		fwrite($fh, $newLegend);
-		fclose($fh);
+        $newLegend = implode("\n", $legend);
+        $fh = fopen("$tmpdir/gmt.legend", "w");
+        fwrite($fh, $newLegend);
+        fclose($fh);
 
-		$gmtLegend = "$tmpdir/gmt.legend";
-		$dpi = 100;
-		$elev = 25;
-		$fh = fopen("$tmpdir/$tmp.gmt", 'w') or die("can't open file for writing gmt file <br/>");
+        $gmtLegend = "$tmpdir/gmt.legend";
+        $dpi = 100;
+        $elev = 25;
+        $fh = fopen("$tmpdir/$tmp.gmt", 'w') or die("can't open file for writing gmt file <br/>");
 
-		// GMT set parameters
-		fwrite($fh, ". gmt_shell_functions.sh\n");
-		//fwrite($fh,"gmtset PAPER_MEDIA=A4 FRAME_WIDTH=0.2c LABEL_FONT_SIZE=12p ANNOT_FONT_SIZE_PRIMARY=12p HEADER_FONT_SIZE=20p\n");
-		fwrite($fh, "gmtset PAPER_MEDIA=Custom_570x570 FRAME_WIDTH=0.2c LABEL_FONT_SIZE=12p ANNOT_FONT_SIZE_PRIMARY=12p HEADER_FONT_SIZE=20p\n");
-		fwrite($fh, "gmtset INPUT_CLOCK_FORMAT=hh:mm:ss INPUT_DATE_FORMAT=yyyy-mm-dd TIME_FORMAT_PRIMARY abbreviated PLOT_DATE_FORMAT o\n");
-		fwrite($fh, "gmtset OUTPUT_DATE_FORMAT=yyyy-mm-dd\n");
-		fwrite($fh, "gmtset PAGE_COLOR=243/255/237 \n");
-		fwrite($fh, "gmtset CHAR_ENCODING ISOLatin1+\n");
+        // GMT set parameters
+        fwrite($fh, ". gmt_shell_functions.sh\n");
+        //fwrite($fh,"gmtset PAPER_MEDIA=A4 FRAME_WIDTH=0.2c LABEL_FONT_SIZE=12p ANNOT_FONT_SIZE_PRIMARY=12p HEADER_FONT_SIZE=20p\n");
+        fwrite($fh, "gmtset PAPER_MEDIA=Custom_570x570 FRAME_WIDTH=0.2c LABEL_FONT_SIZE=12p ANNOT_FONT_SIZE_PRIMARY=12p HEADER_FONT_SIZE=20p\n");
+        fwrite($fh, "gmtset INPUT_CLOCK_FORMAT=hh:mm:ss INPUT_DATE_FORMAT=yyyy-mm-dd TIME_FORMAT_PRIMARY abbreviated PLOT_DATE_FORMAT o\n");
+        fwrite($fh, "gmtset OUTPUT_DATE_FORMAT=yyyy-mm-dd\n");
+        fwrite($fh, "gmtset PAGE_COLOR=243/255/237 \n");
+        fwrite($fh, "gmtset CHAR_ENCODING ISOLatin1+\n");
 
-		// makes colormap
-		fwrite($fh, "makecpt -Crainbow -T$zMin/$zMax/5 -Z > $tmp.cpt\n");
+        // makes colormap
+        fwrite($fh, "makecpt -Crainbow -T$zMin/$zMax/5 -Z > $tmp.cpt\n");
 
-		// generate frames
-		fwrite($fh, "frame=0\n");
-		fwrite($fh, "name=\"frame\"\n");
+        // generate frames
+        fwrite($fh, "frame=0\n");
+        fwrite($fh, "name=\"frame\"\n");
 
-		// $initial_value is given by the user. 
-		fwrite($fh, "azim=$initial_value\n");
+        // $initial_value is given by the user. 
+        fwrite($fh, "azim=$initial_value\n");
 
-		fwrite($fh, "exitFlag=0\n");
+        fwrite($fh, "exitFlag=0\n");
 
-		fwrite($fh, "while ((\$azim <= 360)); do \n");
+        fwrite($fh, "while ((\$azim <= 360)); do \n");
 
-		fwrite($fh, "file=`gmt_set_framename \$name \$frame ` \n");
+        fwrite($fh, "file=`gmt_set_framename \$name \$frame ` \n");
 
 
-		// $3 is sd_evn_elon, $2 is sd_evn_elat, 
-		// $4 is sd_evn_edep, $5 is sd_evn_pmag.  
-		//
+        // $3 is sd_evn_elon, $2 is sd_evn_elat, 
+        // $4 is sd_evn_edep, $5 is sd_evn_pmag.  
+        //
 		// Note: 1. The symbol size for magnitude 1 is 0.06i. So, 
-		//          "0.06*$5" is the symbol size for magnitude specified
-		//          by $5. . The symbol size is used to show the level of 
-		//          magnitude. Also see the function createLegend().
-		//       2. if sd_evn_pmag <= 0, assign the symbol size to 0.04. 
-		fwrite($fh, "awk -F , '{if (\$5<=1) {print \$3,\$2,(-1)*\$4,(-1)*\$4,0.16} else if (\$5>=5) {print \$3,\$2,(-1)*\$4,(-1)*\$4,0.7 } else {print \$3,\$2,(-1)*\$4,(-1)*\$4,0.16*\$5}}' $tmp.txt | psxyz $Rll_3D -JM3.5i -JZ3.5i -E\$azim/$elev -B$anno_x/$anno_y/10::wsneZ+ -Sc -C$tmp.cpt -Wthinnest -X2i -Y2.5i -K -P  > $tmp.ps\n");
+        //          "0.06*$5" is the symbol size for magnitude specified
+        //          by $5. . The symbol size is used to show the level of 
+        //          magnitude. Also see the function createLegend().
+        //       2. if sd_evn_pmag <= 0, assign the symbol size to 0.04. 
+        fwrite($fh, "awk -F , '{if (\$5<=1) {print \$3,\$2,(-1)*\$4,(-1)*\$4,0.16} else if (\$5>=5) {print \$3,\$2,(-1)*\$4,(-1)*\$4,0.7 } else {print \$3,\$2,(-1)*\$4,(-1)*\$4,0.16*\$5}}' $tmp.txt | psxyz $Rll_3D -JM3.5i -JZ3.5i -E\$azim/$elev -B$anno_x/$anno_y/10::wsneZ+ -Sc -C$tmp.cpt -Wthinnest -X2i -Y2.5i -K -P  > $tmp.ps\n");
 
 
-		// Draw the red N-directional sign.
-		// posX/posY is the position to draw the N-directional sign.
-		$posX = ($lon2 - 0.03);
-		$posY = ($lat1 + ($lat2 - ($lat1)) / 2);
-		fwrite($fh, "psbasemap $Rll -J -E\$azim/$elev -T$posX/$posY/1i --COLOR_BACKGROUND=red --TICK_PEN=thinner,black -O -K >> $tmp.ps\n");
+        // Draw the red N-directional sign.
+        // posX/posY is the position to draw the N-directional sign.
+        $posX = ($lon2 - 0.03);
+        $posY = ($lat1 + ($lat2 - ($lat1)) / 2);
+        fwrite($fh, "psbasemap $Rll -J -E\$azim/$elev -T$posX/$posY/1i --COLOR_BACKGROUND=red --TICK_PEN=thinner,black -O -K >> $tmp.ps\n");
 
 
-		// Draw the lon/lat/depth (km) distant scale bar. 
-		$deltaX = (($lon2 - ($lon1)) / 2);
-		$sBar_x = ($lon1 + $deltaX);
-		$sBar_y = ($lat1 - 0.03);
+        // Draw the lon/lat/depth (km) distant scale bar. 
+        $deltaX = (($lon2 - ($lon1)) / 2);
+        $sBar_x = ($lon1 + $deltaX);
+        $sBar_y = ($lat1 - 0.03);
 
-		fwrite($fh, "psbasemap -R -J -O -K -E\$azim/$elev -Lf$sBar_x/$sBar_y/$sBar_y/20k --TICK_PEN=thinner,black  >> $tmp.ps\n");
+        fwrite($fh, "psbasemap -R -J -O -K -E\$azim/$elev -Lf$sBar_x/$sBar_y/$sBar_y/20k --TICK_PEN=thinner,black  >> $tmp.ps\n");
 
-		// Draw the color scale for DEPTH
-		fwrite($fh, "psscale -C$tmp.cpt -D2i/-1.0i/4.5i/0.2ih -O -K -Ac -B5:DEPTH:/:km: -E >> $tmp.ps\n");
+        // Draw the color scale for DEPTH
+        fwrite($fh, "psscale -C$tmp.cpt -D2i/-1.0i/4.5i/0.2ih -O -K -Ac -B5:DEPTH:/:km: -E >> $tmp.ps\n");
 
-		// Draw the magnitude scale. 
-		fwrite($fh, "pslegend -Dx2i/-1.8i/6.0i/0.575i/TC -J -R -O -F gmt.legend -Glightyellow >> $tmp.ps\n");
+        // Draw the magnitude scale. 
+        fwrite($fh, "pslegend -Dx2i/-1.8i/6.0i/0.575i/TC -J -R -O -F gmt.legend -Glightyellow >> $tmp.ps\n");
 
-		// Convert ps to tif.
-		fwrite($fh, "ps2raster $tmp.ps -Tj -E$dpi\n");
-		fwrite($fh, "mv $tmp.jpg \$file.jpg\n");
+        // Convert ps to tif.
+        fwrite($fh, "ps2raster $tmp.ps -Tj -E$dpi\n");
+        fwrite($fh, "mv $tmp.jpg \$file.jpg\n");
 
-		fwrite($fh, "frame=`gmt_set_framenext \$frame`\n");
-		fwrite($fh, "((azim += $updatedAzim))\n");
+        fwrite($fh, "frame=`gmt_set_framenext \$frame`\n");
+        fwrite($fh, "((azim += $updatedAzim))\n");
 
-		// Draw the frame for remaining angle.
-		fwrite($fh, "if (( (\$azim > 360) && (\$exitFlag==0) ));\n");
-		fwrite($fh, "then\nazim=360\nexitFlag=1 \nfi\n");
+        // Draw the frame for remaining angle.
+        fwrite($fh, "if (( (\$azim > 360) && (\$exitFlag==0) ));\n");
+        fwrite($fh, "then\nazim=360\nexitFlag=1 \nfi\n");
 
-		fwrite($fh, "done \n"); # end of while loop
-		// 100 ticks per second. 3000 ticks == 30s
-		// The total display time is 30s.
-		// The $delay is the pause between each frame.
-		$displaytime = 3000;
-		$delay = ($displaytime * $updatedAzim / 360);
+        fwrite($fh, "done \n"); # end of while loop
+        // 100 ticks per second. 3000 ticks == 30s
+        // The total display time is 30s.
+        // The $delay is the pause between each frame.
+        $displaytime = 3000;
+        $delay = ($displaytime * $updatedAzim / 360);
 
-		// makes tif from gif file
-		fwrite($fh, "convert -delay $delay  *.jpg $tmp.gif\n");
+        // makes tif from gif file
+        fwrite($fh, "convert -delay $delay  *.jpg $tmp.gif\n");
 
-		fclose($fh);
-		// execute the script
-		passthru("cd $tmpdir ;  bash $tmp.gmt");
+        fclose($fh);
+        // execute the script
+        passthru("cd $tmpdir ;  bash $tmp.gmt");
 
-		$imageFile = $tmp . ".gif";
-		$imageSrc = $imageFile;
+        $imageFile = $tmp . ".gif";
+        $imageSrc = $imageFile;
 
-		$lastimageno = floor((360 - $initial_value) / $updatedAzim);      //Get total images number
-		$lastimageno = $lastimageno + 1;                                  // because the image starts from zero
-		$result['numberOfImages'] = $lastimageno;
+        $lastimageno = floor((360 - $initial_value) / $updatedAzim);      //Get total images number
+        $lastimageno = $lastimageno + 1;                                  // because the image starts from zero
+        $result['numberOfImages'] = $lastimageno;
 
-		return $result;
+        return $result;
     }
-
 
 // Create the legend file for drawing the magnitude scale.
     function createLegend() {
