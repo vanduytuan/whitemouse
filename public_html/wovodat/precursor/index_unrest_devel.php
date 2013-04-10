@@ -1645,6 +1645,7 @@ $cache = time();
                 else
                     eruptionsData.markdata = data;
             }
+            
             //changed by Nam
             //insert parameter: selectId - id of the "select" option where the list of Volcano is inserted into
             function insertVolcanoList(obj, selectId){
@@ -1652,25 +1653,33 @@ $cache = time();
                 for(var j = 0 ; j < ids.length ;j++){
                     selectId = ids[j];
                     // a list of volcanos and their cavw separated by: ;
-                    var list = obj.list;
-                    list = list.split(";");
+                    var list = obj;
                     // get the volcano select list tag
                     var volcanos = document.getElementById(selectId);
                     // reset the volcano list
                     volcanos.options = [];
                     // assign new list
                     var i = 0;
+                    // insert the list of volcano
                     volcanos.options[0] = new Option("Select...","");
+                    var vd_name = "";
+                    var vd_cavw = "";
                     for(;i < list.length;i++){
-                        if (list[i].indexOf("Unnamed")==-1)
-                            volcanos.options[volcanos.options.length] = new Option(list[i].replace('&','_'),list[i]);
-                    }                   
+                        vd_name = list[i]['vd_name'];
+                        vd_cavw = list[i]['vd_cavw'];
+                        if(vd_name.indexOf('Unnamed') != -1)
+                            continue;
+                        volcanos.options[volcanos.options.length] = new Option(vd_name + '_' + vd_cavw,vd_name + '&' + vd_cavw);
+                    }
+                    
+                    // randomly select one volcano
                     randomSelectVolcano(selectId);
-                
+             
             
 <?php
 if ($dev) {
     ?>
+                                
                     if(ids[j] == 'VolcanoList'){
                         var a = document.getElementById('VolcanoList');
                         a.value = "St. Helens&1201-05-";
@@ -1685,12 +1694,9 @@ if ($dev) {
                         $("#TimeSeriesHeader2").click();
                     }       
     <?php
-} else {
+} 
     ?>     
-                    randomSelectVolcano(selectId);
-    <?php
-}
-?>
+    
         }
     }
     /*

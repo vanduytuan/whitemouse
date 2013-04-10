@@ -95,17 +95,21 @@ class Wovodat {
     public function getVolcanoList() {
         mysql_query("set character_set_results='utf8'");
         $result = mysql_query("select vd_name, vd_cavw FROM vd  ORDER BY vd_name");
-        $i = mysql_fetch_array($result);
-        if ($i === false)
+        $row = mysql_fetch_array($result);
+        if ($row === false)
             return;
-        else
-            while (true) {
-                echo "$i[0]&$i[1]";
-                $i = mysql_fetch_array($result);
-                if ($i === false)
-                    break;
-                echo ";";
-            }
+        $results = Array();
+        $object;
+        while (true) {
+            $object = "";
+            $object['vd_name'] = $row[0];
+            $object['vd_cavw'] = $row[1];
+            array_push($results,$object);
+            $row = mysql_fetch_array($result);
+            if ($row == false)
+                break;
+        }
+        echo json_encode($results);
     }
 
     /*

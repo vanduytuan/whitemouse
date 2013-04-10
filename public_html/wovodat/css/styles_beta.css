@@ -617,7 +617,6 @@ a.active.trigger {
     padding-right: 40px;
 }
 .FilterBtn{
-
     width: 60px;
 }
 
@@ -709,9 +708,7 @@ a.active.trigger {
     margin-top: 35px;
 }
 .threeDNavigationBar{
-
     position: absolute;
-
 }
 #previousButton{
     display: inline-block;

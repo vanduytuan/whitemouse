@@ -13,12 +13,16 @@ function Wovodat(){
     
 }
 
+// time constants in milliseconds
 Wovodat.THREE_HOURS = 10800000;
 Wovodat.ONE_MONTH = 2592000000;
 Wovodat.ONE_WEEK = 604800000;
 Wovodat.ONE_DAY = 86400000;
+
 /*
  * Create the trim function for the every string object.
+ * trim all invisible character at the beginning as well as at the end of 
+ * a string
  */
 Wovodat.trim = function(text){
     text = text.replace(/[\x00-\x1F\x7F]/g,"");
@@ -26,8 +30,9 @@ Wovodat.trim = function(text){
 };
 
 /*
- * Get the domain name. Return format is: http://<domain name>
+ * Get the current domain name. Return format is: http://<domain name>
  * No directory name will be appended.
+ * usually: http://wovodat.org
  */
 Wovodat.getDomain = function (){
     var location = window.location.toString();
@@ -50,6 +55,7 @@ Wovodat.getDomain = function (){
     }
     return domain;
 };
+
 /*
  * This function is to make sure that wovodat javascript file is properly
  * included
@@ -67,16 +73,15 @@ Wovodat.redirectPage = function(link){
 /*
  * Get the list of all available volcanoes using ajax
  */
-Wovodat.getVolcanoList = function(func,selectId){
+Wovodat.getVolcanoList = function(callBackFunction,selectId){
     $.ajax({
         method: "get", 
         url: "/php/switch.php",
         data: "get=VolcanoList",
+        dataType: "json",
         success: function(html){
             if(html.indexOf('Can\'t') >= 0) return;
-            func({
-                list:html
-            },selectId);
+            callBackFunction(html,selectId);
         }
     });
 };
@@ -306,7 +311,7 @@ Wovodat.getCcUrl = function(panelUsed, cavw,handler){
         success:function(object){
             object.mapUsed = panelUsed;
             handler(object);
-            /*
+        /*
             var owner = $("#dataOwner"+panelUsed);
             var vstatus = $("#volcstatus"+panelUsed);
             var o = {};
@@ -1022,9 +1027,9 @@ Wovodat.Printer = {
             
             style.type = 'text/css';
             if (style.styleSheet){
-              style.styleSheet.cssText = css;
+                style.styleSheet.cssText = css;
             } else {
-              style.appendChild(w.document.createTextNode(css));
+                style.appendChild(w.document.createTextNode(css));
             }
 
             head.appendChild(style);
