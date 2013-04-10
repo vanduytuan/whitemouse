@@ -3079,7 +3079,7 @@ if ($dev) {
                                     </tr>
                                 </table>
                             </div>
-                            <div id="map_legend1" class="map_legend" style="font-size:8px;display:inline">
+                            <div id="map_legend1" class="map_legend">
                                 <div style="float:right">
                                     <button id="showHideMarkers1" class="showHideMarkerButton">
                                         Hide earthquake
@@ -3094,7 +3094,7 @@ if ($dev) {
                                     <img src="/img/pin_ms.png" alt=""/> Meteo
                                 </div>
                             </div>
-                            <div style="" id="Map" style="">
+                            <div style="" id="Map">
                             </div>
 
 
@@ -3414,7 +3414,7 @@ if ($dev) {
                                         </td>
                                     </tr>
                                 </table>
-                            </div><div id="map_legend2" class="map_legend" style="font-size:8px;display:inline">
+                            </div><div id="map_legend2" class="map_legend">
                                 <div style="float:right">
                                     <button id="showHideMarkers2" class="showHideMarkerButton">
                                         Hide earthquake
@@ -3431,7 +3431,8 @@ if ($dev) {
                             </div>
                             <div id="Map2">
 
-                            </div><div class="button white">
+                            </div>
+                            <div class="button white">
                                 <div class="CloseButton" id="HideVolcanoInformation2"></div>
                                 <div style="float:right;padding-right: 10px">
                                     <select id="CompVolcanoList">

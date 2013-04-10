@@ -801,7 +801,15 @@ a.active.trigger {
 .flowElement{
     width: 513px;
     display: inline-block;
+    float: right;
 }
 .switchViewButton:hover{
     cursor: pointer;
+}
+#switchViewPanel{
+    margin-bottom: 5px;
+}
+.map_legend{
+    font-size: 8px;
+    margin-top: 2px;
 }
