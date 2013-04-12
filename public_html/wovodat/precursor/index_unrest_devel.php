@@ -1968,30 +1968,33 @@ if ($dev) {
     function filterData(cavw,panelUsed){
         // parse the data in the start-date and end-date box
         function parseDateVal(date){
-            var result = Date.parse(date);
-            // the function parse of the class Date 
-            if (isNaN(result)){
-                // remove all the whitespace character in the date string
-                date = date.replace(/\s+/g,'');
-                if(date.match(/^\d{2}\/\d{2}\/\d{4}$/)){
-                    // date should be in the format MM/DD/YYYY now
-                    result = new Date(date.substring(0,4),parseInt(date.substring(5,7))-1,date.substring(8,10),date.substring(11,13),date.substring(14,16),date.substring(17,19),0);
-                    result = result.getTime();
-                }else
-                    result = "";
+            date = date.split("/");
+            if(date.length != 3)
+                return "";
+            for(var i = 0 ; i < date.length; i++){
+                date[i] = parseInt(date[i]);
             }
-            return result;
+            var result = new Date();
+            result.setUTCFullYear(date[2], date[0]-1, date[1]);
+            result.setUTCHours(0, 0, 0, 0); 
+            return result.getTime();
         }
         // data is not available for filtering
         if(!earthquakes[cavw]) 
             return;
         var nEvent = $("#Evn"+panelUsed).val();
         var sDate = parseDateVal($("#SDate"+panelUsed).val());
+        
         if(sDate == undefined || sDate == "")
             sDate = 0;
         var eDate = parseDateVal($("#EDate"+panelUsed).val());
+        
+        // set the end time to be at the end of the end date, not the start of the
+        // end date
         if(eDate == undefined || eDate == "")
             eDate = new Date().getTime();
+        eDate += Wovodat.ONE_DAY - 1000;// in milliseconds
+        
         var dhigh = parseFloat($("#DepthHigh"+panelUsed).val());
         var dlow = parseFloat($("#DepthLow"+panelUsed).val());
         var type = document.getElementById("EqType"+panelUsed);
@@ -2005,11 +2008,15 @@ if ($dev) {
             
             if(i == 'vlat' || i == 'vlon')
                 continue;
+            // if we already have enough earthquakes event, the rest of event is 
+            // ignored eventhough they satisfy the filter
             if (count > nEvent){
                 earthquakes[cavw][i]['available'] = false;
                 continue;
             }
+            
             if (earthquakes[cavw][i]['time'] != "" && typeof earthquakes[cavw][i]['time'] != "undefined"){
+                
                 var eType = earthquakes[cavw][i]['eqtype'];
                 var eDepth = parseFloat(earthquakes[cavw][i]['depth']);
                 var eTime = Wovodat.convertDate(earthquakes[cavw][i]['time']);
@@ -2021,8 +2028,11 @@ if ($dev) {
                     earthquakes[cavw][i]['available'] = false;	
                     continue;
                 }
+                
                 eTime = eTime.getTime();
+                
                 earthquakes[cavw][i]['available'] = false;
+                
                 if(eType != type && type != "")
                     continue;
                 if(eDepth < dlow)
@@ -2030,10 +2040,10 @@ if ($dev) {
                 if(eDepth > dhigh)
                     continue;
                 // event happened after the end date
-                if(eTime > eDate + Wovodat.ONE_DAY)
+                if(eTime > eDate)
                     continue;
                 // event happned before the start date
-                if (eTime < sDate - Wovodat.ONE_DAY)
+                if (eTime < sDate)
                     continue;
                 count++;
                 earthquakes[cavw][i]['available'] = true;
@@ -2063,9 +2073,8 @@ if ($dev) {
             // eliminate the empty elements at the end of the ajax data
             while (equakeSet[equakeSet.length-1] == "")
                 equakeSet.length--;
-            var count = 0;
+            var color,size;
             for (var i in equakeSet){
-                count++;
                 var index = Wovodat.trim(equakeSet[i]);
                 var nextQuake = index.split(",");
                 var lat = nextQuake[0];
@@ -2159,7 +2168,6 @@ if ($dev) {
                 earthquakes[cavw][index]['lonDistance'] = Wovodat.calculateD(lat,lon,vlat,vlon,1);
                 earthquakes[cavw][index]['timestamp'] = Wovodat.convertDate(time);
             }
-            console.log(count);
             filterData(cavw,mapUsed);
             insertMarkersForEarthquakes(null,cavw,mapUsed);
         }
@@ -2171,8 +2179,9 @@ if ($dev) {
                     if (earthquakes[cavw][i]['available']){
                         earthquakes[cavw][i]['marker' + mapUsed].setMap(map[mapUsed]);
                     }
-                    else
+                    else{
                         earthquakes[cavw][i]['marker' + mapUsed].setMap(null);
+                    }
                 }	
             }
         }
