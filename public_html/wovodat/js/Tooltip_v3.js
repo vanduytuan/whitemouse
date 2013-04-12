@@ -18,12 +18,12 @@ function Tooltip(options) {
     
     this.div_ = null;
 
-    //Explicitly call setMap on this overlay
+    // Explicitly call setMap on this overlay
+    
     this.setMap(this.map_);
     var me = this;
     // Show tooltip on mouseover event.
     google.maps.event.addListener(me.marker_, 'mouseover', function() {
-       
         me.show();
     });
     // Hide tooltip on mouseout event.

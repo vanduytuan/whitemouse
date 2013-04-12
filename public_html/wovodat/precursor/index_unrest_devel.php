@@ -1641,7 +1641,7 @@ $cache = time();
 <?php
 if ($dev) {
     ?>
-                                
+                                        
                     if(ids[j] == 'VolcanoList'){
                         var a = document.getElementById('VolcanoList');
                         a.value = "St. Helens&1201-05-";
@@ -1656,8 +1656,8 @@ if ($dev) {
                         $("#TimeSeriesHeader2").click();
                     }       
     <?php
-} 
-    ?>     
+}
+?>     
     
         }
     }
@@ -2015,12 +2015,13 @@ if ($dev) {
                 continue;
             }
             
+                
             if (earthquakes[cavw][i]['time'] != "" && typeof earthquakes[cavw][i]['time'] != "undefined"){
                 
                 var eType = earthquakes[cavw][i]['eqtype'];
                 var eDepth = parseFloat(earthquakes[cavw][i]['depth']);
                 var eTime = Wovodat.convertDate(earthquakes[cavw][i]['time']);
-				
+			
                 var elat = earthquakes[cavw][i]['lat'], elon = earthquakes[cavw][i]['lon'];
                 var distanceFromVolcano = Wovodat.calculateD(vlat,vlon,elat,elon,2);
                 
@@ -2028,7 +2029,7 @@ if ($dev) {
                     earthquakes[cavw][i]['available'] = false;	
                     continue;
                 }
-                
+                	
                 eTime = eTime.getTime();
                 
                 earthquakes[cavw][i]['available'] = false;
@@ -2049,6 +2050,70 @@ if ($dev) {
                 earthquakes[cavw][i]['available'] = true;
             }
         }
+    }
+    function createMarkerIcon(depth,size){
+    
+        // set the shape of the marker
+        var color = '../img/blankCircles/pin_';
+        if (depth <= 2.5) 
+            color += 're'; // Red
+        else if (depth >2.5 && depth <= 5) 
+            color += 'org'; // Orange
+        else if (depth >5 && depth <= 10) 
+            color += 'ye'; // Yellow
+        else if (depth >10 && depth <= 15) 
+            color += 'ge'; // Dark Green
+        else if (depth >15 && depth <= 25) 
+            color += 'lbe'; // Light BLUE
+        else if (depth >25 && depth <= 40) 
+            color += 'be'; // BLUE
+        else 
+            color += 'dbe'; // Dark Blue
+        color += '.png';
+    
+        // set size of the marker
+        var icon = new google.maps.MarkerImage(color,null,null,null,new google.maps.Size(size,size));
+    
+        return icon;
+    }
+    function getSizeOfEquake(mag){
+        // choose icon size base on magnitude of the equake event
+        var size = Math.round(4+((mag)*2)/4);
+
+        if (size<4) 
+            size = 4;
+        if (size>14) 
+            size = 14;
+        return size;
+    }
+    function getCssClassForEquakeMarker(){
+        return "earthquakeTooltip";
+    }
+    function createMarker(equakeObj,mapUsed){
+        var mag,depth,size,icon,lat,lon,marker,time;
+        mag = equakeObj['mag'];
+        depth = equakeObj['depth'];
+        size = getSizeOfEquake(mag);
+        icon = createMarkerIcon(depth,size);
+        lat = equakeObj['lat'];
+        lon = equakeObj['lon'];
+        time = equakeObj['time'];
+        // set marker
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lon),
+            icon:icon,
+            map: map[mapUsed]
+        });
+        var contentText = "<table><tr><td><b>Lat</b> </td><td>" + 
+            lat + "</td></tr><tr><td><b>Lon</b></td><td>" + 
+            lon + "</td></tr><tr><td><b>Time</b></td><td>" + 
+            time + "</td></tr><tr><td><b>Depth</b></td><td>" + 
+            depth + "</td></tr><tr><td><b>Magnitude</b></td><td>" 
+            + mag+"</td></tr></table>";
+        // create tooltip
+        new Tooltip({marker:marker,content:contentText,cssClass:"earthquakeTooltip"});
+    
+        return marker;
     }
     /*
      * Insert markers for earthquakes
@@ -2073,90 +2138,22 @@ if ($dev) {
             // eliminate the empty elements at the end of the ajax data
             while (equakeSet[equakeSet.length-1] == "")
                 equakeSet.length--;
-            var color,size;
+            var index,nextQuake,lat,lon,depth,mag,time,type;
             for (var i in equakeSet){
-                var index = Wovodat.trim(equakeSet[i]);
-                var nextQuake = index.split(",");
-                var lat = nextQuake[0];
-                var lon = nextQuake[1];
-                var depth = nextQuake[2];
-                var mag = nextQuake[3];
-                var time = nextQuake[4];
-                var type = nextQuake[5];
+                index = Wovodat.trim(equakeSet[i]);
+                nextQuake = index.split(",");
+                lat = nextQuake[0];
+                lon = nextQuake[1];
+                depth = nextQuake[2];
+                mag = nextQuake[3];
+                time = nextQuake[4];
+                type = nextQuake[5];
 						
                 // ignore earthquakes that have no information on depth and/or magnitude
                 if (depth == "" || typeof depth=="undefined" || mag=="" || typeof mag=="undefined")
                     continue;
-                
-                // choose icon size base on magnitude of the equake event
-                size = Math.round(4+((mag)*2)/4);
-                        
-                if (size<4) 
-                    size = 4;
-                if (size>14) 
-                    size = 14;
-                        
-                // choose icon image base on depth of the equake event
-                if (depth <= 2.5) 
-                    color = '../img/blankCircles/pin_re.png'; // Red
-                else if (depth >2.5 && depth <= 5) 
-                    color = '../img/blankCircles/pin_org.png'; // Orange
-                else if (depth >5 && depth <= 10) 
-                    color = '../img/blankCircles/pin_ye.png'; // Yellow
-                else if (depth >10 && depth <= 15) 
-                    color ='../img/blankCircles/pin_ge.png'; // Dark Green
-                else if (depth >15 && depth <= 25) 
-                    color ='../img/blankCircles/pin_lbe.png'; // Light BLUE
-                else if (depth >25 && depth <= 40) 
-                    color ='../img/blankCircles/pin_be.png'; // BLUE
-                else 
-                    color = '../img/blankCircles/pin_dbe.png'; // Dark Blue
-                
-                if(i < parseInt(document.getElementById('Evn' + mapUsed).value)){
-                    				
-                    // set icon
-                    var icon = new google.maps.MarkerImage(color,null,null,null,new google.maps.Size(size,size));
-
-                    // set marker
-                    var marker = new google.maps.Marker({
-                        position: new google.maps.LatLng(lat,lon),
-                        icon:icon,
-                        map: map[1]
-                    });
-
-                    var marker2 = new google.maps.Marker({
-                        position: new google.maps.LatLng(lat,lon),
-                        icon:icon,
-                        map: map[2]
-                    });
-                    
-                    // the content for the popup window when the mouse hovers
-                    // over this equake event
-                    var contentText = "<table><tr><td><b>Lat</b> </td><td>" + 
-                        lat + "</td></tr><tr><td><b>Lon</b></td><td>" + 
-                        lon + "</td></tr><tr><td><b>Time</b></td><td>" + 
-                        time + "</td></tr><tr><td><b>Depth</b></td><td>" + 
-                        depth + "</td></tr><tr><td><b>Magnitude</b></td><td>" 
-                        + mag+"</td></tr></table>";
-                    
-                    var infoWindow = new google.maps.InfoWindow({content:contentText});
-                    
-                    // to show tooltip for the current earthquakes
-                    new Tooltip({marker:marker,content:contentText,cssClass:"earthquakeTooltip"});
-                    new Tooltip({marker:marker2,content:contentText,cssClass:"earthquakeTooltip"});
-                    
-                    // the trick so that the tooltip will display
-                    marker.setMap(null);
-                    marker2.setMap(null);
-                    
-                }	
-                // infoWindow.open(map[mapUsed],marker);
                 // store the quake data in the earthquakes[cavw] object
-                
                 earthquakes[cavw][index]=[];
-                earthquakes[cavw][index]['marker' + 1]= marker;
-                earthquakes[cavw][index]['marker' + 2]= marker2;
-                earthquakes[cavw][index]['infoWindow']= infoWindow;
                 earthquakes[cavw][index]['eqtype'] = type;
                 earthquakes[cavw][index]['lat']=lat;
                 earthquakes[cavw][index]['lon']=lon;
@@ -2174,14 +2171,15 @@ if ($dev) {
         else{
             // if we already had the cached data, just display it in the specific 
             // map
+            var marker;
             for (var i in earthquakes[cavw]){
-                if (typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
-                    if (earthquakes[cavw][i]['available']){
-                        earthquakes[cavw][i]['marker' + mapUsed].setMap(map[mapUsed]);
-                    }
-                    else{
-                        earthquakes[cavw][i]['marker' + mapUsed].setMap(null);
-                    }
+                if (earthquakes[cavw][i]['available']){
+                    marker = createMarker(earthquakes[cavw][i],mapUsed);
+                    earthquakes[cavw][i]['marker' + mapUsed] = marker;
+                }
+                else if(typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
+                    earthquakes[cavw][i]['marker' + mapUsed].setMap(null);
+                    earthquakes[cavw][i]['marker' + mapUsed] = null;
                 }	
             }
         }
