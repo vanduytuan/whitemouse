@@ -109,29 +109,6 @@ Wovodat.getEruptionList = function(args){
 };
 
 /*
- * Get latitude and longitude of a volcano
- */
-Wovodat.getLatLon = function(args, volcId, mapId){
-    var cavw = args.cavw;
-    var handler = args.handler;
-    var mapUsed = args.mapUsed;
-    $.ajax({
-        method: "get", 
-        url: "/php/switch.php",
-        data: "get=LatLon&cavw="+cavw,
-        success: function(html){
-            if(html.indexOf('Can\'t') >= 0) return;
-            html = html.split(";");
-            handler({
-                lat:html[0],
-                lon:html[1],
-                elev:html[2]
-            },volcId, mapId,mapUsed);
-        }
-    });
-};
-
-/*
  * Get available stations for a specific volcano
  * 
  */
@@ -389,6 +366,7 @@ Wovodat.showTooltip = function (x, y, contents) {
  * show processing bar when the script is making ajax call to server
  */
 var busy_counter=0;
+
 Wovodat.showProcessingIcon = function(icon){
     // show the loading icon when ajax is executing
     icon.ajaxSend(function(){

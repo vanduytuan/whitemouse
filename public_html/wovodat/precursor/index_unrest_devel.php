@@ -94,7 +94,7 @@ $cache = time();
                     max: Math.floor(endDate.getTime()-startDate.getTime())/86400000,
                     values : [0, Math.floor(endDate.getTime()-startDate.getTime())/86400000],
                     slide: function(event,ui){
-                        var startDate = new Date(1900, 0, 1, 0, 0, 0, 0);
+                        var startDate = new Date(1940, 0, 2, 0, 0, 0, 0);
                         var date = new Date(startDate.getTime());
                         date.setDate(date.getDate() + ui.values[0]);
                         $("#SDate" + mapUsed).val($.datepicker.formatDate('mm/dd/yy',date));
@@ -223,10 +223,11 @@ $cache = time();
                 $("#VolcanoList").change(function(){
                     hideEarthquakeMarkerButton(1);
                     uncheckAllEquakeButton(1);
+                    setPrintButtonVisibility(1,false);
                     var volcano = $("#VolcanoList").val();
                     volcano = volcano.split("&");
                     var cavw = volcano[1];
-                    Wovodat.getLatLon({cavw:cavw,handler:drawMap,mapUsed:1},"VolcanoList", "Map");
+                    Wovodat.getLatLon({handler:drawMap,cavw:cavw,mapUsed:1},"VolcanoList", "Map");
                     //initialise value for Number of Events textbox
                     resetFilter(1);
                     $("#FormFilter1").hide();
@@ -314,6 +315,7 @@ $cache = time();
                 $("#CompVolcanoList").change(function(){
                     hideEarthquakeMarkerButton(2);
                     uncheckAllEquakeButton(2);
+                    setPrintButtonVisibility(2,false);
                     var volcano = $("#CompVolcanoList").val();
                     volcano = volcano.split("&");
                     var cavw = volcano[1];
@@ -1390,7 +1392,6 @@ $cache = time();
                 }
             }
             
-            
             function randomSelectVolcano(selectedId){
                 var list = document.getElementById(selectedId);
                 var length = list.options.length;
@@ -1398,46 +1399,7 @@ $cache = time();
                 list.options[i].selected = 'selected';
                 $("#"+selectedId).change();
             }
-            function updateStationsWithDataList(args, tableId){
-                stationTypeList.length = 0;
-                stationTypeList = args.list;
-                var stationsTable = $("#"+tableId);
-                var html="";
-                if(stationTypeList.length == 0){
-                    html="<tr><td></td><td>No data</td></tr>";
-                    stationsTable.html(html);
-                    return;
-                }
-                for (var i in stationTypeList){
-                    html += "<tr><td><input type='checkbox' value='" + stationTypeList[i] + "' id='" + stationTypeList[i]+"Checkbox'/></td><td>" 
-                        + formatReturnStations(stationTypeList[i])+  "</td></tr>";
-                }
-                stationsTable.html(html);
-                for(var i in stationTypeList){
-                    document.getElementById(stationTypeList[i] + "Checkbox").onclick = function(){
-                        if(this.checked){
-                            if(stationsDatabase[this.value]){
-                                updateTimeSeriesandStations({
-                                    type:   this.value,
-                                    action: 'updateOldData'
-                                }, stationsDatabase,1);
-                            }else{
-                                var volcano = $("#VolcanoList").val();
-                                volcano = volcano.split("&");
-                                var cavw = volcano[1];
-                                Wovodat.getStations({
-                                    cavw: cavw,
-                                    type: this.value,
-                                    handler: updateTimeSeriesandStations,
-                                    stationsDatabaseUsed: stationsDatabase
-                                });
-                            }
-                        }else{
-                            updateTimeSeriesandStations({action:'delete',type:this.value}, stationsDatabase,1);
-                        }
-                    }
-                }
-            }
+            
             function updateAllStationsList(args,tableId,mapId,stationsDatabaseUsed,mapUsed){
                 
                 stationTypeList.length = 0;
@@ -2101,7 +2063,9 @@ if ($dev) {
             // eliminate the empty elements at the end of the ajax data
             while (equakeSet[equakeSet.length-1] == "")
                 equakeSet.length--;
+            var count = 0;
             for (var i in equakeSet){
+                count++;
                 var index = Wovodat.trim(equakeSet[i]);
                 var nextQuake = index.split(",");
                 var lat = nextQuake[0];
@@ -2195,6 +2159,7 @@ if ($dev) {
                 earthquakes[cavw][index]['lonDistance'] = Wovodat.calculateD(lat,lon,vlat,vlon,1);
                 earthquakes[cavw][index]['timestamp'] = Wovodat.convertDate(time);
             }
+            console.log(count);
             filterData(cavw,mapUsed);
             insertMarkersForEarthquakes(null,cavw,mapUsed);
         }
@@ -2204,7 +2169,6 @@ if ($dev) {
             for (var i in earthquakes[cavw]){
                 if (typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
                     if (earthquakes[cavw][i]['available']){
-                        console.log(earthquakes[cavw][i]['marker' + mapUsed]);
                         earthquakes[cavw][i]['marker' + mapUsed].setMap(map[mapUsed]);
                     }
                     else
