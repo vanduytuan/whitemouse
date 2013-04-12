@@ -2179,7 +2179,6 @@ if ($dev) {
                 }
                 else if(typeof earthquakes[cavw][i]['marker' + mapUsed] != "undefined"){
                     earthquakes[cavw][i]['marker' + mapUsed].setMap(null);
-                    earthquakes[cavw][i]['marker' + mapUsed] = null;
                 }	
             }
         }
