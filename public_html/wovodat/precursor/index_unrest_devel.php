@@ -2190,6 +2190,8 @@ if ($dev) {
         });
         initializeFilter(earthquakes[cavw],mapUsed);
     }
+    // set filter to avaiable data that we have, especially the start time and 
+    // end time of all earthquake event
     function initializeFilter(data,mapUsed){
         var i, item, startTime, endTime, timestamp;
         for(i in data){

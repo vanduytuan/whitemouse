@@ -1318,7 +1318,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         if ($quantity)
             $quakeQuery .= "sd_evn_code, ";
 
-        $quakeQuery .= " sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn JOIN (SELECT ROUND(RAND() * (SELECT MAX(sd_evn_id) FROM sd_evn where  sd_evn_time <= now())) AS id) AS r2";
+        $quakeQuery .= " sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id, (0.15 * (unix_timestamp(sd_evn_time)/unix_timestamp(now())) + 0.15 * (1 - sd_evn_edep/40)  + 0.7 * rand()) as id FROM sd_evn ";
 
 
         $quakeQuery .= " WHERE ABS($latitude - sd_evn_elat) < 1 AND ABS($longitude - sd_evn_elon) < 6 ";
@@ -1352,7 +1352,7 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
         }
 
         //$quakeQuery .= " group by sd_evn_elat, sd_evn_elon order by sd_evn_time desc ";
-        $quakeQuery .= " order by r2.id ";
+        $quakeQuery .= " order by id desc ";
 
 
         if ($quantity) {
