@@ -668,6 +668,7 @@ $cache = time();
                 }
                 return ownerList;
             }
+            
             // main function to draw the time series graph
             // data has the format [[[x1,y1],[x2,y2],[x3,y3]]]
             // id is the string to specify the type of the data
@@ -675,19 +676,20 @@ $cache = time();
                 var id = args.id;
                 // the map used
                 var tableId = args.tableId;
-                if(!tableId)
-                    tableId = "";
                 
                 // get the label from the list of available time series
                 var label = document.getElementById(id + 'Tr' + tableId).getElementsByTagName('td')[1].innerHTML;
                 
-                // delete the link between data that are too long from each other
+                
                 var data = args.data;
-                // delete the data thar are too big compare to its neighbor
+                
+                // delete the link between data that are too long from each other
                 if(label.indexOf("Leveling") == -1)
                     data = Wovodat.highlightNoDataRange(data);
                 
+                // delete the data that are too big compare to its neighbor
                 data = Wovodat.fixBigData(data);
+                
                 // set up the reference time
                 if(referenceTime == null){
                     referenceTime = data[0][0][0];
@@ -703,6 +705,7 @@ $cache = time();
                 if(detailedData[id] == null){
                     Wovodat.getDetailedStationData({
                         id: id,
+                        referenceTime: referenceTime,
                         handler: function(e){
                             detailedData[id] = e.data;
                             // set the graphs to appropriate dataset when 
@@ -949,6 +952,7 @@ $cache = time();
                             synchronizeGraph(i,id + '' + tableId);
                     }
                 }
+                
                 
                 // showing the tooltip of information for the graphs when
                 // user hovers mouse over a point on the graph.

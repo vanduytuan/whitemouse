@@ -1313,12 +1313,18 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
           $sql_statement = "SELECT sd_evn_code, sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id FROM sd_evn JOIN (SELECT ROUND(RAND() * (SELECT MAX(sd_evn_id) FROM sd_evn)) AS id) AS r2 WHERE ABS(34.0789985656738 - sd_evn_elat) < 1 AND ABS(139.529006958008 - sd_evn_elon) < 6 AND SQRT(POW((34.0789985656738 - sd_evn_elat)*110, 2) + POW((139.529006958008 - sd_evn_elon) * 111.32 * COS(34.0789985656738/57.32), 2))< 10 AND sd_evn_pubdate <= now() and sd_evn_time BETWEEN '1900/01/01' AND '2013/4/2' and sd_evn_edep BETWEEN 0 AND 40 order by r2.id limit 500";
          */
 
-
+        if (is_numeric($startDepth) && is_numeric($endDepth)) {
+            
+        } else {
+            $startDepth = 0;
+            $endDepth = 40;
+        }
+        
         $quakeQuery = "SELECT ";
         if ($quantity)
             $quakeQuery .= "sd_evn_code, ";
 
-        $quakeQuery .= " sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id, (0.15 * (unix_timestamp(sd_evn_time)/unix_timestamp(now())) + 0.15 * (1 - sd_evn_edep/40)  + 0.7 * rand()) as id FROM sd_evn ";
+        $quakeQuery .= " sd_evn_elat, sd_evn_elon, sd_evn_edep, sd_evn_pmag, sd_evn_time, sd_evn_eqtype, sn_id, (0.15 * (unix_timestamp(sd_evn_time)/unix_timestamp(now())) + 0.2 * (rand() * sd_evn_edep/$endDepth)  + 0.65 * rand()) as id FROM sd_evn ";
 
 
         $quakeQuery .= " WHERE ABS($latitude - sd_evn_elat) < 1 AND ABS($longitude - sd_evn_elon) < 6 ";
@@ -1339,13 +1345,11 @@ where a.ds_code = '$code' and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd
             $quakeQuery .= $dates;
         }
 
-        if (is_numeric($startDepth) && is_numeric($endDepth)) {
+        
+        
             $depth = " and sd_evn_edep BETWEEN $startDepth AND $endDepth ";
             $quakeQuery .= $depth;
-        } else {
-            $quakeQuery .= " AND sd_evn_edep < 40 and sd_evn_edep > -3 ";
-        }
-
+            
         if ($eqtype) {
             $quaketype = " and sd_evn_eqtype = $eqtype ";
             $quakeQuery .= $quaketype;
