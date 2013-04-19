@@ -273,6 +273,7 @@ $cache = time();
                             div.parentNode.removeChild(div);
                         }
                         document.getElementById('overviewPanel').style.display = 'none';
+                        
                         document.getElementById('TimeSeriesList').innerHTML = '';
                     }else{
                         for(var i in graphs){
@@ -598,7 +599,8 @@ $cache = time();
                 
                 }
                 if(count == 0){
-                    timeSeriesList.innerHTML = "<tr><td>No data is available yet.</td></tr>";
+                    
+                    $(timeSeriesList).html("<tr><td>No data is available yet.</td></tr>");
                     optionList.style.height = '30px';
                 }else{
                     if(count > 3) count = 3;
@@ -796,7 +798,7 @@ $cache = time();
                 ownerLists.style.setProperty('height','16px');
                 var ownerOption = document.createElement('option');
                 ownerOption.value = '';
-                ownerOption.innerHTML = 'Select Owner';
+                $(ownerOption).html('Select Owner');
                 ownerLists.appendChild(ownerOption);
                 ownerLists.style.width = '100px';
                 td.appendChild(ownerLists);

@@ -1159,7 +1159,7 @@ Wovodat.showNotification = function(obj){
     window.setTimeout(function(){
         div.parentNode.removeChild(div);
     },duration * 1000);
-}
+};
 /*
 Wovodat.showTooltip = function (x, y, contents) {
     $('<div id="tooltip">' + contents + '</div>').css( {
